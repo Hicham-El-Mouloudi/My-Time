@@ -1,24 +1,20 @@
 <resources>
+    <string name="app_name">My Time</string>
+
     <!-- Navigation menu bar -->
     <string name="nav_alarm">Alarm</string>
-    <string name="nav_study_session">Study\nSession</string>
-    <string name="nav_sleep_session">Sleep\nSession</string>
+    <string name="nav_study_session">Study</string>
+    <string name="nav_sleep_session">Sleep</string>
     <string name="nav_statistics">Statistics</string>
     <string name="nav_settings">Settings</string>
-    <!-- App Name -->
-    <string name="app_name">My Time</string>
+
     <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
+    <string name="genral_settings">General Settings</string>
+    <string name="theme_title">Theme</string>
+    <string name="language_title">Language</string>
 
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
+    <!-- Theme Preferences -->
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
 
-    <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
 </resources>
