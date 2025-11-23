@@ -1,6 +1,9 @@
 <resources>
     <!-- Navigation menu bar -->
-    <string name="nav_home">Home</string>
+    <string name="nav_alarm">Alarm</string>
+    <string name="nav_study_session">Study\nSession</string>
+    <string name="nav_sleep_session">Sleep\nSession</string>
+    <string name="nav_statistics">Statistics</string>
     <string name="nav_settings">Settings</string>
     <!-- App Name -->
     <string name="app_name">My Time</string>
