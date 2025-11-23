@@ -29,11 +29,18 @@ public class MainActivity extends AppCompatActivity {
         // Avoiding system insets -> system bars
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        // applyingg the bottom inset to the navigation bar
+        ViewCompat.setOnApplyWindowInsetsListener(bottomNavigationView, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(0, 0, 0, systemBars.bottom);
+            return insets;
+        });
+
         bottomNavigationView.setOnItemSelectedListener(item -> {
             navigateTo(item.getItemId());
             return true;
