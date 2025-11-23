@@ -2,8 +2,13 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="sage_green">#ccd5ae</color>
-    <color name="pale_olive">#e9edc9</color>
-    <color name="cream">#fefae0</color>
 
+    <!-- Semantic Colors -->
+    <color name="background_color">#F5F7FA</color> <!-- Soft Blue-Grey Background -->
+    <color name="nav_bar_color">#FFFFFF</color>   <!-- Clean White Nav Bar -->
+    <color name="primary_color">#4A90E2</color>   <!-- Soft Blue -->
+    <color name="secondary_color">#50E3C2</color> <!-- Teal Accent -->
+    <color name="surface_color">#FFFFFF</color>
+    <color name="text_primary">#2C3E50</color>    <!-- Dark Blue-Grey Text -->
+    <color name="text_secondary">#7F8C8D</color>  <!-- Grey Text -->
 </resources>
