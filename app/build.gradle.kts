@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.mytime"
+    namespace = "com.ensao.mytime"
     compileSdk = 36
 
     defaultConfig {

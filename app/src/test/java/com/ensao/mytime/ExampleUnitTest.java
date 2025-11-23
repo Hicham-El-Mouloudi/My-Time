@@ -1,4 +1,4 @@
-package com.example.mytime;
+package com.ensao.mytime;
 
 import org.junit.Test;
 
