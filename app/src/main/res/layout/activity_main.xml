@@ -8,6 +8,7 @@
     tools:context=".MainActivity">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
         android:layout_width="364dp"
         android:layout_height="74dp"
         android:layout_marginBottom="4dp"
@@ -17,4 +18,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/navigation_menu_bar" />
+
+    <FrameLayout
+        android:id="@+id/mainContent"
+        android:layout_width="match_parent"
+        android:layout_height="644dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+        tools:layout_editor_absoluteX="6dp">
+
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
