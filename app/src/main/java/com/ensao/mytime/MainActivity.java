@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
-        if (savedInstanceState == null) {
+        if (savedInstanceState == null) { // if the activity is created for the first time
             bottomNavigationView.setSelectedItemId(R.id.nav_alarm);
         }
     }
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (fragment != null) {
             getSupportFragmentManager()
-                    .beginTransaction()
+                    .beginTransaction()// mainContent is the id of the frame layout
                     .replace(R.id.mainContent, fragment)
                     .commit();
         }
