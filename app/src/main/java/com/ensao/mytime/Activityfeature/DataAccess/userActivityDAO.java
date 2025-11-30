@@ -23,6 +23,7 @@ public interface userActivityDAO {
 
 
 
+    @Query("update activities  set IsActive = 0 where id = :id")
     int DesactivateActivity(int id);
 
 
