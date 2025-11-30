@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
 import androidx.room.Database;
-import androidx.room.InvalidationTracker;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
@@ -17,7 +16,7 @@ import com.ensao.mytime.Activityfeature.DataAccess.*;
 @Database(entities = {userActivity.class, RepetitionKind.class,CourseContent.class,Course.class, Category.class,ActivityHistory.class},version = 1)
 public abstract class ActivityRoomDB extends RoomDatabase {
 
-    private static volatile ActivityRoomDB db;
+    private static volatile ActivityRoomDB Instance;
 
 
     //entities ===========================================================================
@@ -36,16 +35,17 @@ public abstract class ActivityRoomDB extends RoomDatabase {
 
 
     public static synchronized ActivityRoomDB getInstance(Context context){
-        if(db==null){
+        if(Instance ==null){
 
-            db= Room.databaseBuilder(context.getApplicationContext(),ActivityRoomDB.class,"activity_db")
+            Instance = Room.databaseBuilder(context.getApplicationContext(),ActivityRoomDB.class,"activity_db")
+                    .addCallback(callback)
                     .build();
 
 
 
         }
 
-        return db;
+        return Instance;
     }
 
 
@@ -60,6 +60,7 @@ public abstract class ActivityRoomDB extends RoomDatabase {
             //but we can use the room generated insert directly
             // we need to do it as an asynchronous operation
 
+            new populateDbAsync(Instance).execute();
 
         }
 
