@@ -9,7 +9,7 @@ import com.ensao.mytime.Activityfeature.Busniss.ActivityHistory;
 public interface ActivityHistoryDAO {
 
     @Insert
-    int Insert(ActivityHistory Historyrecord);
+    long Insert(ActivityHistory Historyrecord);
 
 
     //we will work on this later

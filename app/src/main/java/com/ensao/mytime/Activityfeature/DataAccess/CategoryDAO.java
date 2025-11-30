@@ -12,7 +12,7 @@ import java.util.List;
 @Dao
 public interface CategoryDAO {
     @Insert
-    int Insert(Category record);
+    long Insert(Category record);
 
 
     @Query("select c.* , r.Title as RepetitionTitle from category as c inner join RepetitionKind as r " +

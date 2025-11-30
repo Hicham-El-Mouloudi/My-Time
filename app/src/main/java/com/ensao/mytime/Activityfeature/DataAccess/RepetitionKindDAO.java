@@ -14,7 +14,7 @@ public interface RepetitionKindDAO {
 
 
     @Insert
-    int Insert(RepetitionKind kind);
+    long Insert(RepetitionKind kind);
 
 
     @Query("select * from RepetitionKind")

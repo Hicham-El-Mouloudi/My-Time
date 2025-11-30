@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.ensao.mytime.Activityfeature.Busniss.*;
@@ -14,6 +15,7 @@ import com.ensao.mytime.Activityfeature.DataAccess.*;
 
 
 @Database(entities = {userActivity.class, RepetitionKind.class,CourseContent.class,Course.class, Category.class,ActivityHistory.class},version = 1)
+@TypeConverters({Converters.class})
 public abstract class ActivityRoomDB extends RoomDatabase {
 
     private static volatile ActivityRoomDB Instance;
@@ -21,12 +23,12 @@ public abstract class ActivityRoomDB extends RoomDatabase {
 
     //entities ===========================================================================
 
-    public abstract RepetitionKindDAO m_repetitionKindDao();
-    public abstract userActivityDAO m_userActivityDAO();
-    public abstract CourseDAO m_CourseDAO();
-    public abstract CourseContentDAO m_CourseContentDAO();
-    public abstract CategoryDAO m_CategoryDAO();
-    public abstract ActivityHistoryDAO m_ActivityHistoryDAO();
+    public abstract RepetitionKindDAO _repetitionKindDao();
+    public abstract userActivityDAO _userActivityDAO();
+    public abstract CourseDAO _CourseDAO();
+    public abstract CourseContentDAO _CourseContentDAO();
+    public abstract CategoryDAO _CategoryDAO();
+    public abstract ActivityHistoryDAO _ActivityHistoryDAO();
 
     //====================================================================================
 
@@ -87,8 +89,8 @@ public abstract class ActivityRoomDB extends RoomDatabase {
 
         public populateDbAsync(ActivityRoomDB db){
 
-            _repetitionKindDao=db.m_repetitionKindDao();
-            _categoryDao =db.m_CategoryDAO();
+            _repetitionKindDao=db._repetitionKindDao();
+            _categoryDao =db._CategoryDAO();
         }
 
 
@@ -98,10 +100,10 @@ public abstract class ActivityRoomDB extends RoomDatabase {
 
             //populate the repetition kinds table
 
-            int EachDayID = _repetitionKindDao.Insert(new RepetitionKind("eachday"));
-            int EachMonthID = _repetitionKindDao.Insert(new RepetitionKind("eachmonth"));
-            int EachDWeekID = _repetitionKindDao.Insert(new RepetitionKind("eachweek"));
-            int OneTimeID = _repetitionKindDao.Insert(new RepetitionKind("onetime"));
+            long EachDayID = _repetitionKindDao.Insert(new RepetitionKind("eachday"));
+            long EachMonthID = _repetitionKindDao.Insert(new RepetitionKind("eachmonth"));
+            long EachDWeekID = _repetitionKindDao.Insert(new RepetitionKind("eachweek"));
+            long OneTimeID = _repetitionKindDao.Insert(new RepetitionKind("onetime"));
 
             //if we wanted we can add some default categories here
 

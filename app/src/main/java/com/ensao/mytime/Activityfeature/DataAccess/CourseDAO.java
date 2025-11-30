@@ -14,7 +14,7 @@ import java.util.List;
 public interface CourseDAO {
 
     @Insert
-    int Insert(Course newCourse);
+    long Insert(Course newCourse);
 
 
     @Query("delete from Course where id = :id")
@@ -22,7 +22,7 @@ public interface CourseDAO {
 
 
     //note that because we used inner join , courses with no content will not be returned in this list
-    @Query("select c.* , CourseContentCount.NumberOfContent as contentCount  from Course as c inner  join " +
+    @Query("select c.* , CourseContentCount.NumberOfContent as ContentCount  from Course as c inner  join " +
             "(select CourseID as CID ,  Count(1) as NumberOfContent from CourseContent group by CourseID) as CourseContentCount " +
             "on c.id= CourseContentCount.CID ")
     List<CourseWithContentCountDTO> GetCourses();

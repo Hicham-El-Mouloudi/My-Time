@@ -4,6 +4,8 @@ package com.ensao.mytime.Activityfeature.Busniss;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import java.util.Date;
@@ -17,18 +19,19 @@ import java.util.Date;
             entity = Category.class,
             parentColumns = "id",
             childColumns = "CategoryID"
-    )})
+    )},
+        indices = {@Index("courseID"),@Index("CategoryID")})
 public class userActivity {
 
     @PrimaryKey(autoGenerate = true)
-    private int id ;
+    private long id ;
 
     @NonNull
     private String Title ;
     private String Description;
 
 
-    private int CategoryID ;
+    private long CategoryID ;
 
     @NonNull
     private boolean IsActive;
@@ -36,7 +39,7 @@ public class userActivity {
     private Date EndDate ;
 
     private Date CreatedAt;
-    private int  courseID;
+    private long  courseID;
 
 
     //======================================================setters
@@ -44,11 +47,20 @@ public class userActivity {
         Title = title;
     }
 
+
+    public boolean isActive() {
+        return IsActive;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public void setDescription(String description) {
         Description = description;
     }
 
-    public void setCategoryID(int categoryID) {
+    public void setCategoryID(long categoryID) {
         CategoryID = categoryID;
     }
 
@@ -68,7 +80,7 @@ public class userActivity {
         CreatedAt = createdAt;
     }
 
-    public void setCourseID(int courseID) {
+    public void setCourseID(long courseID) {
         this.courseID = courseID;
     }
 
@@ -76,7 +88,7 @@ public class userActivity {
     //==============getters
 
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -88,7 +100,7 @@ public class userActivity {
         return Description;
     }
 
-    public int getCategoryID() {
+    public long getCategoryID() {
         return CategoryID;
     }
 
@@ -108,11 +120,16 @@ public class userActivity {
         return CreatedAt;
     }
 
-    public int getCourseID() {
+    public long getCourseID() {
         return courseID;
     }
 
-    public userActivity(String title, String description, int categoryID, Boolean isActive, Date startDate, Date endDate, Date createdAt, int courseID) {
+
+    public userActivity() {
+    }
+
+    @Ignore
+    public userActivity(String title, String description, long categoryID, Boolean isActive, Date startDate, Date endDate, Date createdAt, long courseID) {
         Title = title;
         Description = description;
         CategoryID = categoryID;

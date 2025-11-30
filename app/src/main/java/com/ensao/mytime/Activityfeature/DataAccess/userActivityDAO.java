@@ -14,7 +14,7 @@ import java.util.List;
 public interface userActivityDAO {
 
     @Insert
-    int Insert(userActivity Activity);
+    long Insert(userActivity Activity);
 
 
     @Query("delete from activities where id = :id")
@@ -24,7 +24,7 @@ public interface userActivityDAO {
 
 
     @Query("update activities  set IsActive = 0 where id = :id")
-    int DesactivateActivity(int id);
+    void DesactivateActivity(int id);
 
 
     //get Activitys of date

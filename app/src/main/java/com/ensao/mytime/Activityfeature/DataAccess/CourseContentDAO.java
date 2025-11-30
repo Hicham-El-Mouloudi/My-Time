@@ -9,7 +9,8 @@ import com.ensao.mytime.Activityfeature.Busniss.CourseContent;
 public interface CourseContentDAO {
 
     @Insert
-    int Insert(CourseContent content);
+    long Insert(CourseContent content);
+
 
 
 

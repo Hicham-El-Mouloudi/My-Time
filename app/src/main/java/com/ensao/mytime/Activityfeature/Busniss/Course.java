@@ -2,13 +2,14 @@ package com.ensao.mytime.Activityfeature.Busniss;
 
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "Course")
 public class Course {
 
     @PrimaryKey(autoGenerate = true)
-    private int id ;
+    private long id ;
 
 
 
@@ -24,7 +25,7 @@ public class Course {
         return description;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
     //Setters =====================================
@@ -45,6 +46,14 @@ public class Course {
     //constructors
 
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Course() {
+    }
+
+    @Ignore
     public Course(String description, String title) {
         this.description = description;
         Title = title;

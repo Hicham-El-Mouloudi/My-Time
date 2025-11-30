@@ -2,6 +2,8 @@ package com.ensao.mytime.Activityfeature.Busniss;
 
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "Category",foreignKeys = @ForeignKey(
@@ -9,21 +11,21 @@ import androidx.room.PrimaryKey;
         parentColumns = "id",
         childColumns = "RepetitionKindID"
 
-))
+),indices = {@Index("RepetitionKindID")})
 public class Category {
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private long id;
 
     private String Title;
     private String description;
 
-    private int RepetitionKindID;
+    private long RepetitionKindID;
 
 
     //Getters ===========================================================
 
 
-    public int getRepetitionKindID() {
+    public long getRepetitionKindID() {
         return RepetitionKindID;
     }
 
@@ -35,7 +37,7 @@ public class Category {
         return Title;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -44,7 +46,7 @@ public class Category {
     //Setters =====================================
 
 
-    public void setRepetitionKindID(int repetitionKindID) {
+    public void setRepetitionKindID(long repetitionKindID) {
         RepetitionKindID = repetitionKindID;
     }
     public void setDescription(String description) {
@@ -56,11 +58,18 @@ public class Category {
 
 
 
+    public void setId(long id) {
+        this.id = id;
+    }
 
     //Constructor
+    public Category() {
+
+    }
 
 
-    public Category(String description, String title, int repetitionKindID) {
+    @Ignore
+    public Category(String description, String title, long repetitionKindID) {
         this.description = description;
         Title = title;
         RepetitionKindID = repetitionKindID;

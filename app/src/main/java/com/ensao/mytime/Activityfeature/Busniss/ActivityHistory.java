@@ -3,6 +3,8 @@ package com.ensao.mytime.Activityfeature.Busniss;
 
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import java.util.Date;
@@ -11,13 +13,13 @@ import java.util.Date;
         entity = userActivity.class,
         parentColumns = "id",
         childColumns = "ActivityID"
-))
+),indices = {@Index("ActivityID")})
 public class ActivityHistory {
 
     @PrimaryKey(autoGenerate = true)
-    private int id ;
+    private long id ;
 
-    private int ActivityID;
+    private long ActivityID;
 
     private Date StartDate;
     private Date EndDate;
@@ -32,11 +34,11 @@ public class ActivityHistory {
     //=========================================================
 
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public int getActivityID() {
+    public long getActivityID() {
         return ActivityID;
     }
 
@@ -52,7 +54,7 @@ public class ActivityHistory {
         return Notes;
     }
 
-    public Boolean getCompleted() {
+    public Boolean getIsCompleted() {
         return IsCompleted;
     }
 
@@ -61,7 +63,7 @@ public class ActivityHistory {
     //========================================
 
 
-    public void setActivityID(int activityID) {
+    public void setActivityID(long activityID) {
         ActivityID = activityID;
     }
 
@@ -73,8 +75,14 @@ public class ActivityHistory {
         EndDate = endDate;
     }
 
-    public void setCompleted(Boolean completed) {
+
+
+    public void setIsCompleted(Boolean completed) {
         IsCompleted = completed;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public void setNotes(String notes) {
@@ -88,7 +96,12 @@ public class ActivityHistory {
     //============================================
 
 
-    public ActivityHistory(int activityID, Date startDate, Date endDate, Boolean isCompleted, String notes) {
+    public ActivityHistory() {
+    }
+
+
+    @Ignore
+    public ActivityHistory(long activityID, Date startDate, Date endDate, Boolean isCompleted, String notes) {
         ActivityID = activityID;
         StartDate = startDate;
         EndDate = endDate;
