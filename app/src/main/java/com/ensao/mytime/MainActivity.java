@@ -10,11 +10,15 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.ensao.mytime.alarm.AlarmFragment;
+import com.ensao.mytime.calendar.CalendarFragment;
+import com.ensao.mytime.home.HomeFragment;
 import com.ensao.mytime.settings.SettingsFragment;
 import com.ensao.mytime.sleep.SleepSessionFragment;
 import com.ensao.mytime.statistics.StatisticsFragment;
 import com.ensao.mytime.study.StudySessionFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import javax.sql.StatementEvent;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,16 +57,24 @@ public class MainActivity extends AppCompatActivity {
 
     private void navigateTo(int itemId) {
         Fragment fragment = null;
-        if (itemId == R.id.nav_alarm) {
-            fragment = new AlarmFragment();
-        } else if (itemId == R.id.nav_sleep_session) {
+        if (itemId == R.id.navigation_home) {
+            fragment = new HomeFragment();
+        } else if (itemId == R.id.navigation_study) {
+            fragment = new    StudySessionFragment();
+        } else if (itemId == R.id.navigation_sleep) {
             fragment = new SleepSessionFragment();
-        } else if (itemId == R.id.nav_study_session) {
-            fragment = new StudySessionFragment();
-        } else if (itemId == R.id.nav_statistics) {
-            fragment = new StatisticsFragment();
-        } else if (itemId == R.id.nav_settings) {
-            fragment = new SettingsFragment();
+        }
+        else if (itemId == R.id.navigation_calendar){
+            fragment= new HomeFragment();
+        }
+        else if (itemId == R.id.navigation_calendar){
+            fragment = new CalendarFragment();
+        }
+        else if (itemId == R.id.navigation_alarm){
+            fragment = new AlarmFragment();
+        }
+        else if (itemId == R.id.nav_statistics){
+            fragment = new StatementEvent();
         }
 
         if (fragment != null) {

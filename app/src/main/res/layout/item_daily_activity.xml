@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/activity_item_background"
+    android:padding="16dp"
+    android:layout_marginBottom="8dp"
+    android:gravity="center_vertical">
+
+    <!-- Heure -->
+    <TextView
+        android:id="@+id/tvTime"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="14:00"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/navy_blue" />
+
+    <!-- Description -->
+    <TextView
+        android:id="@+id/tvDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Description de l'activité"
+        android:textSize="14sp"
+        android:textColor="@color/text_dark"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp" />
+
+    <!-- Bouton Modifier -->
+    <ImageButton
+        android:id="@+id/btnEdit"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@android:drawable/ic_menu_edit"
+        android:contentDescription="Modifier"
+        android:tint="@color/navy_blue"
+        android:padding="8dp" />
+
+    <!-- Bouton Supprimer -->
+    <ImageButton
+        android:id="@+id/btnDelete"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@android:drawable/ic_menu_delete"
+        android:contentDescription="Supprimer"
+        android:tint="#FF5252"
+        android:padding="8dp" />
+
+</LinearLayout>
