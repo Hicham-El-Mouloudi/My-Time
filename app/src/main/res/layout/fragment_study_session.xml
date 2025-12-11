@@ -1,14 +1,237 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".study.StudySessionFragment">
+    android:fillViewport="true">
 
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/light_gray"
+    android:padding="16dp">
+
+    <!-- Header avec titre POMODORO -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/navy_blue"
+        android:padding="20dp"
+        android:elevation="4dp"
+        android:layout_marginBottom="24dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="POMODORO"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:fontFamily="sans-serif-condensed" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Technique de productivité"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:textColor="@color/light_gray"
+            android:layout_marginTop="4dp" />
+
+    </LinearLayout>
+
+    <!-- Cercle du Timer -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="280dp"
+        android:gravity="center"
+        android:layout_marginBottom="32dp">
+
+        <!-- Cercle de fond -->
+        <ImageView
+            android:layout_width="240dp"
+            android:layout_height="240dp"
+            android:src="@drawable/circle_timer_background"
+            android:layout_centerInParent="true" />
+
+        <!-- Timer au centre -->
+        <TextView
+            android:id="@+id/tv_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="25:00"
+            android:textSize="48sp"
+            android:textStyle="bold"
+            android:textColor="@color/navy_blue"
+            android:layout_centerInParent="true"
+            android:fontFamily="monospace" />
+
+    </RelativeLayout>
+
+    <!-- Contrôles de durée -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="24dp">
+
+        <Button
+            android:id="@+id/btn_25_min"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="25 min"
+            android:textSize="14sp"
+            android:backgroundTint="@color/navy_blue"
+            android:textColor="@color/white"
+            android:layout_marginEnd="8dp"
+            android:elevation="2dp"
+            style="@style/Widget.Material3.Button.OutlinedButton" />
+
+        <Button
+            android:id="@+id/btn_45_min"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="45 min"
+            android:textSize="14sp"
+            android:backgroundTint="@color/navy_blue"
+            android:textColor="@color/white"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:elevation="2dp"
+            style="@style/Widget.Material3.Button.OutlinedButton" />
+
+        <Button
+            android:id="@+id/btn_custom"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="Personnalisé"
+            android:textSize="12sp"
+            android:backgroundTint="@color/medium_gray"
+            android:textColor="@color/text_dark"
+            android:layout_marginStart="8dp"
+            android:elevation="2dp"
+            style="@style/Widget.Material3.Button.OutlinedButton" />
+
+    </LinearLayout>
+
+    <!-- Contrôles du Timer -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="40dp">
+
+        <Button
+            android:id="@+id/btn_start"
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:layout_weight="1"
+            android:text="Start"
+            android:textSize="16sp"
+            android:backgroundTint="@color/navy_blue"
+            android:textColor="@color/white"
+            android:layout_marginEnd="8dp"
+            android:elevation="4dp"
+            style="@style/Widget.Material3.Button" />
+
+        <Button
+            android:id="@+id/btn_pause"
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:layout_weight="1"
+            android:text="Pause"
+            android:textSize="16sp"
+            android:backgroundTint="@color/medium_gray"
+            android:textColor="@color/text_dark"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:elevation="4dp"
+            style="@style/Widget.Material3.Button.OutlinedButton" />
+
+        <Button
+            android:id="@+id/btn_stop"
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:layout_weight="1"
+            android:text="Stop"
+            android:textSize="16sp"
+            android:backgroundTint="@color/medium_gray"
+            android:textColor="@color/text_dark"
+            android:layout_marginStart="8dp"
+            android:elevation="4dp"
+            style="@style/Widget.Material3.Button.OutlinedButton" />
+
+    </LinearLayout>
+
+    <!-- Section Ajout de Matière -->
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="Study Session Fragment" />
+        android:layout_height="wrap_content"
+        android:text="Ajouter une Matière"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/navy_blue"
+        android:layout_marginBottom="12dp" />
 
-</FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="32dp">
+
+        <EditText
+            android:id="@+id/et_subject_name"
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:layout_weight="1"
+            android:hint="Nom de la matière"
+            android:textSize="16sp"
+            android:background="@drawable/edittext_design"
+            android:textColorHint="@color/dark_gray"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:layout_marginEnd="12dp" />
+
+        <Button
+            android:id="@+id/btn_add_subject"
+            android:layout_width="120dp"
+            android:layout_height="55dp"
+            android:text="Ajouter"
+            android:textSize="16sp"
+            android:backgroundTint="@color/navy_blue"
+            android:textColor="@color/white"
+            android:elevation="4dp"
+            style="@style/Widget.Material3.Button" />
+
+    </LinearLayout>
+
+    <!-- Liste des Matières -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Matières à Étudier"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/navy_blue"
+        android:layout_marginBottom="12dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_subjects"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginBottom="16dp" />
+
+</LinearLayout>
+
+</ScrollView>

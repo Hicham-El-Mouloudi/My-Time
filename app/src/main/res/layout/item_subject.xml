@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:background="@drawable/item_subject_background"
+    android:layout_marginBottom="8dp"
+    android:gravity="center_vertical">
+
+    <CheckBox
+        android:id="@+id/cb_subject"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:buttonTint="#4CAF50" />
+
+    <TextView
+        android:id="@+id/tv_subject_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Mathématiques"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#333333"
+        android:layout_marginStart="16dp"
+        android:layout_gravity="center_vertical" />
+
+    <ImageButton
+        android:id="@+id/btn_delete"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@android:drawable/ic_menu_delete"
+        android:contentDescription="Supprimer la matière"
+        android:layout_marginStart="8dp" />
+
+</LinearLayout>
