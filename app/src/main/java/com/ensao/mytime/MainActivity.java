@@ -30,6 +30,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity implements InvocationFragment.InvocationListener {
 
+
     private BottomNavigationView bottomNavigationView;
     private PomodoroService pomodoroService;
     private boolean isServiceBound = false;
