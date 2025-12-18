@@ -32,11 +32,13 @@
 
         <!-- Placeholder for Horizontal RecyclerView of days -->
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_days"
+            android:id="@+id/rv_weeks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            tools:listitem="@layout/item_calendar_day" />
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:reverseLayout="true"
+            tools:listitem="@layout/item_week" />
 
     </LinearLayout>
 
