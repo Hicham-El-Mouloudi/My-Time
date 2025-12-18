@@ -63,8 +63,8 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
         private ImageButton deleteButton;
         public AlarmViewHolder(@NonNull View itemView) {
             super(itemView);
-            timeText = itemView.findViewById(R.id.alarm_time_text);
-            labelText = itemView.findViewById(R.id.alarm_label_text);
+            timeText = itemView.findViewById(R.id.alarm_time);
+            labelText = itemView.findViewById(R.id.alarm_label);
             alarmSwitch = itemView.findViewById(R.id.alarm_switch);
             editButton = itemView.findViewById(R.id.edit_button);
             deleteButton = itemView.findViewById(R.id.delete_button);
@@ -72,7 +72,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
         }
         public void bind (Alarm alarm){
             // format time
-            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm", Locale.getDefault());
             String formattedTime = timeFormat.format(alarm.getTimeInMillis());
             timeText.setText(formattedTime);
 
