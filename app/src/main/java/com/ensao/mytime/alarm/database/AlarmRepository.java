@@ -2,6 +2,8 @@ package com.ensao.mytime.alarm.database;
 
 
 import android.app.Application;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.lifecycle.LiveData;
 
@@ -13,6 +15,7 @@ public class AlarmRepository {
     private AlarmDao dao;
     private LiveData<List<Alarm>> allAlarms;
     private ExecutorService executorService;
+    private final Handler mainThreadHandler;
 
     //
     public AlarmRepository(Application application){
@@ -20,16 +23,17 @@ public class AlarmRepository {
         dao = database.alarmDao();
         allAlarms = dao.getAllAlarms();
         executorService = Executors.newSingleThreadExecutor();
+        mainThreadHandler = new Handler(Looper.getMainLooper());
     }
     public interface OnAlarmInsertedListener {
         void onAlarmInserted(Alarm alarm);
     }
     public void insert(Alarm alarm, OnAlarmInsertedListener listener){
-        long id = dao.insert(alarm);
-        alarm.setId((int) id);
         executorService.execute(() -> {
+            long id = dao.insert(alarm);
+            alarm.setId((int) id);
             if (listener != null){
-                listener.onAlarmInserted(alarm);
+                mainThreadHandler.post(() -> listener.onAlarmInserted(alarm));
             }
         });
     }
