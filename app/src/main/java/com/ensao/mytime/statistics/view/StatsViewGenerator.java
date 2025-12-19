@@ -7,6 +7,15 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.cardview.widget.CardView;
+
+import com.ensao.mytime.R;
+import com.github.mikephil.charting.animation.Easing;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+
+import java.util.ArrayList;
 import java.util.Map;
 
 public class StatsViewGenerator {
@@ -155,5 +164,77 @@ public class StatsViewGenerator {
         tv.setTextColor(Color.DKGRAY);
         tv.setTypeface(null, android.graphics.Typeface.BOLD);
         return tv;
+    }
+
+    public void setupQualityPieArcChart(View qualityView, int pourcentage, boolean isDisabled) {
+        PieChart qualityPieArcChart = (PieChart) qualityView;
+        qualityPieArcChart.clear();
+
+        // 1. Setup Semi-Circle Appearance
+        qualityPieArcChart.setUsePercentValues(false);
+        qualityPieArcChart.getDescription().setEnabled(false);
+        qualityPieArcChart.getLegend().setEnabled(false);
+
+        qualityPieArcChart.setHoleRadius(85f); // Controls the thickness of the arc
+        qualityPieArcChart.setTransparentCircleRadius(0f);
+        qualityPieArcChart.setHoleColor(Color.TRANSPARENT);
+
+        qualityPieArcChart.setMaxAngle(180f); // Makes it a semi-circle
+        qualityPieArcChart.setRotationAngle(180f); // Rotates it to look like a gauge/rainbow
+        qualityPieArcChart.setTouchEnabled(false);
+
+        // 2. Prepare Data (Value and "The Rest")
+        ArrayList<PieEntry> entries = new ArrayList<>();
+        if (!isDisabled) {
+            entries.add(new PieEntry(pourcentage, "")); // The Progress
+            entries.add(new PieEntry(100f - pourcentage, "")); // The Background/Remaining
+
+            PieDataSet dataSet = new PieDataSet(entries, "");
+            dataSet.setSliceSpace(0f);
+            dataSet.setSelectionShift(0f);
+
+            // 3. Colors (Bright Cyan for progress, Dark Teal for background)
+            dataSet.setColors(new int[] {
+                    Color.parseColor("#00BCD4"), // Progress color
+                    Color.parseColor("#989898ff") // Background arc color
+            });
+
+            PieData data = new PieData(dataSet);
+            data.setDrawValues(false); // Hide numbers on the slice itself
+
+            qualityPieArcChart.setData(data);
+
+            // 4. Center Text (The "97")
+            qualityPieArcChart.setCenterText("Qualité\n" + pourcentage + "%");
+            qualityPieArcChart.setCenterTextSize(24f);
+            qualityPieArcChart.setCenterTextColor(Color.WHITE);
+
+            // 5. Animation (The "Filling" effect)
+            qualityPieArcChart.animateY(1400, Easing.EaseInOutQuad);
+        } else {
+            entries.add(new PieEntry(0f, "")); // The Progress
+            entries.add(new PieEntry(100f, "")); // The Background/Remaining
+
+            PieDataSet dataSet = new PieDataSet(entries, "");
+            dataSet.setSliceSpace(0f);
+            dataSet.setSelectionShift(0f);
+
+            // 3. Colors (Bright Cyan for progress, Dark Teal for background)
+            dataSet.setColors(new int[] {
+                    Color.parseColor("#1A3A4A"), // Progress color
+                    Color.parseColor("#989898ff") // Background arc color
+            });
+
+            PieData data = new PieData(dataSet);
+            data.setDrawValues(false); // Hide numbers on the slice itself
+
+            qualityPieArcChart.setData(data);
+
+            // 4. Center Text (The "97")
+            qualityPieArcChart.setCenterText("Qualité\n?");
+            qualityPieArcChart.setCenterTextSize(24f);
+            qualityPieArcChart.setCenterTextColor(Color.WHITE);
+
+        }
     }
 }
