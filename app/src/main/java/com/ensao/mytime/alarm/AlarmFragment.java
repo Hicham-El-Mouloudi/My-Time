@@ -2,6 +2,7 @@ package com.ensao.mytime.alarm;
 
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -82,6 +83,7 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
 
         checkExactAlarmPermission();
         checkNotificationPermission();
+        checkFullScreenIntentPermission();
     }
 
     private void deleteSelectedAlarms() {
@@ -108,7 +110,56 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (requireContext().checkSelfPermission(
                     android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[] { android.Manifest.permission.POST_NOTIFICATIONS }, 101);
+                // Show dialog explaining why we need the permission
+                new AlertDialog.Builder(requireContext())
+                        .setTitle("Notification Permission Required")
+                        .setMessage(
+                                "This app needs notification permission to show alarm alerts. Without this, you won't see alarm notifications.")
+                        .setPositiveButton("Grant Permission", (dialog, which) -> {
+                            requestPermissions(new String[] { android.Manifest.permission.POST_NOTIFICATIONS }, 101);
+                        })
+                        .setNegativeButton("Cancel", (dialog, which) -> {
+                            Toast.makeText(requireContext(),
+                                    "Alarm notifications will not work without this permission",
+                                    Toast.LENGTH_LONG).show();
+                        })
+                        .setCancelable(false)
+                        .show();
+            }
+        } else {
+            // For older Android versions, check if notifications are enabled
+            NotificationManager notificationManager = (NotificationManager) requireContext()
+                    .getSystemService(Context.NOTIFICATION_SERVICE);
+            if (notificationManager != null && !notificationManager.areNotificationsEnabled()) {
+                new AlertDialog.Builder(requireContext())
+                        .setTitle("Notifications Disabled")
+                        .setMessage("Please enable notifications for this app to receive alarm alerts.")
+                        .setPositiveButton("Go to Settings", (dialog, which) -> {
+                            Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+                            intent.putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().getPackageName());
+                            startActivity(intent);
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+            }
+        }
+    }
+
+    private void checkFullScreenIntentPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) { // Android 14
+            NotificationManager notificationManager = (NotificationManager) requireContext()
+                    .getSystemService(Context.NOTIFICATION_SERVICE);
+            if (notificationManager != null && !notificationManager.canUseFullScreenIntent()) {
+                new AlertDialog.Builder(requireContext())
+                        .setTitle("Permission Required")
+                        .setMessage("To show alarms on the lock screen, please enable Full Screen Notifications.")
+                        .setPositiveButton("Go to Settings", (dialog, which) -> {
+                            Intent intent = new Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT);
+                            intent.setData(Uri.parse("package:" + requireContext().getPackageName()));
+                            startActivity(intent);
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
             }
         }
     }

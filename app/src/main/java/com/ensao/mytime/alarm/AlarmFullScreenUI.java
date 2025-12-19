@@ -1,5 +1,7 @@
 package com.ensao.mytime.alarm;
 
+import android.app.KeyguardManager;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.content.Intent;
@@ -26,15 +28,18 @@ public class AlarmFullScreenUI extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Show on lock screen and turn screen on
+        // Show on lock screen and turn screen on (WITHOUT dismissing keyguard)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true);
             setTurnScreenOn(true);
+            // NOTE: We do NOT call requestDismissKeyguard() because we want to
+            // show the alarm UI OVER the lock screen without requiring unlock
         } else {
             getWindow().addFlags(
                     WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                             WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
                             WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            // NOTE: Removed FLAG_DISMISS_KEYGUARD to show over lock screen
         }
 
         setContentView(R.layout.fragment_alarm_fullscreen_ui);

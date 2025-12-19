@@ -13,6 +13,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 
@@ -26,7 +27,7 @@ import java.io.IOException;
 public class RingtoneService extends Service {
     private MediaPlayer mediaPlayer;
     private Vibrator vibrator;
-    private static final String CHANNEL_ID = "ALARM_CHANNEL_SERVICE";
+    private static final String CHANNEL_ID = "ALARM_FULLSCREEN_CHANNEL"; // New ID to force channel recreation
     private static final String ACTION_DISMISS = "ACTION_DISMISS";
 
     @Nullable
@@ -47,26 +48,45 @@ public class RingtoneService extends Service {
 
         // Extract data
         int alarmId = intent.getIntExtra("ALARM_ID", -1);
-        long alarmTime = intent.getLongExtra("ALARM_TIME", 0);
+        long alarmTime = intent.getLongExtra("ALARM_TIME", System.currentTimeMillis());
 
-        // 1. Play Ringtone
+        // 1. Acquire WakeLock FIRST to ensure screen wakes up
+        PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        if (powerManager != null) {
+            @SuppressWarnings("deprecation")
+            PowerManager.WakeLock wakeLock = powerManager.newWakeLock(
+                    PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
+                            PowerManager.ACQUIRE_CAUSES_WAKEUP,
+                    "MyTime:AlarmWakeLock");
+            wakeLock.acquire(60 * 1000L); // 60 seconds max
+        }
+
+        // 2. Play Ringtone
         playRingtone();
 
-        // 2. Vibrate
+        // 3. Vibrate
         startVibration();
 
-        // 3. Start Foreground with Notification
+        // 4. Start Foreground with Notification (contains FullScreenIntent)
         startForeground(1, buildNotification(alarmId, alarmTime));
 
-        // 4. Try to start Activity (Older Androids or if permission works)
-        // This acts as a backup to setFullScreenIntent
-        Intent fullScreenIntent = new Intent(this, AlarmFullScreenUI.class);
-        fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        fullScreenIntent.putExtra("ALARM_ID", alarmId);
-        fullScreenIntent.putExtra("ALARM_TIME", alarmTime);
-        startActivity(fullScreenIntent);
+        // 5. Try to start Activity directly (may fail on Android 10+ due to BAL
+        // restrictions)
+        // The FullScreenIntent in the notification is the primary mechanism
+        try {
+            Intent fullScreenIntent = new Intent(this, AlarmFullScreenUI.class);
+            fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                    Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS |
+                    Intent.FLAG_ACTIVITY_NO_USER_ACTION);
+            fullScreenIntent.putExtra("ALARM_ID", alarmId);
+            fullScreenIntent.putExtra("ALARM_TIME", alarmTime);
+            startActivity(fullScreenIntent);
+        } catch (Exception e) {
+            // On Android 10+, this may fail due to background activity start restrictions
+            // The FullScreenIntent in the notification should still work
+            e.printStackTrace();
+        }
 
         return START_STICKY;
     }
@@ -150,13 +170,15 @@ public class RingtoneService extends Service {
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("Alarm")
                 .setContentText("Tap to dismiss")
+                .setContentIntent(fullScreenPendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setFullScreenIntent(fullScreenPendingIntent, true)
-                .setDeleteIntent(dismissPendingIntent) // Swipe to dismiss stops service
-                .addAction(R.drawable.ic_launcher_foreground, "Dismiss", dismissPendingIntent) // Add Action Button
-                                                                                               // (need a drawable)
+                .setDeleteIntent(dismissPendingIntent)
+                .addAction(R.drawable.ic_launcher_foreground, "Dismiss", dismissPendingIntent)
                 .setOngoing(true)
+                .setAutoCancel(false)
                 .build();
     }
 
@@ -164,13 +186,14 @@ public class RingtoneService extends Service {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
                     CHANNEL_ID,
-                    "Alarm Service Channel",
+                    "Alarm Notifications",
                     NotificationManager.IMPORTANCE_HIGH);
+            channel.setDescription("Notifications for active alarms");
             channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
             channel.setSound(null, null); // Sound played by MediaPlayer
-            // Allow vibration on channel too for reliability
             channel.enableVibration(true);
             channel.setVibrationPattern(new long[] { 0, 1000, 1000 });
+            channel.setBypassDnd(true); // Bypass Do Not Disturb for alarms
 
             NotificationManager manager = getSystemService(NotificationManager.class);
             if (manager != null) {
