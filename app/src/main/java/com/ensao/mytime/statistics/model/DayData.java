@@ -64,6 +64,10 @@ public class DayData {
         this.sleepDuration = sleepDuration;
     }
 
+    public int getWakeEfficiency() {
+        return 60;
+    }
+
     public int getSleepEfficiency() {
         return sleepEfficiency;
     }
