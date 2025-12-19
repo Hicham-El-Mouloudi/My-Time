@@ -1,14 +1,8 @@
 package com.ensao.mytime.statistics.view;
 
-import android.content.Context;
 import android.graphics.Color;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import androidx.cardview.widget.CardView;
 
-import com.ensao.mytime.R;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
@@ -16,187 +10,55 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 
 import java.util.ArrayList;
-import java.util.Map;
 
-public class StatsViewGenerator {
+/**
+ * Abstract base class for statistics view generators and decorators.
+ */
+public abstract class StatsViewGenerator {
 
-    public View generateSleepView(Context context, Map<String, Object> stats) {
-        LinearLayout container = new LinearLayout(context);
-        container.setOrientation(LinearLayout.VERTICAL);
-
-        // Diagnostic du sommeil
-        container.addView(createSectionTitle(context, "Diagnostic du sommeil"));
-        container.addView(createCard(context, "Durée du sommeil", stats.get("sleepDuration") + " h", "Bon"));
-        container.addView(createCard(context, "Efficacité du sommeil", stats.get("sleepEfficiency") + " %", "Bon"));
-
-        // Durée de sommeil nette
-        container.addView(createSectionTitle(context, "Durée de sommeil nette"));
-        container.addView(createCard(context, "Temps passé au lit", stats.get("timeInBed") + " h", null));
-        container.addView(createCard(context, "Latence", stats.get("sleepLatency") + " min", null));
-        container.addView(createCard(context, "Réveil pendant sommeil", stats.get("wakeDuringSleep") + " min", null));
-
-        return container;
-    }
-
-    public View generateWakeView(Context context, Map<String, Object> stats) {
-        LinearLayout container = new LinearLayout(context);
-        container.setOrientation(LinearLayout.VERTICAL);
-
-        // Wake Stats
-        container.addView(createCard(context, "Latence", stats.get("wakeLatency") + " min", null));
-        container.addView(createCard(context, "Nombre de Sonneries", String.valueOf(stats.get("ringCount")), null));
-        container.addView(createCard(context, "Variabilité du temps", stats.get("timeVariability") + " min", null));
-
-        // Horizontal Cards
-        LinearLayout horizontalContainer = new LinearLayout(context);
-        horizontalContainer.setOrientation(LinearLayout.HORIZONTAL);
-        horizontalContainer.setWeightSum(2);
-
-        View firstAlarm = createCard(context, "Premier Alarme", (String) stats.get("firstAlarm"), null);
-        ((LinearLayout.LayoutParams) firstAlarm.getLayoutParams()).weight = 1;
-        horizontalContainer.addView(firstAlarm);
-
-        View lastOff = createCard(context, "Derniere Extinction", (String) stats.get("lastOff"), null);
-        ((LinearLayout.LayoutParams) lastOff.getLayoutParams()).weight = 1;
-        horizontalContainer.addView(lastOff);
-
-        container.addView(horizontalContainer);
-
-        container.addView(createCard(context, "Durée du réveil", stats.get("wakeDuration") + " min", null));
-
-        // Graph Placeholder
-        container.addView(createSectionTitle(context, "Variance (Last 7 Days)"));
-
-        // Simple Bar Graph
-        LinearLayout graphContainer = new LinearLayout(context);
-        graphContainer.setOrientation(LinearLayout.HORIZONTAL);
-        graphContainer.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, 300)); // Fixed height
-        graphContainer.setGravity(Gravity.BOTTOM);
-        graphContainer.setPadding(16, 16, 16, 16);
-        graphContainer.setBackgroundColor(Color.parseColor("#F5F7FA")); // Light background
-
-        java.util.List<Float> varianceData = (java.util.List<Float>) stats.get("last7DaysGraph");
-        if (varianceData != null) {
-            float max = 0;
-            for (float v : varianceData)
-                max = Math.max(max, v);
-            if (max == 0)
-                max = 1; // Avoid divide by zero
-
-            for (float val : varianceData) {
-                View bar = new View(context);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
-                        LinearLayout.LayoutParams.MATCH_PARENT);
-                params.weight = 1;
-                params.setMargins(4, 0, 4, 0);
-
-                // Calculate height percentage
-                int heightPercent = (int) ((val / max) * 100);
-                params.height = 0; // Reset for weight, but we need to set height dynamically via layout params or
-                                   // weight?
-                // Actually, for a bottom gravity linear layout, we can set height.
-                params.height = (int) ((val / max) * 250); // Scale to container height approx
-                params.width = 0; // using weight
-
-                // Better approach for bars in LinearLayout with Gravity.BOTTOM:
-                // Use a container for each bar to control height?
-                // Let's just set the height directly.
-                params = new LinearLayout.LayoutParams(0, (int) ((val / max) * 200)); // Max 200px height
-                params.weight = 1;
-                params.setMargins(8, 0, 8, 0);
-
-                bar.setLayoutParams(params);
-                bar.setBackgroundColor(Color.parseColor("#4A90E2")); // Primary Color
-                graphContainer.addView(bar);
-            }
-        }
-        container.addView(graphContainer);
-
-        container.addView(createCard(context, "Heure moyenne au réveil", (String) stats.get("averageWakeTime"), null));
-
-        return container;
-    }
-
-    private View createCard(Context context, String title, String value, String status) {
-        CardView card = new CardView(context);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(16, 16, 16, 16);
-        card.setLayoutParams(params);
-        card.setRadius(16);
-        card.setCardElevation(8);
-        card.setCardBackgroundColor(Color.WHITE);
-
-        LinearLayout content = new LinearLayout(context);
-        content.setOrientation(LinearLayout.VERTICAL);
-        content.setPadding(32, 32, 32, 32);
-        content.setGravity(Gravity.CENTER);
-
-        TextView tvTitle = new TextView(context);
-        tvTitle.setText(title);
-        tvTitle.setTextColor(Color.GRAY);
-        content.addView(tvTitle);
-
-        TextView tvValue = new TextView(context);
-        tvValue.setText(value);
-        tvValue.setTextSize(18);
-        tvValue.setTextColor(Color.BLACK);
-        tvValue.setTypeface(null, android.graphics.Typeface.BOLD);
-        content.addView(tvValue);
-
-        if (status != null) {
-            TextView tvStatus = new TextView(context);
-            tvStatus.setText(status);
-            tvStatus.setTextColor(Color.GREEN); // Example color
-            content.addView(tvStatus);
-        }
-
-        card.addView(content);
-        return card;
-    }
-
-    private View createSectionTitle(Context context, String title) {
-        TextView tv = new TextView(context);
-        tv.setText(title);
-        tv.setPadding(32, 32, 32, 16);
-        tv.setTextSize(16);
-        tv.setTextColor(Color.DKGRAY);
-        tv.setTypeface(null, android.graphics.Typeface.BOLD);
-        return tv;
-    }
-
-    public void setupQualityPieArcChart(View qualityView, int pourcentage, boolean isDisabled) {
+    public static void setupQualityPieArcChart(View qualityView, View backgroundView, int pourcentage,
+            boolean isDisabled) {
         PieChart qualityPieArcChart = (PieChart) qualityView;
+        PieChart backgroundPieChart = (PieChart) backgroundView;
+
         qualityPieArcChart.clear();
+        backgroundPieChart.clear();
 
-        // 1. Setup Semi-Circle Appearance
-        qualityPieArcChart.setUsePercentValues(false);
-        qualityPieArcChart.getDescription().setEnabled(false);
-        qualityPieArcChart.getLegend().setEnabled(false);
+        // --- BACKGROUND CHART SETUP (Static Gray Arc) ---
+        setupPieChartAppearance(backgroundPieChart);
+        backgroundPieChart.setRotationAngle(180f);
 
-        qualityPieArcChart.setHoleRadius(85f); // Controls the thickness of the arc
-        qualityPieArcChart.setTransparentCircleRadius(0f);
-        qualityPieArcChart.setHoleColor(Color.TRANSPARENT);
+        ArrayList<PieEntry> bgEntries = new ArrayList<>();
+        bgEntries.add(new PieEntry(100f, "")); // Full arc
 
-        qualityPieArcChart.setMaxAngle(180f); // Makes it a semi-circle
-        qualityPieArcChart.setRotationAngle(180f); // Rotates it to look like a gauge/rainbow
-        qualityPieArcChart.setTouchEnabled(false);
+        PieDataSet bgDataSet = new PieDataSet(bgEntries, "");
+        bgDataSet.setSliceSpace(0f);
+        bgDataSet.setSelectionShift(0f);
+        bgDataSet.setColors(new int[] { Color.parseColor("#7b7b7bff") }); // Gray color
+
+        PieData bgData = new PieData(bgDataSet);
+        bgData.setDrawValues(false);
+        backgroundPieChart.setData(bgData);
+        backgroundPieChart.invalidate(); // No animation for background
+
+        // --- FOREGROUND CHART SETUP (Animated Progress) ---
+        setupPieChartAppearance(qualityPieArcChart);
+        qualityPieArcChart.setRotationAngle(180f);
 
         // 2. Prepare Data (Value and "The Rest")
         ArrayList<PieEntry> entries = new ArrayList<>();
         if (!isDisabled) {
             entries.add(new PieEntry(pourcentage, "")); // The Progress
-            entries.add(new PieEntry(100f - pourcentage, "")); // The Background/Remaining
+            entries.add(new PieEntry(100f - pourcentage, "")); // The Rest (Transparent)
 
             PieDataSet dataSet = new PieDataSet(entries, "");
             dataSet.setSliceSpace(0f);
             dataSet.setSelectionShift(0f);
 
-            // 3. Colors (Bright Cyan for progress, Dark Teal for background)
+            // 3. Colors (Bright Cyan for progress, TRANSPARENT for remainder)
             dataSet.setColors(new int[] {
                     Color.parseColor("#00BCD4"), // Progress color
-                    Color.parseColor("#989898ff") // Background arc color
+                    Color.TRANSPARENT // Remainder is transparent to show background
             });
 
             PieData data = new PieData(dataSet);
@@ -204,37 +66,49 @@ public class StatsViewGenerator {
 
             qualityPieArcChart.setData(data);
 
-            // 4. Center Text (The "97")
+            // 4. Center Text (The "97%")
             qualityPieArcChart.setCenterText("Qualité\n" + pourcentage + "%");
             qualityPieArcChart.setCenterTextSize(24f);
-            qualityPieArcChart.setCenterTextColor(Color.WHITE);
+            qualityPieArcChart.setCenterTextColor(Color.BLACK);
 
             // 5. Animation (The "Filling" effect)
             qualityPieArcChart.animateY(1400, Easing.EaseInOutQuad);
         } else {
-            entries.add(new PieEntry(0f, "")); // The Progress
-            entries.add(new PieEntry(100f, "")); // The Background/Remaining
+            // Disabled State
+            entries.add(new PieEntry(0f, ""));
+            entries.add(new PieEntry(100f, ""));
 
             PieDataSet dataSet = new PieDataSet(entries, "");
             dataSet.setSliceSpace(0f);
             dataSet.setSelectionShift(0f);
 
-            // 3. Colors (Bright Cyan for progress, Dark Teal for background)
             dataSet.setColors(new int[] {
-                    Color.parseColor("#1A3A4A"), // Progress color
-                    Color.parseColor("#989898ff") // Background arc color
+                    Color.TRANSPARENT,
+                    Color.TRANSPARENT
             });
 
             PieData data = new PieData(dataSet);
-            data.setDrawValues(false); // Hide numbers on the slice itself
+            data.setDrawValues(false);
 
             qualityPieArcChart.setData(data);
 
-            // 4. Center Text (The "97")
+            // 4. Center Text
             qualityPieArcChart.setCenterText("Qualité\n?");
             qualityPieArcChart.setCenterTextSize(24f);
-            qualityPieArcChart.setCenterTextColor(Color.WHITE);
-
+            qualityPieArcChart.setCenterTextColor(Color.GRAY);
+            // No animation needed for disabled state effectively
+            qualityPieArcChart.invalidate();
         }
+    }
+
+    private static void setupPieChartAppearance(PieChart chart) {
+        chart.setUsePercentValues(false);
+        chart.getDescription().setEnabled(false);
+        chart.getLegend().setEnabled(false);
+        chart.setHoleRadius(85f);
+        chart.setTransparentCircleRadius(0f);
+        chart.setHoleColor(Color.TRANSPARENT);
+        chart.setMaxAngle(180f);
+        chart.setTouchEnabled(false);
     }
 }

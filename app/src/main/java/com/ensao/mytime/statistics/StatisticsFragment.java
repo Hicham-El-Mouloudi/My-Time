@@ -83,7 +83,7 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
         weeksAdapter = new WeeksAdapter(weeksAdaptee, this);
         sleepCalculator = new MockSleepStatsCalculator();
         wakeCalculator = new MockWakeStatsCalculator();
-        viewGenerator = new StatsViewGenerator();
+        //viewGenerator = new StatsViewGenerator();
 
         // Bind Views
         rvWeeks = view.findViewById(R.id.rv_weeks);
@@ -127,80 +127,37 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
     private void updateContent(DayData day) {
         contentContainer.removeAllViews();
 
-        if (day == null || (!day.hasSleep() && !day.hasWake())) {
-            // Show Empty State
-            getLayoutInflater().inflate(R.layout.layout_statistics_empty, contentContainer, true);
-        } else {
-            // Show Content State
-            View contentView = getLayoutInflater().inflate(R.layout.layout_statistics_content, contentContainer, true);
-            setupContentLogic(contentView, day);
-        }
-    }
+        // Use Builder
+        com.ensao.mytime.statistics.view.DayStatisticsViewBuilder builder = new com.ensao.mytime.statistics.view.DayStatisticsViewBuilder(
+                getContext(), contentContainer);
 
-    private void setupContentLogic(View view, DayData day) {
-        Button btnSleep = view.findViewById(R.id.btn_toggle_sommeil);
-        Button btnWake = view.findViewById(R.id.btn_toggle_reveil);
-        LinearLayout statsContainer = view.findViewById(R.id.dynamic_stats_container);
-        PieChart pbQuality = view.findViewById(R.id.qualityChart);
+        Map<String, Object> sleepStats = (day != null && day.hasSleep()) ? sleepCalculator.calculateSleepStats(day)
+                : null;
+        Map<String, Object> wakeStats = (day != null && day.hasWake()) ? wakeCalculator.calculateWakeStats(day) : null;
 
-        // Set initial state
-        updateTabSelection(btnSleep, btnWake, statsContainer, pbQuality, day);
+        View contentView = builder
+                .forDay(day)
+                .setAvailableSleepDataLayout(R.layout.layout_sleep_stats)
+                .setUnavailableSleepDataLayout(R.layout.layout_statistics_empty) // Or specific empty layout
+                .setAvailableWakeDataLayout(R.layout.layout_wake_stats)
+                .setUnavailableWakeDataLayout(R.layout.layout_statistics_empty)
+                .setUnavailableDataLayout(R.layout.layout_statistics_empty)
+                .useSleepStats(sleepStats)
+                .useWakeStats(wakeStats)
+                .prioritizeDataAvailability(isSleepTabSelected) // Maintains state? Or builder determines priority?
+                // The user said: "prioritizeDataAvailability ... returns view will have by
+                // default an activated tab ... if hasSleep=true ... activated on tab Sleep"
+                // This implies the builder decides the INITIAL tab.
+                // But I have state 'isSleepTabSelected' in Fragment.
+                // If I want to persist user selection when they change days, I should pass my
+                // current selection.
+                // But if the user wants the logic "Prioritize available data", maybe I should
+                // let builder decide and update my state?
+                // For now, I'll pass 'isSleepTabSelected' as the preference.
+                .prioritizeDataAvailability(isSleepTabSelected)
+                .build();
 
-        btnSleep.setOnClickListener(v -> {
-            isSleepTabSelected = true;
-            updateTabSelection(btnSleep, btnWake, statsContainer, pbQuality, day);
-        });
-
-        btnWake.setOnClickListener(v -> {
-            isSleepTabSelected = false;
-            updateTabSelection(btnSleep, btnWake, statsContainer, pbQuality, day);
-        });
-    }
-
-    private void updateTabSelection(Button btnSleep, Button btnWake, LinearLayout container, PieChart pbQuality,
-            DayData day) {
-        container.removeAllViews();
-        Context context = getContext();
-        if (context == null)
-            return;
-
-        // Define Colors
-        int primaryColor = getResources().getColor(R.color.primary_color);
-        int whiteColor = getResources().getColor(R.color.white);
-
-        if (isSleepTabSelected) {
-            // Sleep Active
-            btnSleep.setBackgroundTintList(android.content.res.ColorStateList.valueOf(primaryColor));
-            btnSleep.setTextColor(whiteColor);
-
-            btnWake.setBackgroundTintList(android.content.res.ColorStateList.valueOf(whiteColor));
-            btnWake.setTextColor(primaryColor);
-
-            if (day != null && day.hasSleep()) {
-                int sleepEfficiency = day.getSleepEfficiency();
-                viewGenerator.setupQualityPieArcChart(pbQuality, sleepEfficiency, false);
-                Map<String, Object> stats = sleepCalculator.calculateSleepStats(day);
-                container.addView(viewGenerator.generateSleepView(context, stats));
-            } else {
-                viewGenerator.setupQualityPieArcChart(pbQuality, 0, true);
-            }
-        } else {
-            // Wake Active
-            btnWake.setBackgroundTintList(android.content.res.ColorStateList.valueOf(primaryColor));
-            btnWake.setTextColor(whiteColor);
-
-            btnSleep.setBackgroundTintList(android.content.res.ColorStateList.valueOf(whiteColor));
-            btnSleep.setTextColor(primaryColor);
-
-            if (day != null && day.hasWake()) {
-                int wakeEfficiency = day.getWakeEfficiency();
-                viewGenerator.setupQualityPieArcChart(pbQuality, wakeEfficiency, false);
-                Map<String, Object> stats = wakeCalculator.calculateWakeStats(day);
-                container.addView(viewGenerator.generateWakeView(context, stats));
-            } else {
-                viewGenerator.setupQualityPieArcChart(pbQuality, 0, true);
-            }
-        }
+        contentContainer.addView(contentView);
     }
 
     private void showCalendarDialog() {

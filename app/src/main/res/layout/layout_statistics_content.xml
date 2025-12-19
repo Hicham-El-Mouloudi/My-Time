@@ -46,10 +46,24 @@
         </LinearLayout>
 
         <!-- Quality Percentage Arc -->
-        <com.github.mikephil.charting.charts.PieChart
-            android:id="@+id/qualityChart"
+        <!-- Quality Percentage Arc Container -->
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="300dp" />
+            android:layout_height="wrap_content">
+
+            <!-- Background Chart (Static) -->
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/qualityChartBackground"
+                android:layout_width="match_parent"
+                android:layout_height="300dp" />
+
+            <!-- Foreground Chart (Animated) -->
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/qualityChart"
+                android:layout_width="match_parent"
+                android:layout_height="300dp" />
+
+        </FrameLayout>
 
         <!-- Dynamic Stats Container -->
         <LinearLayout
