@@ -1,8 +1,8 @@
 package com.ensao.mytime.alarm;
 
-
 import android.os.Build;
 import android.os.Bundle;
+import android.content.Intent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -63,12 +63,9 @@ public class AlarmFullScreenUI extends AppCompatActivity {
 
         // Dismiss button
         dismissButton.setOnClickListener(v -> {
-            // Cancel the notification
-            android.app.NotificationManager notificationManager = (android.app.NotificationManager) getSystemService(
-                    android.content.Context.NOTIFICATION_SERVICE);
-            if (notificationManager != null) {
-                notificationManager.cancel(alarmId);
-            }
+            // Stop the Ringtone Service
+            Intent serviceIntent = new Intent(this, RingtoneService.class);
+            stopService(serviceIntent);
             finish();
         });
     }

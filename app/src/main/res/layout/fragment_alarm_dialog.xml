@@ -22,31 +22,51 @@
         android:layout_height="250dp"
         android:timePickerMode="spinner"/>
 
-    <com.google.android.material.textfield.TextInputLayout
+    <!-- Day Selection -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Repeat"
+        android:textColor="#FFFFFF"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"/>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:hint="Alarm Label"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        app:boxStrokeColor="#6200EE"
-        app:hintTextColor="#6200EE">
+        android:orientation="horizontal"
+        android:gravity="center">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/alarm_label_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:textColor="#FFFFFF"/>
+        <ToggleButton android:id="@+id/day_sun" style="@style/DayToggle" android:textOn="S" android:textOff="S"/>
+        <ToggleButton android:id="@+id/day_mon" style="@style/DayToggle" android:textOn="M" android:textOff="M"/>
+        <ToggleButton android:id="@+id/day_tue" style="@style/DayToggle" android:textOn="T" android:textOff="T"/>
+        <ToggleButton android:id="@+id/day_wed" style="@style/DayToggle" android:textOn="W" android:textOff="W"/>
+        <ToggleButton android:id="@+id/day_thu" style="@style/DayToggle" android:textOn="T" android:textOff="T"/>
+        <ToggleButton android:id="@+id/day_fri" style="@style/DayToggle" android:textOn="F" android:textOff="F"/>
+        <ToggleButton android:id="@+id/day_sat" style="@style/DayToggle" android:textOn="S" android:textOff="S"/>
 
-    </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
 
     <LinearLayout
         style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="24dp"
-        android:gravity="end">
+        android:layout_marginTop="24dp">
+
+        <Button
+            android:id="@+id/delete_alarm_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:text="Delete"
+            android:textColor="#CF6679"
+            android:visibility="gone"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <Button
             android:id="@+id/cancel_button"

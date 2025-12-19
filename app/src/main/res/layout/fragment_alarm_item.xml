@@ -17,7 +17,7 @@
         android:padding="16dp"
         android:gravity="center_vertical">
 
-        <!-- Time and Label -->
+        <!-- Time and Repetition -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -34,52 +34,24 @@
                 android:fontFamily="sans-serif-light"/>
 
             <TextView
-                android:id="@+id/alarm_label"
+                android:id="@+id/alarm_repetition"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Wake up"
+                android:text="Once"
                 android:textSize="14sp"
                 android:textColor="#B3FFFFFF"
                 android:layout_marginTop="4dp"/>
 
         </LinearLayout>
 
-        <!-- Controls -->
-        <LinearLayout
+        <!-- Switch -->
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/alarm_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/alarm_switch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                app:thumbTint="#BB86FC"
-                app:trackTint="#B3FFFFFF"/>
-
-            <ImageButton
-                android:id="@+id/edit_button"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@android:drawable/ic_menu_edit"
-                android:contentDescription="Edit alarm"
-                android:layout_marginStart="8dp"
-                app:tint="#B3FFFFFF"/>
-
-            <ImageButton
-                android:id="@+id/delete_button"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@android:drawable/ic_menu_delete"
-                android:contentDescription="Delete alarm"
-                android:layout_marginStart="4dp"
-                app:tint="#CF6679"/>
-
-        </LinearLayout>
+            android:checked="true"
+            app:thumbTint="#BB86FC"
+            app:trackTint="#B3FFFFFF"/>
 
     </LinearLayout>
 

@@ -8,6 +8,8 @@ import android.os.Build;
 
 import com.ensao.mytime.alarm.database.Alarm;
 
+import java.util.Calendar;
+
 public class AlarmScheduler {
 
     public static void scheduleAlarm(Context context, Alarm alarm) {
@@ -16,7 +18,7 @@ public class AlarmScheduler {
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra("ALARM_ID", alarm.getId());
         intent.putExtra("ALARM_TIME", alarm.getTimeInMillis());
-        intent.putExtra("ALARM_LABEL", alarm.getLabel());
+        // Label removed
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 context,
@@ -25,32 +27,72 @@ public class AlarmScheduler {
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         if (alarmManager != null) {
-            long triggerTime = alarm.getTimeInMillis();
+            long triggerTime = calculateNextAlarmTime(alarm);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                // For Android 12 (API 31) and newer
                 if (alarmManager.canScheduleExactAlarms()) {
                     alarmManager.setExactAndAllowWhileIdle(
                             AlarmManager.RTC_WAKEUP,
                             triggerTime,
-                            pendingIntent
-                    );
+                            pendingIntent);
                 } else {
-                    // If permission is missing, use an inexact alarm to prevent crashing
-                    // It will still ring, just might be a few seconds off
                     alarmManager.setAndAllowWhileIdle(
                             AlarmManager.RTC_WAKEUP,
                             triggerTime,
-                            pendingIntent
-                    );
+                            pendingIntent);
                 }
             } else {
-                // For older Android versions (Permission is automatic)
                 alarmManager.setExactAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
                         triggerTime,
-                        pendingIntent
-                );
+                        pendingIntent);
+            }
+        }
+    }
+
+    private static long calculateNextAlarmTime(Alarm alarm) {
+        Calendar now = Calendar.getInstance();
+        Calendar alarmTime = Calendar.getInstance();
+        alarmTime.setTimeInMillis(alarm.getTimeInMillis());
+
+        // Normalize alarmTime to today/next occurrence based on time only
+        Calendar nextAlarm = Calendar.getInstance();
+        nextAlarm.set(Calendar.HOUR_OF_DAY, alarmTime.get(Calendar.HOUR_OF_DAY));
+        nextAlarm.set(Calendar.MINUTE, alarmTime.get(Calendar.MINUTE));
+        nextAlarm.set(Calendar.SECOND, 0);
+        nextAlarm.set(Calendar.MILLISECOND, 0);
+
+        int daysOfWeek = alarm.getDaysOfWeek();
+
+        if (daysOfWeek == 0) {
+            // One-time alarm
+            if (nextAlarm.before(now)) {
+                nextAlarm.add(Calendar.DAY_OF_YEAR, 1);
+            }
+            return nextAlarm.getTimeInMillis();
+        } else {
+            // Repeating alarm
+            // Find the next day that matches the bitmask, starting from today (if time
+            // hasn't passed) or tomorrow
+            while (true) {
+                if (nextAlarm.before(now)) {
+                    nextAlarm.add(Calendar.DAY_OF_YEAR, 1);
+                    continue; // Check if this new day is enabled
+                }
+
+                // Check if this day is in the bitmask
+                // Calendar.SUNDAY=1 ... SATURDAY=7
+                // Our bitmask: Sun=1 (1<<0) ... Sat=64 (1<<6)
+                // Map Calendar day to bit index: index = calendarDay - 1
+                int dayOfWeek = nextAlarm.get(Calendar.DAY_OF_WEEK); // 1-7
+                int bitIndex = dayOfWeek - 1; // 0-6
+
+                if ((daysOfWeek & (1 << bitIndex)) != 0) {
+                    return nextAlarm.getTimeInMillis();
+                }
+
+                // Try next day
+                nextAlarm.add(Calendar.DAY_OF_YEAR, 1);
             }
         }
     }
