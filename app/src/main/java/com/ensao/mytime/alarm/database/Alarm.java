@@ -8,13 +8,19 @@ public class Alarm {
     @PrimaryKey(autoGenerate = true)
     private int id;
     private long timeInMillis;
-    private String label;
-    private boolean isEnabled;
+    private boolean isEnabled = true;
+    private int daysOfWeek; // Bitmask: Sun=1, Mon=2, ..., Sat=64
+    private int ringtoneCode;
+    private int vibrationCode;
 
-    public Alarm(long timeInMillis, String label, boolean isEnabled) {
+    // Default Constructor
+    public Alarm() {
+    }
+
+    public Alarm(long timeInMillis, boolean isEnabled, int daysOfWeek) {
         this.timeInMillis = timeInMillis;
-        this.label = label;
         this.isEnabled = isEnabled;
+        this.daysOfWeek = daysOfWeek;
     }
 
     public int getId() {
@@ -23,14 +29,6 @@ public class Alarm {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
     }
 
     public boolean isEnabled() {
@@ -47,5 +45,29 @@ public class Alarm {
 
     public void setTimeInMillis(long timeInMillis) {
         this.timeInMillis = timeInMillis;
+    }
+
+    public int getDaysOfWeek() {
+        return daysOfWeek;
+    }
+
+    public void setDaysOfWeek(int daysOfWeek) {
+        this.daysOfWeek = daysOfWeek;
+    }
+
+    public int getRingtoneCode() {
+        return ringtoneCode;
+    }
+
+    public void setRingtoneCode(int ringtoneCode) {
+        this.ringtoneCode = ringtoneCode;
+    }
+
+    public int getVibrationCode() {
+        return vibrationCode;
+    }
+
+    public void setVibrationCode(int vibrationCode) {
+        this.vibrationCode = vibrationCode;
     }
 }

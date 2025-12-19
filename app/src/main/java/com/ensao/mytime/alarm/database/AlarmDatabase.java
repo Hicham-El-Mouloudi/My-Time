@@ -1,12 +1,13 @@
 package com.ensao.mytime.alarm.database;
 
 import android.content.Context;
-
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 
-@Database(entities = { Alarm.class }, version = 1, exportSchema = false)
+@Database(entities = { Alarm.class }, version = 2, exportSchema = false)
+
 public abstract class AlarmDatabase extends RoomDatabase {
 
     private static AlarmDatabase instance;
