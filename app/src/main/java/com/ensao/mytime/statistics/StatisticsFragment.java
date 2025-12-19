@@ -27,6 +27,7 @@ import com.ensao.mytime.statistics.calculation.MockWakeStatsCalculator;
 import com.ensao.mytime.statistics.data.StatisticsDAOProxy;
 import com.ensao.mytime.statistics.model.DayData;
 import com.ensao.mytime.statistics.view.StatsViewGenerator;
+import com.github.mikephil.charting.charts.PieChart;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
@@ -140,25 +141,24 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
         Button btnSleep = view.findViewById(R.id.btn_toggle_sommeil);
         Button btnWake = view.findViewById(R.id.btn_toggle_reveil);
         LinearLayout statsContainer = view.findViewById(R.id.dynamic_stats_container);
-        ProgressBar pbQuality = view.findViewById(R.id.pb_quality);
-        TextView tvQuality = view.findViewById(R.id.tv_quality_percentage);
+        PieChart pbQuality = view.findViewById(R.id.qualityChart);
 
         // Set initial state
-        updateTabSelection(btnSleep, btnWake, statsContainer, pbQuality, tvQuality, day);
+        updateTabSelection(btnSleep, btnWake, statsContainer, pbQuality, day);
 
         btnSleep.setOnClickListener(v -> {
             isSleepTabSelected = true;
-            updateTabSelection(btnSleep, btnWake, statsContainer, pbQuality, tvQuality, day);
+            updateTabSelection(btnSleep, btnWake, statsContainer, pbQuality, day);
         });
 
         btnWake.setOnClickListener(v -> {
             isSleepTabSelected = false;
-            updateTabSelection(btnSleep, btnWake, statsContainer, pbQuality, tvQuality, day);
+            updateTabSelection(btnSleep, btnWake, statsContainer, pbQuality, day);
         });
     }
 
-    private void updateTabSelection(Button btnSleep, Button btnWake, LinearLayout container, ProgressBar pbQuality,
-            TextView tvQuality, DayData day) {
+    private void updateTabSelection(Button btnSleep, Button btnWake, LinearLayout container, PieChart pbQuality,
+            DayData day) {
         container.removeAllViews();
         Context context = getContext();
         if (context == null)
@@ -177,8 +177,12 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
             btnWake.setTextColor(primaryColor);
 
             if (day != null && day.hasSleep()) {
+                int sleepEfficiency = day.getSleepEfficiency();
+                viewGenerator.setupQualityPieArcChart(pbQuality, sleepEfficiency, false);
                 Map<String, Object> stats = sleepCalculator.calculateSleepStats(day);
                 container.addView(viewGenerator.generateSleepView(context, stats));
+            } else {
+                viewGenerator.setupQualityPieArcChart(pbQuality, 0, true);
             }
         } else {
             // Wake Active
@@ -189,18 +193,13 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
             btnSleep.setTextColor(primaryColor);
 
             if (day != null && day.hasWake()) {
+                int wakeEfficiency = day.getWakeEfficiency();
+                viewGenerator.setupQualityPieArcChart(pbQuality, wakeEfficiency, false);
                 Map<String, Object> stats = wakeCalculator.calculateWakeStats(day);
                 container.addView(viewGenerator.generateWakeView(context, stats));
+            } else {
+                viewGenerator.setupQualityPieArcChart(pbQuality, 0, true);
             }
-        }
-
-        // Update Quality
-        if (day != null) {
-            int quality = isSleepTabSelected ? day.getSleepEfficiency() : 75; // Example logic
-            if (pbQuality != null)
-                pbQuality.setProgress(quality);
-            if (tvQuality != null)
-                tvQuality.setText(quality + "%");
         }
     }
 
