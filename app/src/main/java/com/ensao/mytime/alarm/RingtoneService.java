@@ -111,6 +111,16 @@ public class RingtoneService extends Service {
                 AlarmScheduler.scheduleSnooze(this, alarmId, triggerTime, autoSnoozeCount + 1);
             } else {
                 // Limit reached, just stop (Alarm "turned down")
+                // Turn off alarm in DB if not repeating
+                new Thread(() -> {
+                    com.ensao.mytime.alarm.database.AlarmRepository repository = new com.ensao.mytime.alarm.database.AlarmRepository(
+                            getApplication());
+                    com.ensao.mytime.alarm.database.Alarm alarm = repository.getAlarmByIdSync(alarmId);
+                    if (alarm != null && alarm.getDaysOfWeek() == 0) {
+                        alarm.setEnabled(false);
+                        repository.update(alarm);
+                    }
+                }).start();
             }
 
             stopSelf();
