@@ -17,4 +17,13 @@
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
 
+    <string name="accessibility_description">Ce service permet de détecter l\'ouverture des applications pour activer le blocage durant votre sommeil.</string>
+
+    <string-array name="sleep_advice_messages">
+        <item>Conseil Nuit : Évitez la lumière bleue de vos écrans 1h avant de dormir pour améliorer votre mélatonine.</item>
+        <item>Conseil Nuit : Assurez-vous que votre chambre est complètement obscure pour un sommeil profond et réparateur.</item>
+        <item>Conseil Nuit : Une boisson chaude et non caféinée (tisane) peut grandement faciliter votre endormissement.</item>
+        <item>Conseil Nuit : Écrivez vos préoccupations dans un journal pour vider votre esprit avant de vous coucher.</item>
+    </string-array>
+
 </resources>

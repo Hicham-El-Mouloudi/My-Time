@@ -30,4 +30,8 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="weekend_red">#FFD32F2F</color>
     <color name="gray">#FF9E9E9E</color>
+
+    <color name="success_green">#48DE0E</color>
+    <color name="primary_red">#FF1201</color>
+    <color name="colorPrimary">#C20AEC</color>
 </resources>

@@ -1,16 +1,22 @@
 package com.ensao.mytime;
+
 import android.Manifest;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -19,10 +25,11 @@ import androidx.fragment.app.Fragment;
 
 import com.ensao.mytime.alarm.AlarmFragment;
 import com.ensao.mytime.calendar.CalendarFragment;
+import com.ensao.mytime.home.AlarmScheduler;
 import com.ensao.mytime.home.HomeFragment;
 import com.ensao.mytime.home.view.InvocationFragment;
 import com.ensao.mytime.home.view.SettingsFragment;
-import com.ensao.mytime.sleep.SleepSessionFragment;
+import com.ensao.mytime.sleep.view.SleepFragment;
 import com.ensao.mytime.statistics.StatisticsFragment;
 import com.ensao.mytime.study.fragments.StudySessionFragment;
 import com.ensao.mytime.study.service.PomodoroService;
@@ -30,7 +37,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity implements InvocationFragment.InvocationListener {
 
-
+    private AlertDialog blockedDialog = null;
     private BottomNavigationView bottomNavigationView;
     private PomodoroService pomodoroService;
     private boolean isServiceBound = false;
@@ -83,7 +90,85 @@ public class MainActivity extends AppCompatActivity implements InvocationFragmen
         if (savedInstanceState == null) {
             bottomNavigationView.setSelectedItemId(R.id.navigation_home);
         }
+
+        // ✅ Vérification du blocage au lancement
+        checkIntentForBlocking(getIntent());
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // ✅ Mise à jour automatique du mode sombre selon l'heure
+        checkNightModeDynamic();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        checkIntentForBlocking(intent);
+    }
+
+    // --- LOGIQUE DE BLOCAGE ---
+
+    private void checkIntentForBlocking(Intent intent) {
+        if (intent != null && intent.getBooleanExtra("is_blocked_mode", false)) {
+            showBlockedMessage();
+        }
+    }
+
+    private void showBlockedMessage() {
+        // ✅ Empêche d'avoir plusieurs boîtes de dialogue empilées
+        if (blockedDialog != null && blockedDialog.isShowing()) {
+            return;
+        }
+
+        blockedDialog = new AlertDialog.Builder(this)
+                .setTitle("Mode Sommeil Actif 🌙")
+                .setMessage("Cette application est bloquée pour vous aider à mieux dormir.")
+                .setPositiveButton("Retourner à MyTime", (dialog, which) -> {
+                    // Nettoyer l'intent pour éviter que le dialogue revienne au changement de fragment
+                    getIntent().removeExtra("is_blocked_mode");
+                    blockedDialog = null;
+                })
+                .setCancelable(false)
+                .show();
+    }
+
+    // --- LOGIQUE MODE SOMBRE DYNAMIQUE ---
+
+    public void checkNightModeDynamic() {
+        SharedPreferences prefs = getSharedPreferences(AlarmScheduler.PREFS_NAME, Context.MODE_PRIVATE);
+        boolean isSessionActive = prefs.getBoolean(AlarmScheduler.KEY_IS_SESSION_ACTIVE, false);
+
+        if (isSessionActive) {
+            long now = System.currentTimeMillis();
+            long sleepTime = prefs.getLong(AlarmScheduler.KEY_SLEEP_TIME, 0);
+            long wakeUpTime = prefs.getLong(AlarmScheduler.KEY_WAKE_UP_TIME, 0);
+
+            // Fenêtre de 2h avant le coucher
+            long startTime = sleepTime - (2 * 60 * 60 * 1000);
+
+            // Gère le passage à minuit
+            boolean shouldBeDark;
+            if (wakeUpTime > startTime) {
+                shouldBeDark = (now >= startTime && now <= wakeUpTime);
+            } else {
+                shouldBeDark = (now >= startTime || now <= wakeUpTime);
+            }
+
+            if (shouldBeDark) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
+        } else {
+            // Si la session est désactivée, retour au mode clair
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+    }
+
+    // --- LOGIQUE NAVIGATION ET SERVICES ---
 
     @Override
     protected void onDestroy() {
@@ -131,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements InvocationFragmen
         } else if (itemId == R.id.navigation_study) {
             fragment = new StudySessionFragment();
         } else if (itemId == R.id.navigation_sleep) {
-            fragment = new SleepSessionFragment();
+            fragment = new SleepFragment();
         } else if (itemId == R.id.navigation_calendar) {
             fragment = new CalendarFragment();
         } else if (itemId == R.id.navigation_alarm) {
@@ -171,7 +256,5 @@ public class MainActivity extends AppCompatActivity implements InvocationFragmen
     }
 
     @Override
-    public void onAllInvocationsCompleted() {
-        // La logique est gérée dans HomeFragment
-    }
+    public void onAllInvocationsCompleted() {}
 }
