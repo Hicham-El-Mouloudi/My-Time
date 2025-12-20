@@ -7,24 +7,16 @@
     android:gravity="center"
     android:padding="32dp">
 
-    <ImageView
-        android:id="@+id/iv_empty_state"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:src="@drawable/ic_sleep_session" 
-        app:tint="@color/text_secondary"
-        android:alpha="0.5"
-        android:contentDescription="No Record" />
-        <!-- Note: Replace src with specific image if available, e.g., NoRecodAvailableForThatDay_sommeil -->
+    <!-- Note: Replace src with specific image if available, e.g., NoRecodAvailableForThatDay_sommeil -->
 
     <TextView
         android:id="@+id/tv_empty_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="No Record Available For That Day"
-        android:textSize="18sp"
+        android:gravity="center"
+        android:text="Il n’y a pas de données pour ce jour."
         android:textColor="@color/text_secondary"
-        android:gravity="center" />
+        android:textSize="18sp" />
 
 </LinearLayout>
