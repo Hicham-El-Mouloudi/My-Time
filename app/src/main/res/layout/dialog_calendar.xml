@@ -28,8 +28,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_statistics" 
-                android:rotation="180"
+                android:src="@drawable/ic_arrow_back" 
                 app:tint="@color/text_primary"
                 android:contentDescription="Previous Month" />
 
@@ -49,7 +48,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_statistics"
+                android:src="@drawable/ic_arrow_forward"
                 app:tint="@color/text_primary"
                 android:contentDescription="Next Month" />
         </LinearLayout>

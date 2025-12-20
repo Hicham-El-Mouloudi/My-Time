@@ -19,11 +19,22 @@ public class WeeksAdapter extends RecyclerView.Adapter<WeeksAdapter.WeekViewHold
     private WeeksAdaptee weeksAdaptee;
     private OnDayClickListener listenner;
     private int weeksCount;
+    private DayData selectedDay;
 
     public WeeksAdapter(WeeksAdaptee weeksAdaptee, OnDayClickListener listenner) {
         this.weeksAdaptee = weeksAdaptee;
         this.listenner = listenner;
         this.weeksCount = 2;
+        this.selectedDay = null;
+    }
+
+    public void setSelectedDay(DayData day) {
+        this.selectedDay = day;
+        notifyDataSetChanged();
+    }
+
+    public DayData getSelectedDay() {
+        return selectedDay;
     }
 
     @NonNull
@@ -37,7 +48,7 @@ public class WeeksAdapter extends RecyclerView.Adapter<WeeksAdapter.WeekViewHold
     public void onBindViewHolder(@NonNull WeeksAdapter.WeekViewHolder holder, int position) {
         // The index must be negative to get the week before the current week
         WeekData weekData = weeksAdaptee.getWeekDataForWeekWithIndex(-1 * position);
-        holder.bind(weekData, listenner);
+        holder.bind(weekData, listenner, selectedDay);
     }
 
     @Override
@@ -63,18 +74,28 @@ public class WeeksAdapter extends RecyclerView.Adapter<WeeksAdapter.WeekViewHold
             super(itemView);
         }
 
-        public void bind(WeekData weekData, OnDayClickListener listener) {
+        public void bind(WeekData weekData, OnDayClickListener listener, DayData selectedDay) {
             DayData dayData = null;
+            java.time.LocalDate today = java.time.LocalDate.now();
             for (DayOfWeek day : DayOfWeek.values()) {
                 dayData = weekData.getDays().get(day.getValue() - 1); // -1 because the week days starts from 1
+                boolean isFuture = dayData.getDate().isAfter(today);
+                boolean isSelected = (selectedDay != null && dayData.getDate().equals(selectedDay.getDate()));
+
                 // Setting day number
                 setDayNumberTextViewOf(day, dayData.getDate().getDayOfMonth());
                 // Setting sleep indicator
                 setDayIndicatorSleepOf(day, dayData.hasSleep());
                 // Setting wake indicator
                 setDayIndicatorWakeOf(day, dayData.hasWake());
+                // Apply future/selected styling
+                applyDayStyling(day, isFuture, isSelected);
                 // Setting day container view click listener
-                setDayContainerViewClickListenerOf(day, dayData, listener);
+                if (!isFuture) {
+                    setDayContainerViewClickListenerOf(day, dayData, listener);
+                } else {
+                    disableDayClickOf(day);
+                }
             }
         }
 
@@ -215,7 +236,46 @@ public class WeeksAdapter extends RecyclerView.Adapter<WeeksAdapter.WeekViewHold
                 OnDayClickListener listener) {
             View dayLayoutView = getDayContainerViewOf(day);
             if (dayLayoutView != null) {
+                dayLayoutView.setClickable(true);
                 dayLayoutView.setOnClickListener(v -> listener.onDayClick(dayData));
+            }
+        }
+
+        private void disableDayClickOf(DayOfWeek day) {
+            View dayLayoutView = getDayContainerViewOf(day);
+            if (dayLayoutView != null) {
+                dayLayoutView.setOnClickListener(null);
+                dayLayoutView.setClickable(false);
+            }
+        }
+
+        private void applyDayStyling(DayOfWeek day, boolean isFuture, boolean isSelected) {
+            TextView dayNumberView = (TextView) getDayNumberTextViewOf(day);
+            if (dayNumberView == null)
+                return;
+
+            int grayColor = dayNumberView.getContext().getResources().getColor(R.color.text_secondary);
+            int primaryColor = dayNumberView.getContext().getResources().getColor(R.color.text_primary);
+            int whiteColor = dayNumberView.getContext().getResources().getColor(R.color.white);
+
+            if (isFuture) {
+                // Gray out future days
+                dayNumberView.setTextColor(grayColor);
+                dayNumberView.setAlpha(0.5f);
+                dayNumberView.setBackgroundResource(0); // Remove background
+                dayNumberView.setBackgroundTintList(null);
+            } else if (isSelected) {
+                // Highlight selected day with oval background
+                dayNumberView.setTextColor(whiteColor);
+                dayNumberView.setAlpha(1.0f);
+                dayNumberView.setBackgroundResource(R.drawable.bg_day_selected);
+                dayNumberView.setBackgroundTintList(null); // Clear tint so actual color shows
+            } else {
+                // Normal styling
+                dayNumberView.setTextColor(primaryColor);
+                dayNumberView.setAlpha(1.0f);
+                dayNumberView.setBackgroundResource(0); // Remove background
+                dayNumberView.setBackgroundTintList(null);
             }
         }
     }

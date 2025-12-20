@@ -55,6 +55,13 @@ public class CalendarDaysAdapter extends RecyclerView.Adapter<CalendarDaysAdapte
     }
 
     public void nextMonth() {
+        // Prevent navigation past current month
+        Calendar now = Calendar.getInstance();
+        if (calendar.get(Calendar.YEAR) > now.get(Calendar.YEAR) ||
+                (calendar.get(Calendar.YEAR) == now.get(Calendar.YEAR) &&
+                        calendar.get(Calendar.MONTH) >= now.get(Calendar.MONTH))) {
+            return; // Already at current month or beyond, don't advance
+        }
         calendar.add(Calendar.MONTH, 1);
         setDays(adaptee.getDaysForMonth(calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR)));
     }
@@ -107,19 +114,32 @@ public class CalendarDaysAdapter extends RecyclerView.Adapter<CalendarDaysAdapte
             ivSleepIndicator.setVisibility(day.hasSleep() ? View.VISIBLE : View.GONE);
             ivWakeIndicator.setVisibility(day.hasWake() ? View.VISIBLE : View.GONE);
 
+            // Check if this day is in the future
+            boolean isFutureDay = day.getDate().isAfter(java.time.LocalDate.now());
+
             // Styling
             tvDayNumber.setScaleX(1.0f);
             tvDayNumber.setScaleY(1.0f);
             tvDayNumber.setBackgroundTintList(
                     android.content.res.ColorStateList.valueOf(android.graphics.Color.TRANSPARENT));
-            tvDayNumber.setTextColor(tvDayNumber.getContext().getResources().getColor(R.color.text_primary));
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onDayClick(day);
-                }
-            });
+            if (isFutureDay) {
+                // Gray out future days
+                tvDayNumber.setTextColor(tvDayNumber.getContext().getResources().getColor(R.color.text_secondary));
+                tvDayNumber.setAlpha(0.5f);
+                itemView.setOnClickListener(null); // Disable click
+                itemView.setClickable(false);
+            } else {
+                tvDayNumber.setTextColor(tvDayNumber.getContext().getResources().getColor(R.color.text_primary));
+                tvDayNumber.setAlpha(1.0f);
+                itemView.setClickable(true);
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        listener.onDayClick(day);
+                    }
+                });
+            }
         }
     }
 }
