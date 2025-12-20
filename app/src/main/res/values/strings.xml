@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">My Time</string>
+
+    <!-- Navigation menu bar -->
+    <string name="nav_alarm">Alarm</string>
+    <string name="nav_study_session">Study</string>
+    <string name="nav_sleep_session">Sleep</string>
+    <string name="nav_statistics">Statistics</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Preference Titles -->
+    <string name="genral_settings">General Settings</string>
+    <string name="theme_title">Theme</string>
+    <string name="language_title">Language</string>
+
+    <!-- Theme Preferences -->
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+
 </resources>
