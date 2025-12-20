@@ -1,28 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/nav_alarm"
-        android:icon="@drawable/ic_alarm"
-        android:title="@string/nav_alarm" />
+
 
     <item
-        android:id="@+id/nav_sleep_session"
-        android:icon="@drawable/ic_sleep_session"
-        android:title="@string/nav_sleep_session" />
-    
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_homme"
+        android:title="Home" />
     <item
-        android:id="@+id/nav_study_session"
-        android:icon="@drawable/ic_study_session"
-        android:title="@string/nav_study_session" />
-    
+        android:id="@+id/navigation_study"
+        android:icon="@drawable/ic_study"
+        android:title="Study" />
+    <item
+        android:id="@+id/navigation_sleep"
+        android:icon="@drawable/ic_sleep"
+        android:title="Sleep" />
+    <item
+        android:id="@+id/navigation_calendar"
+        android:icon="@drawable/ic_calender"
+        android:title="Calendar" />
+    <item
+        android:id="@+id/navigation_alarm"
+        android:icon="@drawable/ic_alarme"
+        android:title="Alarm" />
+
     <item
         android:id="@+id/nav_statistics"
         android:icon="@drawable/ic_statistics"
         android:title="@string/nav_statistics" />
-    
-    <item
-        android:id="@+id/nav_settings"
-        android:icon="@drawable/ic_settings"
-        android:title="@string/nav_settings" />
-    
+
 </menu>

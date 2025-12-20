@@ -11,4 +11,27 @@
     <color name="surface_color">#FFFFFF</color>
     <color name="text_primary">#2C3E50</color>    <!-- Dark Blue-Grey Text -->
     <color name="text_secondary">#7F8C8D</color>  <!-- Grey Text -->
+
+
+    <color name="navy_blue">#2C3E50</color>
+    <color name="light_gray">#ECF0F1</color>
+    <color name="medium_gray">#BDC3C7</color>
+    <color name="dark_gray">#7F8C8D</color>
+
+    <!-- Couleurs d'accent -->
+    <color name="accent_blue">#3498DB</color>
+    <color name="text_dark">#2C3E50</color>
+    <color name="text_light">#FFFFFF</color>
+    <color name="dark_blue">#1a237e</color>
+
+
+
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="weekend_red">#FFD32F2F</color>
+    <color name="gray">#FF9E9E9E</color>
+
+    <color name="success_green">#48DE0E</color>
+    <color name="primary_red">#FF1201</color>
+    <color name="colorPrimary">#C20AEC</color>
 </resources>
