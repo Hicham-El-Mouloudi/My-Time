@@ -1,8 +1,19 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.MyTime" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <item name="colorPrimary">@color/primary_color</item>
+        <!-- Colors -->
+        <item name="colorPrimary">@color/brand_primary</item>
+        <item name="colorOnPrimary">@color/brand_on_primary</item>
+        <item name="colorSecondary">@color/brand_primary</item>
+        <item name="colorOnSecondary">@color/brand_on_primary</item>
+        
+        <!-- Backgrounds -->
+        <item name="android:colorBackground">@color/ui_background</item>
+        <item name="colorSurface">@color/ui_surface</item>
+        
+        <!-- Status Bar -->
+        <item name="android:statusBarColor">@color/ui_background</item>
+        <item name="android:windowLightStatusBar">true</item> <!-- Adjusts automatically in DayNight -->
     </style>
 
     <style name="Theme.MyTime" parent="Base.Theme.MyTime" />
@@ -17,5 +28,8 @@
         <item name="android:minWidth">0dp</item>
         <item name="android:minHeight">0dp</item>
         <item name="android:layout_margin">4dp</item>
+        <item name="android:textColor">@color/selector_day_toggle_text</item>
+        <item name="android:background">@drawable/selector_day_toggle_background</item>
+        <item name="background">@drawable/selector_day_toggle_background</item>
     </style>
 </resources>

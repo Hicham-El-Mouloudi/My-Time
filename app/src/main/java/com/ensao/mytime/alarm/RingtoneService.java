@@ -29,6 +29,7 @@ public class RingtoneService extends Service {
     private Vibrator vibrator;
     private static final String CHANNEL_ID = "ALARM_FULLSCREEN_CHANNEL"; // New ID to force channel recreation
     private static final String ACTION_DISMISS = "ACTION_DISMISS";
+    private static final String ACTION_SNOOZE = "ACTION_SNOOZE";
 
     @Nullable
     @Override
@@ -46,9 +47,18 @@ public class RingtoneService extends Service {
             return START_NOT_STICKY;
         }
 
-        // Extract data
+        // Extract data - Need to extract these before Snooze check because we need
+        // alarmId
         int alarmId = intent.getIntExtra("ALARM_ID", -1);
         long alarmTime = intent.getLongExtra("ALARM_TIME", System.currentTimeMillis());
+
+        if (ACTION_SNOOZE.equals(intent.getAction())) {
+            // Schedule Snooze
+            long triggerTime = System.currentTimeMillis() + (AlarmConfig.SNOOZE_DELAY_SECONDS * 1000L);
+            AlarmScheduler.scheduleSnooze(this, alarmId, triggerTime);
+            stopSelf();
+            return START_NOT_STICKY;
+        }
 
         // 1. Acquire WakeLock FIRST to ensure screen wakes up
         PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -61,8 +71,11 @@ public class RingtoneService extends Service {
             wakeLock.acquire(60 * 1000L); // 60 seconds max
         }
 
+        // Extract Rington Uri
+        String ringtoneUri = intent.getStringExtra("ALARM_RINGTONE");
+
         // 2. Play Ringtone
-        playRingtone();
+        playRingtone(ringtoneUri);
 
         // 3. Vibrate
         startVibration();
@@ -89,17 +102,28 @@ public class RingtoneService extends Service {
         }
 
         // 6. Schedule Auto-Snooze / Stop Service after duration
-        new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+        if (handler == null) {
+            handler = new android.os.Handler(android.os.Looper.getMainLooper());
+        }
+
+        // Cancel any existing runnable
+        if (autoSnoozeRunnable != null) {
+            handler.removeCallbacks(autoSnoozeRunnable);
+        }
+
+        autoSnoozeRunnable = () -> {
             // Check if service is still running (if user hasn't dismissed/snoozed yet)
             // Ideally we should track state, but stopping self is safe.
             // However, we want to Auto-Snooze.
 
             // Schedule Auto Snooze
-            long triggerTime = System.currentTimeMillis() + (AlarmConfig.AUTO_SNOOZE_DELAY_MIN * 60 * 1000L);
+            long triggerTime = System.currentTimeMillis() + (AlarmConfig.AUTO_SNOOZE_DELAY_SECONDS * 1000L);
             AlarmScheduler.scheduleSnooze(this, alarmId, triggerTime);
 
             stopSelf();
-        }, AlarmConfig.RING_DURATION_MIN * 60 * 1000L);
+        };
+
+        handler.postDelayed(autoSnoozeRunnable, AlarmConfig.RING_DURATION_SECONDS * 1000L);
 
         return START_STICKY;
     }
@@ -116,10 +140,21 @@ public class RingtoneService extends Service {
         }
     }
 
-    private void playRingtone() {
-        Uri alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+    private void playRingtone(String ringtoneUriString) {
+        Uri alarmUri = null;
+        if (ringtoneUriString != null && !ringtoneUriString.isEmpty()) {
+            try {
+                alarmUri = Uri.parse(ringtoneUriString);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         if (alarmUri == null) {
-            alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+            if (alarmUri == null) {
+                alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            }
         }
 
         mediaPlayer = new MediaPlayer();
@@ -179,6 +214,15 @@ public class RingtoneService extends Service {
                 dismissIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
+        // Snooze Action
+        Intent snoozeIntent = new Intent(this, RingtoneService.class);
+        snoozeIntent.setAction(ACTION_SNOOZE);
+        PendingIntent snoozePendingIntent = PendingIntent.getService(
+                this,
+                0,
+                snoozeIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("Alarm")
@@ -189,6 +233,7 @@ public class RingtoneService extends Service {
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setFullScreenIntent(fullScreenPendingIntent, true)
                 .setDeleteIntent(dismissPendingIntent)
+                .addAction(R.drawable.ic_launcher_foreground, "Snooze", snoozePendingIntent)
                 .addAction(R.drawable.ic_launcher_foreground, "Dismiss", dismissPendingIntent)
                 .setOngoing(true)
                 .setAutoCancel(false)
@@ -206,12 +251,4 @@ public class RingtoneService extends Service {
             channel.setSound(null, null); // Sound played by MediaPlayer
             channel.enableVibration(true);
             channel.setVibrationPattern(new long[] { 0, 1000, 1000 });
-            channel.setBypassDnd(true); // Bypass Do Not Disturb for alarms
-
-            NotificationManager manager = getSystemService(NotificationManager.class);
-            if (manager != null) {
-                manager.createNotificationChannel(channel);
-            }
-        }
-    }
-}
+            channel

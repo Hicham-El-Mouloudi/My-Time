@@ -18,6 +18,7 @@ public class AlarmScheduler {
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra("ALARM_ID", alarm.getId());
         intent.putExtra("ALARM_TIME", alarm.getTimeInMillis());
+        intent.putExtra("ALARM_RINGTONE", alarm.getRingtoneUri());
         // Label removed
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(

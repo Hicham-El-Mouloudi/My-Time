@@ -5,14 +5,14 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="24dp"
-    android:background="#1E1E1E">
+    android:background="@color/ui_surface">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Set Alarm Time"
         android:textSize="20sp"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/text_primary"
         android:textStyle="bold"
         android:layout_marginBottom="16dp"/>
 
@@ -27,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Repeat"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/text_primary"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"/>
 
@@ -47,6 +47,34 @@
 
     </LinearLayout>
 
+    <!-- Ringtone Selection -->
+    <LinearLayout
+        android:id="@+id/ringtone_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ringtone"
+            android:textColor="@color/text_primary"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/ringtone_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Default"
+            android:textColor="@color/text_secondary"
+            android:layout_marginTop="4dp"/>
+
+    </LinearLayout>
+
     <LinearLayout
         style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
@@ -60,7 +88,7 @@
             android:layout_height="wrap_content"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:text="Delete"
-            android:textColor="#CF6679"
+            android:textColor="@color/brand_primary"
             android:visibility="gone"/>
 
         <View
@@ -74,9 +102,9 @@
             android:layout_height="wrap_content"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:text="Cancel"
-            android:textColor="#6200EE"
+            android:textColor="@color/brand_primary"
             android:layout_marginEnd="8dp"
-            app:strokeColor="#6200EE"
+            app:strokeColor="@color/brand_primary"
             app:strokeWidth="1dp" />
 
         <Button
@@ -85,8 +113,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Save"
-            android:backgroundTint="#6200EE"
-            android:textColor="#FFFFFF"/>
+            android:backgroundTint="@color/brand_primary"
+            android:textColor="@color/brand_on_primary"/>
 
     </LinearLayout>
 

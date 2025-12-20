@@ -16,12 +16,24 @@ import com.ensao.mytime.statistics.StatisticsFragment;
 import com.ensao.mytime.study.StudySessionFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity {
+import android.content.SharedPreferences;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.preference.PreferenceManager;
+
+public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Apply theme before view creation
+        applyTheme();
+
         // preparing launch screen
         super.onCreate(savedInstanceState);
+
+        // Register listener
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .registerOnSharedPreferenceChangeListener(this);
+
         // enabling full display on the screen
         EdgeToEdge.enable(this);
         // Setting the main view
@@ -49,6 +61,33 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) { // if the activity is created for the first time
             bottomNavigationView.setSelectedItemId(R.id.nav_alarm);
         }
+    }
+
+    private void applyTheme() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String theme = prefs.getString("theme", "light");
+        if ("dark".equals(theme)) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if ("theme".equals(key)) {
+            applyTheme();
+            // Recreate activity to apply theme immediately if needed (usually handled by
+            // delegate but good practice if not)
+            // recreate();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
     }
 
     private void navigateTo(int itemId) {

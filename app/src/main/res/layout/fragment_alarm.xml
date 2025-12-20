@@ -6,7 +6,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#6200EE"
+    android:background="@color/ui_background"
     tools:context=".alarm.AlarmFragment">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -48,7 +48,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/text_primary"
                     android:textSize="32sp"
                     android:textStyle="bold"
                     android:fontFamily="sans-serif-medium"
@@ -65,7 +65,7 @@
                 android:background="@android:color/transparent"
                 app:layout_collapseMode="pin"
                 app:title="Alarm"
-                app:titleTextColor="#FFFFFF"/>
+                app:titleTextColor="@color/text_primary"/>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -106,7 +106,7 @@
                     android:layout_height="wrap_content"
                     android:text="No alarms"
                     android:textSize="20sp"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/text_primary"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp"/>
 
@@ -115,7 +115,7 @@
                     android:layout_height="wrap_content"
                     android:text="Tap + to add an alarm"
                     android:textSize="14sp"
-                    android:textColor="#B3FFFFFF"/>
+                    android:textColor="@color/text_secondary"/>
 
             </LinearLayout>
 
@@ -132,7 +132,7 @@
         android:layout_margin="16dp"
         android:contentDescription="Delete selected alarms"
         app:srcCompat="@android:drawable/ic_menu_delete"
-        app:tint="#FFFFFF"
+        app:tint="@color/brand_on_primary"
         app:backgroundTint="#CF6679"
         android:visibility="gone"/>
 
@@ -144,7 +144,7 @@
         android:layout_margin="16dp"
         android:contentDescription="Add alarm"
         app:srcCompat="@android:drawable/ic_input_add"
-        app:tint="#FFFFFF"
-        app:backgroundTint="#6200EE"/>
+        app:tint="@color/brand_on_primary"
+        app:backgroundTint="@color/brand_primary"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand / Semantic Colors -->
+    <color name="brand_primary">#FFFFFF</color>
+    <color name="brand_on_primary">#000000</color>
+
+    <!-- UI Colors (Dark Mode) -->
+    <color name="ui_background">#000000</color> <!-- OLED Black -->
+    <color name="ui_surface">#121212</color>
+    <color name="ui_card_background">#1C1C1E</color>
+    <color name="ui_card_stroke">#2C2C2E</color>
+
+    <!-- Text Colors (Dark Mode) -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#8E8E93</color>
+    <color name="text_tertiary">#3A3A3C</color>
+</resources>

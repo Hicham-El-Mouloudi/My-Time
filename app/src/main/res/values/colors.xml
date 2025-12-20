@@ -3,12 +3,22 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- Semantic Colors -->
-    <color name="background_color">#F5F7FA</color> <!-- Soft Blue-Grey Background -->
-    <color name="nav_bar_color">#FFFFFF</color>   <!-- Clean White Nav Bar -->
-    <color name="primary_color">#4A90E2</color>   <!-- Soft Blue -->
-    <color name="secondary_color">#50E3C2</color> <!-- Teal Accent -->
-    <color name="surface_color">#FFFFFF</color>
-    <color name="text_primary">#2C3E50</color>    <!-- Dark Blue-Grey Text -->
-    <color name="text_secondary">#7F8C8D</color>  <!-- Grey Text -->
+    <!-- Legacy Colors (Restored for Nav Bar) -->
+    <color name="background_color">#F5F7FA</color>
+    <color name="nav_bar_color">#FFFFFF</color>
+
+    <!-- Brand / Semantic Colors -->
+    <color name="brand_primary">#000000</color>
+    <color name="brand_on_primary">#FFFFFF</color>
+
+    <!-- UI Colors (Light Mode) -->
+    <color name="ui_background">#FFFFFF</color>
+    <color name="ui_surface">#F5F5F5</color>
+    <color name="ui_card_background">#FFFFFF</color>
+    <color name="ui_card_stroke">#E0E0E0</color>
+
+    <!-- Text Colors (Light Mode) -->
+    <color name="text_primary">#121212</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_tertiary">#E0E0E0</color>
 </resources>

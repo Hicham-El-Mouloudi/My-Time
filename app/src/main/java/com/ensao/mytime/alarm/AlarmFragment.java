@@ -58,6 +58,37 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
     private Runnable clockUpdateRunnable;
     private SimpleDateFormat timeFormat;
 
+    // Ringtone Selection
+    private androidx.activity.result.ActivityResultLauncher<Intent> ringtonePickerLauncher;
+    private String currentRingtoneUri;
+    private TextView ringtoneNameText;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        ringtonePickerLauncher = registerForActivityResult(
+                new androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == android.app.Activity.RESULT_OK && result.getData() != null) {
+                        Uri uri = result.getData()
+                                .getParcelableExtra(android.media.RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+                        if (uri != null) {
+                            currentRingtoneUri = uri.toString();
+                            android.media.Ringtone ringtone = android.media.RingtoneManager
+                                    .getRingtone(requireContext(), uri);
+                            if (ringtone != null) {
+                                ringtoneNameText.setText(ringtone.getTitle(requireContext()));
+                            }
+                        } else {
+                            // Silent
+                            currentRingtoneUri = "";
+                            ringtoneNameText.setText("Silent");
+                        }
+                    }
+                });
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -285,6 +316,21 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
 
         Button deleteAlarmBtn = dialogView.findViewById(R.id.delete_alarm_button);
 
+        // Ringtone UI
+        View ringtoneContainer = dialogView.findViewById(R.id.ringtone_container);
+        ringtoneNameText = dialogView.findViewById(R.id.ringtone_name);
+
+        ringtoneContainer.setOnClickListener(v -> {
+            Intent intent = new Intent(android.media.RingtoneManager.ACTION_RINGTONE_PICKER);
+            intent.putExtra(android.media.RingtoneManager.EXTRA_RINGTONE_TYPE,
+                    android.media.RingtoneManager.TYPE_ALARM);
+            intent.putExtra(android.media.RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Alarm Ringtone");
+            intent.putExtra(android.media.RingtoneManager.EXTRA_RINGTONE_EXISTING_URI,
+                    (currentRingtoneUri != null && !currentRingtoneUri.isEmpty()) ? Uri.parse(currentRingtoneUri)
+                            : null);
+            ringtonePickerLauncher.launch(intent);
+        });
+
         if (existingAlarm != null) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(existingAlarm.getTimeInMillis());
@@ -298,6 +344,19 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
                     dayToggles[i].setChecked(true);
                 }
             }
+
+            // Set Ringtone
+            currentRingtoneUri = existingAlarm.getRingtoneUri();
+            if (currentRingtoneUri != null && !currentRingtoneUri.isEmpty()) {
+                android.media.Ringtone ringtone = android.media.RingtoneManager.getRingtone(requireContext(),
+                        Uri.parse(currentRingtoneUri));
+                if (ringtone != null) {
+                    ringtoneNameText.setText(ringtone.getTitle(requireContext()));
+                }
+            } else {
+                ringtoneNameText.setText("Default");
+            }
+
             deleteAlarmBtn.setVisibility(View.VISIBLE);
         } else {
             deleteAlarmBtn.setVisibility(View.GONE);
@@ -337,6 +396,7 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
             if (existingAlarm != null) {
                 existingAlarm.setTimeInMillis(calendar.getTimeInMillis());
                 existingAlarm.setDaysOfWeek(daysOfWeek);
+                existingAlarm.setRingtoneUri(currentRingtoneUri); // Save Ringtone
                 repository.update(existingAlarm);
 
                 AlarmScheduler.cancelAlarm(requireContext(), existingAlarm.getId());
@@ -346,6 +406,7 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
                 Toast.makeText(requireContext(), R.string.alarm_updated, Toast.LENGTH_SHORT).show();
             } else {
                 Alarm alarm = new Alarm(calendar.getTimeInMillis(), true, daysOfWeek);
+                alarm.setRingtoneUri(currentRingtoneUri); // Save Ringtone
                 repository.insert(alarm, insertedAlarm -> {
                     requireActivity().runOnUiThread(() -> {
                         AlarmScheduler.scheduleAlarm(requireContext(), insertedAlarm);

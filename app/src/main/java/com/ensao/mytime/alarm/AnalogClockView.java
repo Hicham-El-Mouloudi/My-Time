@@ -9,6 +9,8 @@ import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.ensao.mytime.R;
+
 import java.util.Calendar;
 
 /**
@@ -48,39 +50,43 @@ public class AnalogClockView extends View {
     }
 
     private void init() {
+        // Resolve colors from attributes
+        int primaryColor = getColorFromAttr(getContext(), com.google.android.material.R.attr.colorOnSurface);
+        int accentColor = getColorFromAttr(getContext(), androidx.appcompat.R.attr.colorPrimary);
+
         // Circle outline paint
         circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        circlePaint.setColor(Color.WHITE);
+        circlePaint.setColor(primaryColor);
         circlePaint.setStyle(Paint.Style.STROKE);
         circlePaint.setStrokeWidth(6f);
 
         // Tick marks paint
         tickPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        tickPaint.setColor(Color.WHITE);
+        tickPaint.setColor(primaryColor);
         tickPaint.setStrokeWidth(4f);
         tickPaint.setStrokeCap(Paint.Cap.ROUND);
 
         // Hour hand paint
         hourHandPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        hourHandPaint.setColor(Color.WHITE);
+        hourHandPaint.setColor(primaryColor);
         hourHandPaint.setStrokeWidth(10f);
         hourHandPaint.setStrokeCap(Paint.Cap.ROUND);
 
         // Minute hand paint
         minuteHandPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        minuteHandPaint.setColor(Color.WHITE);
+        minuteHandPaint.setColor(primaryColor);
         minuteHandPaint.setStrokeWidth(6f);
         minuteHandPaint.setStrokeCap(Paint.Cap.ROUND);
 
         // Second hand paint
         secondHandPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        secondHandPaint.setColor(0xFFFF5252); // Red accent color
+        secondHandPaint.setColor(accentColor);
         secondHandPaint.setStrokeWidth(3f);
         secondHandPaint.setStrokeCap(Paint.Cap.ROUND);
 
         // Center dot paint
         centerDotPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        centerDotPaint.setColor(0xFFFF5252);
+        centerDotPaint.setColor(accentColor);
         centerDotPaint.setStyle(Paint.Style.FILL);
 
         handler = new Handler(Looper.getMainLooper());
@@ -93,6 +99,14 @@ public class AnalogClockView extends View {
                 }
             }
         };
+    }
+
+    private int getColorFromAttr(Context context, int attr) {
+        android.util.TypedValue typedValue = new android.util.TypedValue();
+        if (context.getTheme().resolveAttribute(attr, typedValue, true)) {
+            return typedValue.data;
+        }
+        return Color.WHITE; // Fallback
     }
 
     @Override

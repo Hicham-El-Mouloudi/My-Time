@@ -21,10 +21,12 @@ public class AlarmReceiver extends BroadcastReceiver {
         // Get alarm data from intent
         int alarmId = intent.getIntExtra("ALARM_ID", -1);
         long alarmTime = intent.getLongExtra("ALARM_TIME", 0);
+        String ringtoneUri = intent.getStringExtra("ALARM_RINGTONE");
 
         Intent serviceIntent = new Intent(context, RingtoneService.class);
         serviceIntent.putExtra("ALARM_ID", alarmId);
         serviceIntent.putExtra("ALARM_TIME", alarmTime);
+        serviceIntent.putExtra("ALARM_RINGTONE", ringtoneUri);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(serviceIntent);

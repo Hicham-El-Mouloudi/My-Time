@@ -12,6 +12,7 @@ public class Alarm {
     private int daysOfWeek; // Bitmask: Sun=1, Mon=2, ..., Sat=64
     private int ringtoneCode;
     private int vibrationCode;
+    private String ringtoneUri;
 
     // Default Constructor
     public Alarm() {
@@ -69,5 +70,13 @@ public class Alarm {
 
     public void setVibrationCode(int vibrationCode) {
         this.vibrationCode = vibrationCode;
+    }
+
+    public String getRingtoneUri() {
+        return ringtoneUri;
+    }
+
+    public void setRingtoneUri(String ringtoneUri) {
+        this.ringtoneUri = ringtoneUri;
     }
 }
