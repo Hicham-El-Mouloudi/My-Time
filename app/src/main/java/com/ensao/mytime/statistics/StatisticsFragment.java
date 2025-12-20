@@ -49,6 +49,7 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
     private RecyclerView rvWeeks;
     private FrameLayout contentContainer;
     private ImageView btnCalendar;
+    private TextView tvSelectedDay;
 
     private StatisticsDAOProxy daoProxy;
 
@@ -83,12 +84,13 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
         weeksAdapter = new WeeksAdapter(weeksAdaptee, this);
         sleepCalculator = new MockSleepStatsCalculator();
         wakeCalculator = new MockWakeStatsCalculator();
-        //viewGenerator = new StatsViewGenerator();
+        // viewGenerator = new StatsViewGenerator();
 
         // Bind Views
         rvWeeks = view.findViewById(R.id.rv_weeks);
         contentContainer = view.findViewById(R.id.content_of_the_day);
         btnCalendar = view.findViewById(R.id.btn_calendar);
+        tvSelectedDay = view.findViewById(R.id.tv_selected_day);
 
         // Setup the Weeks horizontal scroll bar
         setupWeeksHorizontalScrollBar();
@@ -121,7 +123,26 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
     @Override
     public void onDayClick(DayData day) {
         this.currentDay = day;
+        weeksAdapter.setSelectedDay(day);
+        updateSelectedDayText(day);
         updateContent(day);
+    }
+
+    private void updateSelectedDayText(DayData day) {
+        if (day == null || tvSelectedDay == null)
+            return;
+        java.time.LocalDate date = day.getDate();
+        java.time.LocalDate today = java.time.LocalDate.now();
+        java.time.LocalDate yesterday = today.minusDays(1);
+
+        if (date.equals(today)) {
+            tvSelectedDay.setText("Today");
+        } else if (date.equals(yesterday)) {
+            tvSelectedDay.setText("Yesterday");
+        } else {
+            java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("EEE, MMM d");
+            tvSelectedDay.setText(date.format(formatter));
+        }
     }
 
     private void updateContent(DayData day) {
