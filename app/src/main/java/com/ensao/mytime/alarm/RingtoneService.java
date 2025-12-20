@@ -31,6 +31,9 @@ public class RingtoneService extends Service {
     private static final String ACTION_DISMISS = "ACTION_DISMISS";
     private static final String ACTION_SNOOZE = "ACTION_SNOOZE";
 
+    private android.os.Handler handler;
+    private Runnable autoSnoozeRunnable;
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -55,7 +58,7 @@ public class RingtoneService extends Service {
         if (ACTION_SNOOZE.equals(intent.getAction())) {
             // Schedule Snooze
             long triggerTime = System.currentTimeMillis() + (AlarmConfig.SNOOZE_DELAY_SECONDS * 1000L);
-            AlarmScheduler.scheduleSnooze(this, alarmId, triggerTime);
+            AlarmScheduler.scheduleSnooze(this, alarmId, triggerTime, 0);
             stopSelf();
             return START_NOT_STICKY;
         }
@@ -73,6 +76,8 @@ public class RingtoneService extends Service {
 
         // Extract Rington Uri
         String ringtoneUri = intent.getStringExtra("ALARM_RINGTONE");
+        // Extract Auto Snooze Count
+        int autoSnoozeCount = intent.getIntExtra("AUTO_SNOOZE_COUNT", 0);
 
         // 2. Play Ringtone
         playRingtone(ringtoneUri);
@@ -85,7 +90,6 @@ public class RingtoneService extends Service {
 
         // 5. Try to start Activity directly (may fail on Android 10+ due to BAL
         // restrictions)
-        // The FullScreenIntent in the notification is the primary mechanism
         try {
             Intent fullScreenIntent = new Intent(this, AlarmFullScreenUI.class);
             fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
@@ -96,8 +100,6 @@ public class RingtoneService extends Service {
             fullScreenIntent.putExtra("ALARM_TIME", alarmTime);
             startActivity(fullScreenIntent);
         } catch (Exception e) {
-            // On Android 10+, this may fail due to background activity start restrictions
-            // The FullScreenIntent in the notification should still work
             e.printStackTrace();
         }
 
@@ -112,13 +114,14 @@ public class RingtoneService extends Service {
         }
 
         autoSnoozeRunnable = () -> {
-            // Check if service is still running (if user hasn't dismissed/snoozed yet)
-            // Ideally we should track state, but stopping self is safe.
-            // However, we want to Auto-Snooze.
-
-            // Schedule Auto Snooze
-            long triggerTime = System.currentTimeMillis() + (AlarmConfig.AUTO_SNOOZE_DELAY_SECONDS * 1000L);
-            AlarmScheduler.scheduleSnooze(this, alarmId, triggerTime);
+            // Check max auto snoozes
+            if (autoSnoozeCount < AlarmConfig.MAX_AUTO_SNOOZES) {
+                // Schedule Auto Snooze with incremented count
+                long triggerTime = System.currentTimeMillis() + (AlarmConfig.AUTO_SNOOZE_DELAY_SECONDS * 1000L);
+                AlarmScheduler.scheduleSnooze(this, alarmId, triggerTime, autoSnoozeCount + 1);
+            } else {
+                // Limit reached, just stop (Alarm "turned down")
+            }
 
             stopSelf();
         };
@@ -137,6 +140,9 @@ public class RingtoneService extends Service {
         }
         if (vibrator != null) {
             vibrator.cancel();
+        }
+        if (handler != null && autoSnoozeRunnable != null) {
+            handler.removeCallbacks(autoSnoozeRunnable);
         }
     }
 
@@ -251,4 +257,12 @@ public class RingtoneService extends Service {
             channel.setSound(null, null); // Sound played by MediaPlayer
             channel.enableVibration(true);
             channel.setVibrationPattern(new long[] { 0, 1000, 1000 });
-            channel
+            channel.setBypassDnd(true); // Bypass Do Not Disturb for alarms
+
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            if (manager != null) {
+                manager.createNotificationChannel(channel);
+            }
+        }
+    }
+}

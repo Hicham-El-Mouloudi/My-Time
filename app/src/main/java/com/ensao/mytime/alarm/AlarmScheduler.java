@@ -113,12 +113,13 @@ public class AlarmScheduler {
         }
     }
 
-    public static void scheduleSnooze(Context context, int alarmId, long triggerTimeInMillis) {
+    public static void scheduleSnooze(Context context, int alarmId, long triggerTimeInMillis, int snoozeCount) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra("ALARM_ID", alarmId);
         intent.putExtra("ALARM_TIME", triggerTimeInMillis);
+        intent.putExtra("AUTO_SNOOZE_COUNT", snoozeCount);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 context,

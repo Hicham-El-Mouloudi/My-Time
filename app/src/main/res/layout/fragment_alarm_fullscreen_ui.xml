@@ -1,58 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#6200EE"
-    tools:context=".alarm.AlarmFullScreenUI">
+    android:background="@drawable/bg_alarm_gradient"
+    android:keepScreenOn="true">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <!-- Counter TextView -->
+    <TextView
+        android:id="@+id/counter_text"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:padding="32dp">
+        android:layout_marginTop="64dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="60"
+        android:textColor="@android:color/white"
+        android:textSize="48sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/alarm_time_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="08:30"
-            android:textSize="72sp"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            android:fontFamily="sans-serif-light"
-            android:layout_marginBottom="16dp"/>
+    <!-- Alarm Time TextView -->
+    <TextView
+        android:id="@+id/alarm_time_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"
+        android:text="08:00"
+        android:textColor="@android:color/white"
+        android:textSize="80sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.4" />
 
-        <TextView
-            android:id="@+id/alarm_label_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Wake up"
-            android:textSize="24sp"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="48dp"/>
+    <!-- Alarm Label -->
+    <TextView
+        android:id="@+id/alarm_label_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Alarm"
+        android:textColor="@color/text_secondary"
+        android:textSize="24sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/alarm_time_text" />
 
-        <Button
-            android:id="@+id/snooze_button"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:text="Snooze (1m)"
-            android:textSize="18sp"
-            android:backgroundTint="#FF9800"
-            android:textColor="#000000"
-            android:layout_marginBottom="16dp"/>
+    <!-- Swipe Area Hints -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dismiss"
+        android:textColor="#B3FFFFFF"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/swipe_btn_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/swipe_btn_container" />
 
-        <Button
-            android:id="@+id/dismiss_button"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:text="Dismiss Alarm"
-            android:textSize="18sp"
-            android:backgroundTint="#03DAC5"
-            android:textColor="#000000"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Snooze"
+        android:textColor="#B3FFFFFF"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/swipe_btn_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/swipe_btn_container" />
+        
+    <!-- Swipe Button Container -->
+    <FrameLayout
+        android:id="@+id/swipe_btn_container"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginBottom="64dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/selector_day_toggle_background"
+        android:backgroundTint="@color/ui_surface"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-    </LinearLayout>
+        <!-- The Draggable Button -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/swipe_button"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="center"
+            app:cardBackgroundColor="@color/brand_primary"
+            app:cardCornerRadius="32dp"
+            app:cardElevation="4dp">
+            
+            <ImageView
+                 android:layout_width="32dp"
+                 android:layout_height="32dp"
+                 android:layout_gravity="center"
+                 android:src="@drawable/ic_launcher_foreground"
+                 app:tint="@color/brand_on_primary"/>
+                 
+        </androidx.cardview.widget.CardView>
+        
+    </FrameLayout>
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

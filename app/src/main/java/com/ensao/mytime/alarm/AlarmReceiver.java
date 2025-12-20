@@ -22,11 +22,13 @@ public class AlarmReceiver extends BroadcastReceiver {
         int alarmId = intent.getIntExtra("ALARM_ID", -1);
         long alarmTime = intent.getLongExtra("ALARM_TIME", 0);
         String ringtoneUri = intent.getStringExtra("ALARM_RINGTONE");
+        int autoSnoozeCount = intent.getIntExtra("AUTO_SNOOZE_COUNT", 0);
 
         Intent serviceIntent = new Intent(context, RingtoneService.class);
         serviceIntent.putExtra("ALARM_ID", alarmId);
         serviceIntent.putExtra("ALARM_TIME", alarmTime);
         serviceIntent.putExtra("ALARM_RINGTONE", ringtoneUri);
+        serviceIntent.putExtra("AUTO_SNOOZE_COUNT", autoSnoozeCount);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(serviceIntent);
