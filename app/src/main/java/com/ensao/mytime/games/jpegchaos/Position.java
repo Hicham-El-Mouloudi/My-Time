@@ -1,4 +1,4 @@
-package com.aurora.myapplication;
+package com.ensao.mytime.games.jpegchaos;
 
 import java.util.Objects;
 

@@ -1,6 +1,7 @@
-package com.aurora.myapplication;
+package com.ensao.mytime.games.jpegchaos;
 
 import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.aurora.myapplication;
+package com.ensao.mytime.games.jpegchaos;
 
 /**
  * encapsulate the puzzle piece for future changes

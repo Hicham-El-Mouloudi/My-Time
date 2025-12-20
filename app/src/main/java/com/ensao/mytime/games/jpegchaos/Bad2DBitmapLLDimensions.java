@@ -1,4 +1,4 @@
-package com.aurora.myapplication;
+package com.ensao.mytime.games.jpegchaos;
 
 public class Bad2DBitmapLLDimensions extends RuntimeException {
     public Bad2DBitmapLLDimensions(String message) {

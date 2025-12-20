@@ -1,24 +1,26 @@
-package com.aurora.myapplication;
+package com.ensao.mytime.games.jpegchaos;
 
 import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.AudioAttributes;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.Bundle;
-
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.ensao.mytime.R;
+
 import java.io.IOException;
 import java.io.InputStream;
 
-import android.media.AudioAttributes;
-import android.media.MediaPlayer;
-import android.media.SoundPool;
-
-public class MainActivity extends AppCompatActivity {
+public class JpegChaosActivity extends AppCompatActivity {
     public final String TAG = "MainActivity";
     private final int COLS = 3;
     private final int ROWS = 5;
@@ -45,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.games_jpegchaos_main);
 
         puzzleView = findViewById(R.id.puzzleView);
         moreBtn = findViewById(R.id.btn_menu_left);
@@ -200,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
     private void showMoreOptionsDialog() {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_more_options);
+        dialog.setContentView(R.layout.games_jpegchaos_more_options_dialog);
         if(dialog.getWindow()!=null)    dialog.getWindow().setBackgroundDrawableResource(android.R.drawable.dialog_holo_light_frame);
 
         LinearLayout btnReset = dialog.findViewById(R.id.btn_reset);
@@ -272,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
     private void showWinDialog() {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_win);
+        dialog.setContentView(R.layout.games_jpegchaos_win_dialog);
         dialog.setCancelable(false);
         if (dialog.getWindow()!=null) dialog.getWindow().setBackgroundDrawableResource(android.R.drawable.dialog_holo_light_frame);
 

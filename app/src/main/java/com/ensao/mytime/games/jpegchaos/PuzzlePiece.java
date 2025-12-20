@@ -1,4 +1,4 @@
-package com.aurora.myapplication;
+package com.ensao.mytime.games.jpegchaos;
 
 public class PuzzlePiece {
     public final int originalRow;
