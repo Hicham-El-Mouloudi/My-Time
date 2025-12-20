@@ -26,6 +26,7 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
@@ -48,9 +49,11 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.preference)
+    implementation(libs.mpandroidchart)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 
     //ROOM
     val room_version = "2.8.4"
