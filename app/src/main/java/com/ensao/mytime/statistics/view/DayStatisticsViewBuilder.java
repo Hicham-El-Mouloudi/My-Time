@@ -121,19 +121,23 @@ public class DayStatisticsViewBuilder {
         LinearLayout statsContainer = mainView.findViewById(R.id.dynamic_stats_container);
         View pbQuality = mainView.findViewById(R.id.qualityChart);
         View pbQualityBackground = mainView.findViewById(R.id.qualityChartBackground);
+        // We want to change content of the ImageView background
+        android.widget.ImageView headerBackground = mainView.findViewById(R.id.header_background_image);
 
         // Click listeners
         btnSleep.setOnClickListener(
-                v -> updateTab(true, btnSleep, btnWake, statsContainer, pbQuality, pbQualityBackground));
+                v -> updateTab(true, btnSleep, btnWake, statsContainer, pbQuality, pbQualityBackground,
+                        headerBackground));
         btnWake.setOnClickListener(
-                v -> updateTab(false, btnSleep, btnWake, statsContainer, pbQuality, pbQualityBackground));
+                v -> updateTab(false, btnSleep, btnWake, statsContainer, pbQuality, pbQualityBackground,
+                        headerBackground));
 
         // Initial state
-        updateTab(initialSleep, btnSleep, btnWake, statsContainer, pbQuality, pbQualityBackground);
+        updateTab(initialSleep, btnSleep, btnWake, statsContainer, pbQuality, pbQualityBackground, headerBackground);
     }
 
     private void updateTab(boolean isSleep, Button btnSleep, Button btnWake, LinearLayout container, View pbQuality,
-            View pbQualityBackground) {
+            View pbQualityBackground, android.widget.ImageView headerBackground) {
         container.removeAllViews();
 
         // Tab Styling
@@ -146,12 +150,20 @@ public class DayStatisticsViewBuilder {
             btnSleep.setTextColor(whiteColor);
             btnWake.setBackgroundTintList(android.content.res.ColorStateList.valueOf(whiteColor));
             btnWake.setTextColor(primaryColor);
+
+            if (headerBackground != null) {
+                headerBackground.setImageResource(R.drawable.sleepillustration);
+            }
         } else {
             // Wake
             btnWake.setBackgroundTintList(android.content.res.ColorStateList.valueOf(primaryColor));
             btnWake.setTextColor(whiteColor);
             btnSleep.setBackgroundTintList(android.content.res.ColorStateList.valueOf(whiteColor));
             btnSleep.setTextColor(primaryColor);
+
+            if (headerBackground != null) {
+                headerBackground.setImageResource(R.drawable.wakeillustration);
+            }
         }
 
         // Content Generation
