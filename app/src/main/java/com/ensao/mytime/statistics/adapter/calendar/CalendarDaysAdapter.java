@@ -81,7 +81,7 @@ public class CalendarDaysAdapter extends RecyclerView.Adapter<CalendarDaysAdapte
     @NonNull
     @Override
     public DayViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_calendar_day, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.statistics_item_calendar_day, parent, false);
         return new DayViewHolder(view);
     }
 
