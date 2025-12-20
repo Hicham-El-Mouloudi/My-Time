@@ -78,7 +78,25 @@ public class AlarmFullScreenUI extends AppCompatActivity {
 
         // Start Pulse Animation
         startPulseAnimation();
+
+        // Register Receiver to finish activity when service stops (e.g. dismissed from
+        // notification)
+        android.content.IntentFilter filter = new android.content.IntentFilter("com.ensao.mytime.ACTION_STOP_ALARM_UI");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(finishReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            registerReceiver(finishReceiver, filter);
+        }
     }
+
+    private final android.content.BroadcastReceiver finishReceiver = new android.content.BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if ("com.ensao.mytime.ACTION_STOP_ALARM_UI".equals(intent.getAction())) {
+                finish();
+            }
+        }
+    };
 
     private void startPulseAnimation() {
         android.view.animation.ScaleAnimation pulse = new android.view.animation.ScaleAnimation(
@@ -191,6 +209,11 @@ public class AlarmFullScreenUI extends AppCompatActivity {
         super.onDestroy();
         if (countDownTimer != null) {
             countDownTimer.cancel();
+        }
+        try {
+            unregisterReceiver(finishReceiver);
+        } catch (Exception e) {
+            // Receiver might not be registered or already unregistered
         }
     }
 }

@@ -88,20 +88,10 @@ public class RingtoneService extends Service {
         // 4. Start Foreground with Notification (contains FullScreenIntent)
         startForeground(1, buildNotification(alarmId, alarmTime));
 
-        // 5. Try to start Activity directly (may fail on Android 10+ due to BAL
-        // restrictions)
-        try {
-            Intent fullScreenIntent = new Intent(this, AlarmFullScreenUI.class);
-            fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                    Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                    Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS |
-                    Intent.FLAG_ACTIVITY_NO_USER_ACTION);
-            fullScreenIntent.putExtra("ALARM_ID", alarmId);
-            fullScreenIntent.putExtra("ALARM_TIME", alarmTime);
-            startActivity(fullScreenIntent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // 5. Explicit startActivity Removed
+        // We rely on setFullScreenIntent in the Notification to show the UI
+        // if the screen is locked/off. If unlocked, it shows as a notification.
+        // This prevents double UI (Notification + Activity) when using the app.
 
         // 6. Schedule Auto-Snooze / Stop Service after duration
         if (handler == null) {
@@ -134,6 +124,10 @@ public class RingtoneService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        // Notify UI to close
+        sendBroadcast(new Intent("com.ensao.mytime.ACTION_STOP_ALARM_UI"));
+
         if (mediaPlayer != null) {
             mediaPlayer.stop();
             mediaPlayer.release();
