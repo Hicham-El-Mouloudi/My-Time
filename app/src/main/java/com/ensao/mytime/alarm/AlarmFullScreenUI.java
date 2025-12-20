@@ -131,24 +131,39 @@ public class AlarmFullScreenUI extends AppCompatActivity {
         if (countDownTimer != null)
             countDownTimer.cancel();
 
-        Intent serviceIntent = new Intent(this, RingtoneService.class);
-        stopService(serviceIntent); // Stop ringing
-
-        // Update database: Turn off if not repeating
+        // Check if Sleep Alarm
         int alarmId = getIntent().getIntExtra("ALARM_ID", -1);
         if (alarmId != -1) {
             new Thread(() -> {
                 com.ensao.mytime.alarm.database.AlarmRepository repository = new com.ensao.mytime.alarm.database.AlarmRepository(
                         getApplication());
                 com.ensao.mytime.alarm.database.Alarm alarm = repository.getAlarmByIdSync(alarmId);
-                if (alarm != null && alarm.getDaysOfWeek() == 0) {
-                    alarm.setEnabled(false);
-                    repository.update(alarm);
-                }
-            }).start();
-        }
 
-        finish();
+                // Stop Ringing (Common for both)
+                Intent serviceIntent = new Intent(this, RingtoneService.class);
+                stopService(serviceIntent);
+
+                if (alarm != null && alarm.isSleepAlarm()) {
+                    // Redirect to Puzzle
+                    Intent puzzleIntent = new Intent(this, PuzzleTestActivity.class);
+                    puzzleIntent.putExtra("ALARM_ID", alarmId);
+                    puzzleIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(puzzleIntent);
+                } else {
+                    // Normal Dismiss - Turn off if not repeating
+                    if (alarm != null && alarm.getDaysOfWeek() == 0) {
+                        alarm.setEnabled(false);
+                        repository.update(alarm);
+                    }
+                }
+                finish();
+            }).start();
+        } else {
+            // Fallback if no ID (shouldn't happen)
+            Intent serviceIntent = new Intent(this, RingtoneService.class);
+            stopService(serviceIntent);
+            finish();
+        }
     }
 
     @Override

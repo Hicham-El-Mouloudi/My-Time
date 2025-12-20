@@ -357,6 +357,10 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
                 ringtoneNameText.setText("Default");
             }
 
+            com.google.android.material.switchmaterial.SwitchMaterial sleepAlarmSwitch = dialogView
+                    .findViewById(R.id.sleep_alarm_switch);
+            sleepAlarmSwitch.setChecked(existingAlarm.isSleepAlarm());
+
             deleteAlarmBtn.setVisibility(View.VISIBLE);
         } else {
             deleteAlarmBtn.setVisibility(View.GONE);
@@ -393,10 +397,16 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
                 calendar.add(Calendar.DAY_OF_MONTH, 1);
             }
 
+            // Get Sleep Alarm State
+            com.google.android.material.switchmaterial.SwitchMaterial sleepAlarmSwitch = dialogView
+                    .findViewById(R.id.sleep_alarm_switch);
+            boolean isSleepAlarm = sleepAlarmSwitch.isChecked();
+
             if (existingAlarm != null) {
                 existingAlarm.setTimeInMillis(calendar.getTimeInMillis());
                 existingAlarm.setDaysOfWeek(daysOfWeek);
                 existingAlarm.setRingtoneUri(currentRingtoneUri); // Save Ringtone
+                existingAlarm.setSleepAlarm(isSleepAlarm);
                 repository.update(existingAlarm);
 
                 AlarmScheduler.cancelAlarm(requireContext(), existingAlarm.getId());
@@ -407,6 +417,7 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
             } else {
                 Alarm alarm = new Alarm(calendar.getTimeInMillis(), true, daysOfWeek);
                 alarm.setRingtoneUri(currentRingtoneUri); // Save Ringtone
+                alarm.setSleepAlarm(isSleepAlarm);
                 repository.insert(alarm, insertedAlarm -> {
                     requireActivity().runOnUiThread(() -> {
                         AlarmScheduler.scheduleAlarm(requireContext(), insertedAlarm);

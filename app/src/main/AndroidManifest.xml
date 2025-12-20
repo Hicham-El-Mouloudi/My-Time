@@ -51,6 +51,11 @@
             android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
+        <activity
+            android:name=".alarm.PuzzleTestActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+
         <receiver
             android:name=".alarm.BootReceiver"
             android:enabled="true"

@@ -13,6 +13,7 @@ public class Alarm {
     private int ringtoneCode;
     private int vibrationCode;
     private String ringtoneUri;
+    private boolean isSleepAlarm;
 
     // Default Constructor
     public Alarm() {
@@ -78,5 +79,13 @@ public class Alarm {
 
     public void setRingtoneUri(String ringtoneUri) {
         this.ringtoneUri = ringtoneUri;
+    }
+
+    public boolean isSleepAlarm() {
+        return isSleepAlarm;
+    }
+
+    public void setSleepAlarm(boolean sleepAlarm) {
+        isSleepAlarm = sleepAlarm;
     }
 }
