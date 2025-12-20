@@ -83,7 +83,7 @@ public class SleepFragment extends Fragment {
         if (btnManageApps != null) {
             btnManageApps.setOnClickListener(v -> {
                 getParentFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new AppSelectionFragment())
+                        .replace(R.id.mainContent, new AppSelectionFragment())
                         .addToBackStack(null)
                         .commit();
             });

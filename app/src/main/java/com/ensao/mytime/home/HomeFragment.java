@@ -75,7 +75,7 @@ public class HomeFragment extends Fragment {
             // Cacher le badge lorsqu'on clique sur le bouton
             invocationBadge.setVisibility(View.GONE);
             getParentFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new InvocationFragment())
+                    .replace(R.id.mainContent, new InvocationFragment())
                     .addToBackStack(null)
                     .commit();
         });
