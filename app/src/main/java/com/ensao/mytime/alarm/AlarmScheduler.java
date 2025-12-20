@@ -111,4 +111,39 @@ public class AlarmScheduler {
             alarmManager.cancel(pendingIntent);
         }
     }
+
+    public static void scheduleSnooze(Context context, int alarmId, long triggerTimeInMillis) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        intent.putExtra("ALARM_ID", alarmId);
+        intent.putExtra("ALARM_TIME", triggerTimeInMillis);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                context,
+                alarmId,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        if (alarmManager != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (alarmManager.canScheduleExactAlarms()) {
+                    alarmManager.setExactAndAllowWhileIdle(
+                            AlarmManager.RTC_WAKEUP,
+                            triggerTimeInMillis,
+                            pendingIntent);
+                } else {
+                    alarmManager.setAndAllowWhileIdle(
+                            AlarmManager.RTC_WAKEUP,
+                            triggerTimeInMillis,
+                            pendingIntent);
+                }
+            } else {
+                alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        triggerTimeInMillis,
+                        pendingIntent);
+            }
+        }
+    }
 }

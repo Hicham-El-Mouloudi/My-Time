@@ -8,11 +8,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -23,14 +26,18 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import com.ensao.mytime.R;
 import com.ensao.mytime.alarm.database.Alarm;
 import com.ensao.mytime.alarm.database.AlarmRepository;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActionListener {
 
@@ -40,6 +47,16 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
     private FloatingActionButton fabAddAlarm;
     private FloatingActionButton fabDeleteSelected;
     private View emptyState;
+
+    // Clock views
+    private AnalogClockView analogClock;
+    private TextView digitalClock;
+    private AppBarLayout appBarLayout;
+
+    // Handler for digital clock updates
+    private Handler clockHandler;
+    private Runnable clockUpdateRunnable;
+    private SimpleDateFormat timeFormat;
 
     @Nullable
     @Override
@@ -58,6 +75,25 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
         fabAddAlarm = view.findViewById(R.id.fab_add_alarm);
         fabDeleteSelected = view.findViewById(R.id.fab_delete_selected);
         emptyState = view.findViewById(R.id.empty_state);
+
+        // Initialize clock views
+        analogClock = view.findViewById(R.id.analog_clock);
+        digitalClock = view.findViewById(R.id.digital_clock);
+        appBarLayout = view.findViewById(R.id.app_bar_layout);
+
+        // Setup time format
+        timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        clockHandler = new Handler(Looper.getMainLooper());
+        clockUpdateRunnable = new Runnable() {
+            @Override
+            public void run() {
+                updateDigitalClock();
+                clockHandler.postDelayed(this, 1000);
+            }
+        };
+
+        // Setup scroll-based clock animation
+        setupClockAnimation();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
@@ -84,6 +120,51 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
         checkExactAlarmPermission();
         checkNotificationPermission();
         checkFullScreenIntentPermission();
+    }
+
+    private void setupClockAnimation() {
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                int totalScrollRange = appBarLayout.getTotalScrollRange();
+                if (totalScrollRange == 0)
+                    return;
+
+                // Calculate scroll progress (0 = fully expanded, 1 = fully collapsed)
+                float scrollProgress = Math.abs(verticalOffset) / (float) totalScrollRange;
+
+                // Animate analog clock: scale down and fade out
+                float analogScale = 1f - (scrollProgress * 0.5f); // Scale from 1.0 to 0.5
+                float analogAlpha = 1f - scrollProgress; // Fade out
+                analogClock.setScaleX(analogScale);
+                analogClock.setScaleY(analogScale);
+                analogClock.setAlpha(analogAlpha);
+
+                // Animate digital clock: fade in as we scroll
+                digitalClock.setAlpha(scrollProgress);
+            }
+        });
+    }
+
+    private void updateDigitalClock() {
+        if (digitalClock != null) {
+            digitalClock.setText(timeFormat.format(new Date()));
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Start digital clock updates
+        updateDigitalClock();
+        clockHandler.postDelayed(clockUpdateRunnable, 1000);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        // Stop digital clock updates
+        clockHandler.removeCallbacks(clockUpdateRunnable);
     }
 
     private void deleteSelectedAlarms() {

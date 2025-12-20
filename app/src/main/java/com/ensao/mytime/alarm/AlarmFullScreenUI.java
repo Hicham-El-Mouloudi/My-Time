@@ -66,6 +66,20 @@ public class AlarmFullScreenUI extends AppCompatActivity {
             alarmLabelText.setVisibility(View.GONE);
         }
 
+        // Snooze button
+        Button snoozeButton = findViewById(R.id.snooze_button);
+        snoozeButton.setOnClickListener(v -> {
+            // Stop the Ringtone Service
+            Intent serviceIntent = new Intent(this, RingtoneService.class);
+            stopService(serviceIntent);
+
+            // Schedule Snooze
+            long triggerTime = System.currentTimeMillis() + (AlarmConfig.SNOOZE_DELAY_MIN * 60 * 1000L);
+            AlarmScheduler.scheduleSnooze(this, alarmId, triggerTime);
+
+            finish();
+        });
+
         // Dismiss button
         dismissButton.setOnClickListener(v -> {
             // Stop the Ringtone Service

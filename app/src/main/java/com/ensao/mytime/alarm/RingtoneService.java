@@ -88,6 +88,19 @@ public class RingtoneService extends Service {
             e.printStackTrace();
         }
 
+        // 6. Schedule Auto-Snooze / Stop Service after duration
+        new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+            // Check if service is still running (if user hasn't dismissed/snoozed yet)
+            // Ideally we should track state, but stopping self is safe.
+            // However, we want to Auto-Snooze.
+
+            // Schedule Auto Snooze
+            long triggerTime = System.currentTimeMillis() + (AlarmConfig.AUTO_SNOOZE_DELAY_MIN * 60 * 1000L);
+            AlarmScheduler.scheduleSnooze(this, alarmId, triggerTime);
+
+            stopSelf();
+        }, AlarmConfig.RING_DURATION_MIN * 60 * 1000L);
+
         return START_STICKY;
     }
 
