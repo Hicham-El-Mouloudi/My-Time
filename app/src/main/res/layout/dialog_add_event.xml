@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/et_event_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Titre de l'événement"
+        android:textSize="16sp"
+        android:padding="12dp"
+        android:background="@drawable/edittext_background"
+        android:layout_marginBottom="12dp" />
+
+    <EditText
+        android:id="@+id/et_event_description"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:hint="Description"
+        android:textSize="14sp"
+        android:padding="12dp"
+        android:background="@drawable/edittext_background"
+        android:gravity="top"
+        android:layout_marginBottom="12dp" />
+
+    <EditText
+        android:id="@+id/et_event_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Heure (HH:MM)"
+        android:textSize="16sp"
+        android:padding="12dp"
+        android:background="@drawable/edittext_background"
+        android:inputType="number" />
+
+</LinearLayout>
