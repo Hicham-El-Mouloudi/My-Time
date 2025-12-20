@@ -10,7 +10,7 @@ import android.view.View;
 
 import androidx.core.content.ContextCompat;
 
-import com.aurora.sudoku.R;
+import com.ensao.mytime.R;
 
 import java.util.Set;
 

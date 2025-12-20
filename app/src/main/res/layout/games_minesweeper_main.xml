@@ -1,50 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="300dp"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="32dp"
-    android:background="@android:color/white"
-    android:gravity="center">
+    android:id="@+id/rootLayout"
+    android:background="#1A1A2E">
 
-    <!-- Trophy/Success Icon -->
-    <ImageView
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:src="@android:drawable/star_big_on"
-        android:contentDescription="Success"
-        app:tint="#FFD700" />
-
-    <!-- Congratulations Text -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Congratulations!"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="#4CAF50"
-        android:layout_marginTop="16dp"/>
-
-    <!-- Success message -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="You solved the puzzle!"
-        android:textSize="16sp"
-        android:textColor="#666666"
-        android:layout_marginTop="8dp"
-        android:gravity="center"/>
-
-    <!-- OK Button -->
-    <Button
-        android:id="@+id/btn_ok"
+    <!-- Header Section -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="OK"
-        android:textColor="@android:color/white"
-        android:background="#4CAF50"
-        android:layout_marginTop="24dp"
-        android:padding="12dp"/>
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingBottom="16dp"
+        android:paddingTop="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+        <!-- Flag Counter -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginEnd="8dp">
+
+            <TextView
+                android:id="@+id/tvMineCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10/10"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:fontFamily="monospace"
+                android:textColor="#FFA502"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="FLAGS"
+                android:textSize="10sp"
+                android:textColor="#6C63FF"/>
+        </LinearLayout>
+
+        <!-- Flag/Reveal Mode Toggle -->
+        <ImageButton
+            android:id="@+id/btnToggleMode"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_shovel"
+            android:scaleType="centerInside"
+            android:padding="10dp"
+            android:backgroundTint="#6C63FF"
+            android:layout_marginEnd="4dp"/>
+
+        <!-- Spacer -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Restart Button -->
+        <ImageButton
+            android:id="@+id/btnRestart"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_face_smile"
+            android:scaleType="centerInside"
+            android:padding="8dp"
+            android:backgroundTint="#6C63FF"/>
+
+        <!-- Spacer -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Timer -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginEnd="8dp">
+
+            <TextView
+                android:id="@+id/tvTimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="000"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:fontFamily="monospace"
+                android:textColor="#00D2FF"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SECONDS"
+                android:textSize="10sp"
+                android:textColor="#6C63FF"/>
+        </LinearLayout>
+
+        <!-- Dark Mode Toggle -->
+        <ImageButton
+            android:id="@+id/btnDarkMode"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_mode_dark"
+            android:scaleType="centerInside"
+            android:padding="10dp"
+            android:backgroundTint="#252A3E"/>
+
+    </LinearLayout>
+
+    <!-- Game Board -->
+    <com.ensao.mytime.games.minesweeper.MinesweeperView
+        android:id="@+id/minesweeperView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="4dp"/>
 
 </LinearLayout>

@@ -11,6 +11,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.ensao.mytime.R;
+
 public class MinesweeperGameActivity extends AppCompatActivity implements MinesweeperView.OnCellClickListener {
 
     private MinesweeperView minesweeperView;
@@ -37,7 +39,7 @@ public class MinesweeperGameActivity extends AppCompatActivity implements Minesw
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_minesweeper_game);
+        setContentView(R.layout.games_minesweeper_main);
 
         minesweeperView = findViewById(R.id.minesweeperView);
         tvMineCount = findViewById(R.id.tvMineCount);
