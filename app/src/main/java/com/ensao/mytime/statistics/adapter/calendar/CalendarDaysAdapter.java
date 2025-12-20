@@ -72,8 +72,10 @@ public class CalendarDaysAdapter extends RecyclerView.Adapter<CalendarDaysAdapte
     }
 
     public void initializeDayContentOfListener() {
-        int currentDayIndex = calendar.get(Calendar.DAY_OF_MONTH);
-        listener.onDayClick(days.get(currentDayIndex));
+        int currentDayIndex = calendar.get(Calendar.DAY_OF_MONTH) - 1; // -1 because list is 0-indexed
+        if (currentDayIndex >= 0 && currentDayIndex < days.size()) {
+            listener.onDayClick(days.get(currentDayIndex));
+        }
     }
 
     @NonNull
