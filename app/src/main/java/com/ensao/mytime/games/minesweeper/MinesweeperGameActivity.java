@@ -29,6 +29,9 @@ public class MinesweeperGameActivity extends AppCompatActivity implements Minesw
     private boolean isFlagMode = false;
     private boolean isDarkMode = true;
 
+    // Alarm integration
+    private int alarmId = -1;
+
     // Default difficulty (can be set from intent later)
     private Difficulty currentDifficulty = Difficulty.BEGINNER;
 
@@ -54,6 +57,9 @@ public class MinesweeperGameActivity extends AppCompatActivity implements Minesw
         btnDarkMode.setOnClickListener(v -> toggleDarkMode());
 
         minesweeperView.setOnCellClickListener(this);
+
+        // Get alarm ID if launched from alarm
+        alarmId = getIntent().getIntExtra("ALARM_ID", -1);
 
         startNewGame();
     }
@@ -200,11 +206,28 @@ public class MinesweeperGameActivity extends AppCompatActivity implements Minesw
                 if (engine.isGameWon()) {
                     btnRestart.setImageResource(R.drawable.ic_face_win);
                     Toast.makeText(this, "🎉 Congratulations! You won!", Toast.LENGTH_LONG).show();
+                    disableAlarmIfNeeded();
                 } else {
                     btnRestart.setImageResource(R.drawable.ic_face_dead);
                     Toast.makeText(this, "💥 Game Over! You hit a mine.", Toast.LENGTH_SHORT).show();
                 }
             }
+        }
+    }
+
+    private void disableAlarmIfNeeded() {
+        if (alarmId != -1) {
+            new Thread(() -> {
+                com.ensao.mytime.alarm.database.AlarmRepository repository = new com.ensao.mytime.alarm.database.AlarmRepository(
+                        getApplication());
+                com.ensao.mytime.alarm.database.Alarm alarm = repository.getAlarmByIdSync(alarmId);
+                if (alarm != null && alarm.getDaysOfWeek() == 0) {
+                    alarm.setEnabled(false);
+                    repository.update(alarm);
+                }
+                // Finish activity after disabling alarm
+                runOnUiThread(this::finish);
+            }).start();
         }
     }
 

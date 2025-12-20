@@ -144,8 +144,22 @@ public class AlarmFullScreenUI extends AppCompatActivity {
                 stopService(serviceIntent);
 
                 if (alarm != null && alarm.isSleepAlarm()) {
-                    // Redirect to Puzzle
-                    Intent puzzleIntent = new Intent(this, PuzzleTestActivity.class);
+                    // Redirect to selected puzzle game
+                    String puzzleType = alarm.getPuzzleType();
+                    Intent puzzleIntent;
+                    switch (puzzleType != null ? puzzleType : "jpegchaos") {
+                        case "minesweeper":
+                            puzzleIntent = new Intent(this,
+                                    com.ensao.mytime.games.minesweeper.MinesweeperGameActivity.class);
+                            break;
+                        case "sudoku":
+                            puzzleIntent = new Intent(this, com.ensao.mytime.games.sudoku.SudoKuMainActivity.class);
+                            break;
+                        case "jpegchaos":
+                        default:
+                            puzzleIntent = new Intent(this, com.ensao.mytime.games.jpegchaos.JpegChaosActivity.class);
+                            break;
+                    }
                     puzzleIntent.putExtra("ALARM_ID", alarmId);
                     puzzleIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(puzzleIntent);

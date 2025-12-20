@@ -14,6 +14,7 @@ public class Alarm {
     private int vibrationCode;
     private String ringtoneUri;
     private boolean isSleepAlarm;
+    private String puzzleType = "jpegchaos"; // Default puzzle type
 
     // Default Constructor
     public Alarm() {
@@ -87,5 +88,13 @@ public class Alarm {
 
     public void setSleepAlarm(boolean sleepAlarm) {
         isSleepAlarm = sleepAlarm;
+    }
+
+    public String getPuzzleType() {
+        return puzzleType;
+    }
+
+    public void setPuzzleType(String puzzleType) {
+        this.puzzleType = puzzleType;
     }
 }

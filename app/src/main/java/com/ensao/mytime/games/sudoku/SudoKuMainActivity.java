@@ -12,11 +12,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import com.ensao.mytime.R;
+
 public class SudoKuMainActivity extends AppCompatActivity {
 
     private SudokuView sudokuView;
@@ -55,6 +55,9 @@ public class SudoKuMainActivity extends AppCompatActivity {
             this.newValue = newValue;
         }
     }
+
+    // Alarm integration
+    private int alarmId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +114,9 @@ public class SudoKuMainActivity extends AppCompatActivity {
 
         // Start new game
         startNewGame(currentDifficulty);
+
+        // Get alarm ID if launched from alarm
+        alarmId = getIntent().getIntExtra("ALARM_ID", -1);
     }
 
     private void setupNumberButtons() {
@@ -370,12 +376,35 @@ public class SudoKuMainActivity extends AppCompatActivity {
         seconds = seconds % 60;
         String timeStr = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
 
+        // Disable alarm if non-repeating
+        disableAlarmIfNeeded();
+
         new AlertDialog.Builder(this)
                 .setTitle(R.string.victory_title)
                 .setMessage(getString(R.string.victory_message, timeStr))
-                .setPositiveButton(R.string.new_game, (dialog, which) -> showDifficultyDialog())
+                .setPositiveButton(R.string.new_game, (dialog, which) -> {
+                    if (alarmId != -1) {
+                        finish(); // Exit if launched from alarm
+                    } else {
+                        showDifficultyDialog();
+                    }
+                })
                 .setCancelable(false)
                 .show();
+    }
+
+    private void disableAlarmIfNeeded() {
+        if (alarmId != -1) {
+            new Thread(() -> {
+                com.ensao.mytime.alarm.database.AlarmRepository repository = new com.ensao.mytime.alarm.database.AlarmRepository(
+                        getApplication());
+                com.ensao.mytime.alarm.database.Alarm alarm = repository.getAlarmByIdSync(alarmId);
+                if (alarm != null && alarm.getDaysOfWeek() == 0) {
+                    alarm.setEnabled(false);
+                    repository.update(alarm);
+                }
+            }).start();
+        }
     }
 
     @Override

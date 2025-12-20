@@ -43,6 +43,9 @@ public class JpegChaosActivity extends AppCompatActivity {
     private int soundPopup, soundReset, soundSoundOn, soundSoundOff, soundMusicOff;
     private boolean soundsLoaded = false;
 
+    // Alarm integration
+    private int alarmId = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +105,9 @@ public class JpegChaosActivity extends AppCompatActivity {
 
         initAudio();
         loadLevel();
+
+        // Get alarm ID if launched from alarm
+        alarmId = getIntent().getIntExtra("ALARM_ID", -1);
     }
 
     private void initAudio() {
@@ -203,7 +209,8 @@ public class JpegChaosActivity extends AppCompatActivity {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.games_jpegchaos_more_options_dialog);
-        if(dialog.getWindow()!=null)    dialog.getWindow().setBackgroundDrawableResource(android.R.drawable.dialog_holo_light_frame);
+        if (dialog.getWindow() != null)
+            dialog.getWindow().setBackgroundDrawableResource(android.R.drawable.dialog_holo_light_frame);
 
         LinearLayout btnReset = dialog.findViewById(R.id.btn_reset);
         LinearLayout btnToggleSound = dialog.findViewById(R.id.btn_toggle_sound);
@@ -276,15 +283,31 @@ public class JpegChaosActivity extends AppCompatActivity {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.games_jpegchaos_win_dialog);
         dialog.setCancelable(false);
-        if (dialog.getWindow()!=null) dialog.getWindow().setBackgroundDrawableResource(android.R.drawable.dialog_holo_light_frame);
+        if (dialog.getWindow() != null)
+            dialog.getWindow().setBackgroundDrawableResource(android.R.drawable.dialog_holo_light_frame);
 
         android.widget.Button btnOk = dialog.findViewById(R.id.btn_ok);
         btnOk.setOnClickListener(v -> {
             dialog.dismiss();
-            finishAffinity(); // Quit the application
+            disableAlarmIfNeeded();
+            finish();
         });
 
         dialog.show();
+    }
+
+    private void disableAlarmIfNeeded() {
+        if (alarmId != -1) {
+            new Thread(() -> {
+                com.ensao.mytime.alarm.database.AlarmRepository repository = new com.ensao.mytime.alarm.database.AlarmRepository(
+                        getApplication());
+                com.ensao.mytime.alarm.database.Alarm alarm = repository.getAlarmByIdSync(alarmId);
+                if (alarm != null && alarm.getDaysOfWeek() == 0) {
+                    alarm.setEnabled(false);
+                    repository.update(alarm);
+                }
+            }).start();
+        }
     }
 
     private void loadLevel() {

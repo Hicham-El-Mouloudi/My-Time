@@ -14,7 +14,9 @@ import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -331,6 +333,23 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
             ringtonePickerLauncher.launch(intent);
         });
 
+        // Setup Puzzle Type Spinner
+        View puzzleTypeContainer = dialogView.findViewById(R.id.puzzle_type_container);
+        Spinner puzzleTypeSpinner = dialogView.findViewById(R.id.puzzle_type_spinner);
+        String[] puzzleNames = { "Jpeg Chaos", "Minesweeper", "Sudoku" };
+        String[] puzzleValues = { "jpegchaos", "minesweeper", "sudoku" };
+        ArrayAdapter<String> puzzleAdapter = new ArrayAdapter<>(requireContext(),
+                android.R.layout.simple_spinner_item, puzzleNames);
+        puzzleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        puzzleTypeSpinner.setAdapter(puzzleAdapter);
+
+        // Setup Sleep Alarm Switch Listener
+        com.google.android.material.switchmaterial.SwitchMaterial sleepAlarmSwitch = dialogView
+                .findViewById(R.id.sleep_alarm_switch);
+        sleepAlarmSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            puzzleTypeContainer.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+        });
+
         if (existingAlarm != null) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(existingAlarm.getTimeInMillis());
@@ -357,9 +376,19 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
                 ringtoneNameText.setText("Default");
             }
 
-            com.google.android.material.switchmaterial.SwitchMaterial sleepAlarmSwitch = dialogView
-                    .findViewById(R.id.sleep_alarm_switch);
             sleepAlarmSwitch.setChecked(existingAlarm.isSleepAlarm());
+            puzzleTypeContainer.setVisibility(existingAlarm.isSleepAlarm() ? View.VISIBLE : View.GONE);
+
+            // Set puzzle type spinner selection
+            String savedPuzzleType = existingAlarm.getPuzzleType();
+            if (savedPuzzleType != null) {
+                for (int i = 0; i < puzzleValues.length; i++) {
+                    if (puzzleValues[i].equals(savedPuzzleType)) {
+                        puzzleTypeSpinner.setSelection(i);
+                        break;
+                    }
+                }
+            }
 
             deleteAlarmBtn.setVisibility(View.VISIBLE);
         } else {
@@ -397,16 +426,16 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
                 calendar.add(Calendar.DAY_OF_MONTH, 1);
             }
 
-            // Get Sleep Alarm State
-            com.google.android.material.switchmaterial.SwitchMaterial sleepAlarmSwitch = dialogView
-                    .findViewById(R.id.sleep_alarm_switch);
+            // Get Sleep Alarm State and Puzzle Type
             boolean isSleepAlarm = sleepAlarmSwitch.isChecked();
+            String selectedPuzzleType = puzzleValues[puzzleTypeSpinner.getSelectedItemPosition()];
 
             if (existingAlarm != null) {
                 existingAlarm.setTimeInMillis(calendar.getTimeInMillis());
                 existingAlarm.setDaysOfWeek(daysOfWeek);
                 existingAlarm.setRingtoneUri(currentRingtoneUri); // Save Ringtone
                 existingAlarm.setSleepAlarm(isSleepAlarm);
+                existingAlarm.setPuzzleType(selectedPuzzleType);
                 repository.update(existingAlarm);
 
                 AlarmScheduler.cancelAlarm(requireContext(), existingAlarm.getId());
@@ -418,6 +447,7 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
                 Alarm alarm = new Alarm(calendar.getTimeInMillis(), true, daysOfWeek);
                 alarm.setRingtoneUri(currentRingtoneUri); // Save Ringtone
                 alarm.setSleepAlarm(isSleepAlarm);
+                alarm.setPuzzleType(selectedPuzzleType);
                 repository.insert(alarm, insertedAlarm -> {
                     requireActivity().runOnUiThread(() -> {
                         AlarmScheduler.scheduleAlarm(requireContext(), insertedAlarm);
