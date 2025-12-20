@@ -25,4 +25,49 @@
     <color name="text_primary">#121212</color>
     <color name="text_secondary">#757575</color>
     <color name="text_tertiary">#E0E0E0</color>
+
+    <!-- Base colors -->
+    <color name="sudoku_black">#FF000000</color>
+    <color name="sudoku_white">#FFFFFFFF</color>
+
+    <!-- Primary colors (Purple gradient) -->
+    <color name="sudoku_primary">#6366F1</color>
+    <color name="primary_dark">#4F46E5</color>
+    <color name="primary_light">#8B5CF6</color>
+    <color name="accent">#A78BFA</color>
+
+    <!-- Background colors -->
+    <color name="background">#F9FAFB</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_variant">#F3F4F6</color>
+
+    <!-- Grid colors -->
+    <color name="grid_background">#FFFFFF</color>
+    <color name="grid_line">#E5E7EB</color>
+    <color name="grid_line_thick">#6B7280</color>
+
+    <!-- Cell colors -->
+    <color name="cell_selected">#E0E7FF</color>
+    <color name="cell_selected_border">#6366F1</color>
+    <color name="cell_error">#FEE2E2</color>
+    <color name="cell_same_number">#F3F4F6</color>
+
+    <!-- Number colors -->
+    <color name="number_clue">#1F2937</color>
+    <color name="number_user">#6366F1</color>
+    <color name="note_text">#9CA3AF</color>
+
+    <!-- Button colors -->
+    <color name="button_background">#6366F1</color>
+    <color name="button_text">#FFFFFF</color>
+    <color name="button_disabled">#D1D5DB</color>
+
+    <!-- Text colors -->
+    <color name="sudoku_text_primary">#111827</color>
+    <color name="sudoku_text_secondary">#6B7280</color>
+
+    <!-- Status colors -->
+    <color name="success">#10B981</color>
+    <color name="error">#EF4444</color>
+    <color name="warning">#F59E0B</color>
 </resources>
