@@ -10,6 +10,10 @@
     <!-- Brand / Semantic Colors -->
     <color name="brand_primary">#000000</color>
     <color name="brand_on_primary">#FFFFFF</color>
+    
+    <!-- Alarm Colors -->
+    <color name="alarm_stop_start">#FF5252</color>
+    <color name="alarm_stop_end">#D32F2F</color>
 
     <!-- UI Colors (Light Mode) -->
     <color name="ui_background">#FFFFFF</color>

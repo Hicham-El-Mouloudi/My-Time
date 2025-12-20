@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.view.View;
 import android.view.WindowManager;
 import android.os.CountDownTimer;
-import android.view.MotionEvent;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,15 +22,8 @@ public class AlarmFullScreenUI extends AppCompatActivity {
 
     private TextView counterText;
     private TextView alarmTimeText;
-    private View swipeButton;
-    private View swipeBtnContainer;
-
-    // Swipe Logic Vars
-    private float dX = 0f;
-    private float initialX = 0f;
-    private boolean isSwiping = false;
-    private static final float SWIPE_THRESHOLD_DP = 100f; // Distance to trigger action
-    private float swipeThresholdPx;
+    private View btnSnooze;
+    private View btnStop;
 
     private CountDownTimer countDownTimer;
 
@@ -54,16 +46,12 @@ public class AlarmFullScreenUI extends AppCompatActivity {
 
         counterText = findViewById(R.id.counter_text);
         alarmTimeText = findViewById(R.id.alarm_time_text);
-        swipeButton = findViewById(R.id.swipe_button);
-        swipeBtnContainer = findViewById(R.id.swipe_btn_container);
-
-        // Calculate px threshold
-        swipeThresholdPx = SWIPE_THRESHOLD_DP * getResources().getDisplayMetrics().density;
+        btnSnooze = findViewById(R.id.btn_snooze);
+        btnStop = findViewById(R.id.btn_stop);
 
         // Get alarm data from intent
         int alarmId = getIntent().getIntExtra("ALARM_ID", -1);
         long alarmTime = getIntent().getLongExtra("ALARM_TIME", System.currentTimeMillis());
-        // String alarmLabel = getIntent().getStringExtra("ALARM_LABEL");
 
         // Format and display time
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
@@ -73,14 +61,14 @@ public class AlarmFullScreenUI extends AppCompatActivity {
         // Start Countdown
         startCountdown();
 
-        // Setup Swipe Listener
-        setupSwipeListener(alarmId);
+        // Setup Buttons
+        btnSnooze.setOnClickListener(v -> performSnooze(alarmId));
+        btnStop.setOnClickListener(v -> performDismiss());
 
-        // Start Pulse Animation
+        // Start Pulse Animation on Stop Button
         startPulseAnimation();
 
-        // Register Receiver to finish activity when service stops (e.g. dismissed from
-        // notification)
+        // Register Receiver to finish activity when service stops
         android.content.IntentFilter filter = new android.content.IntentFilter("com.ensao.mytime.ACTION_STOP_ALARM_UI");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(finishReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
@@ -99,6 +87,7 @@ public class AlarmFullScreenUI extends AppCompatActivity {
     };
 
     private void startPulseAnimation() {
+        // Pulse the Stop button to draw attention
         android.view.animation.ScaleAnimation pulse = new android.view.animation.ScaleAnimation(
                 1.0f, 1.1f, 1.0f, 1.1f,
                 android.view.animation.Animation.RELATIVE_TO_SELF, 0.5f,
@@ -106,7 +95,7 @@ public class AlarmFullScreenUI extends AppCompatActivity {
         pulse.setDuration(1000);
         pulse.setRepeatCount(android.view.animation.Animation.INFINITE);
         pulse.setRepeatMode(android.view.animation.Animation.REVERSE);
-        swipeButton.startAnimation(pulse);
+        btnStop.startAnimation(pulse);
     }
 
     private void startCountdown() {
@@ -120,64 +109,8 @@ public class AlarmFullScreenUI extends AppCompatActivity {
             @Override
             public void onFinish() {
                 counterText.setText("0");
-                // Service handles auto-snooze/stop, activity will be finished or updated
-                // separately?
-                // Actually, duplicate logic: Activity is just UI. Service does the heavy
-                // lifting.
-                // We could finish() here or wait for user.
             }
         }.start();
-    }
-
-    private void setupSwipeListener(int alarmId) {
-        swipeButton.setOnTouchListener((v, event) -> {
-            switch (event.getAction()) {
-                case android.view.MotionEvent.ACTION_DOWN:
-                    v.clearAnimation(); // Stop pulsing when touched
-                    isSwiping = true;
-                    initialX = v.getX();
-                    dX = v.getX() - event.getRawX();
-                    return true;
-
-                case android.view.MotionEvent.ACTION_MOVE:
-                    if (isSwiping) {
-                        float newX = event.getRawX() + dX;
-                        // Limit bounds (simple clamp within container width/2 approx)
-                        // This logic centers around 0 relative to parent...
-                        // Actually CardView is in FrameLayout, using layout_gravity="center".
-                        // We need to move it relative to its initial centered position.
-
-                        // Let's rely on translationX
-                        float translationX = event.getRawX() + dX - initialX;
-
-                        // Limit translation
-                        if (translationX > swipeThresholdPx * 1.5f)
-                            translationX = swipeThresholdPx * 1.5f;
-                        if (translationX < -swipeThresholdPx * 1.5f)
-                            translationX = -swipeThresholdPx * 1.5f;
-
-                        v.setTranslationX(translationX);
-                    }
-                    return true;
-
-                case android.view.MotionEvent.ACTION_UP:
-                    isSwiping = false;
-                    float currentTranslationX = v.getTranslationX();
-
-                    if (currentTranslationX > swipeThresholdPx) {
-                        // Swipe Right -> Snooze
-                        performSnooze(alarmId);
-                    } else if (currentTranslationX < -swipeThresholdPx) {
-                        // Swipe Left -> Dismiss
-                        performDismiss();
-                    } else {
-                        // Reset
-                        v.animate().translationX(0f).setDuration(300).start();
-                    }
-                    return true;
-            }
-            return false;
-        });
     }
 
     private void performSnooze(int alarmId) {
