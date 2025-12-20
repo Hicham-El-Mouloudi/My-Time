@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements InvocationFragmen
             return insets;
         });
 
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
         ViewCompat.setOnApplyWindowInsetsListener(bottomNavigationView, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -232,13 +232,13 @@ public class MainActivity extends AppCompatActivity implements InvocationFragmen
 
     private void loadFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, fragment)
+                .replace(R.id.mainContent, fragment)
                 .addToBackStack(null)
                 .commit();
     }
 
     private void transferServiceToCurrentFragment() {
-        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.mainContent);
         if (currentFragment != null) {
             transferServiceToFragment(currentFragment);
         }
@@ -253,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements InvocationFragmen
     @Override
     public void onSettingsButtonClicked() {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new SettingsFragment())
+                .replace(R.id.mainContent, new SettingsFragment())
                 .addToBackStack(null)
                 .commit();
     }
