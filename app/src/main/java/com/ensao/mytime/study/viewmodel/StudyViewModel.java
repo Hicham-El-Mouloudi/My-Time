@@ -81,7 +81,15 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
             if (timeLeft > 0) {
                 currentTime.setValue((int) (timeLeft / 1000));
                 isTimerRunning.setValue(pomodoroService.isTimerRunning());
-                timerState.setValue(pomodoroService.isTimerRunning() ? "running" : "paused");
+                
+                String state = "stopped";
+                if (pomodoroService.isTimerRunning()) {
+                    state = "running";
+                } else if (pomodoroService.isTimerPaused()) {
+                    state = "paused";
+                }
+                
+                timerState.setValue(state);
             }
         }
     }

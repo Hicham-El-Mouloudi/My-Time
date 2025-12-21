@@ -200,6 +200,10 @@ public class PomodoroService extends Service {
         return isTimerRunning;
     }
 
+    public boolean isTimerPaused() {
+        return ispaused;
+    }
+
     public void setTimerDuration(long durationInMillis) {
         this.totalTime = durationInMillis;
         if (!isTimerRunning) {
