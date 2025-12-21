@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -25,14 +26,14 @@
         android:gravity="center"
         android:layout_marginBottom="16dp">
 
-        <Button
+        <ImageButton
             android:id="@+id/btnPreviousMonth"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="◀"
-            android:textSize="18sp"
-            android:backgroundTint="@color/aurora_primary"
-            android:textColor="@color/white"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_arrow_back"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Mois précédent"
+            app:tint="@color/aurora_primary"
             android:layout_marginEnd="16dp" />
 
         <TextView
@@ -44,14 +45,14 @@
             android:textStyle="bold"
             android:textColor="@color/aurora_primary" />
 
-        <Button
+        <ImageButton
             android:id="@+id/btnNextMonth"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="▶"
-            android:textSize="18sp"
-            android:backgroundTint="@color/aurora_primary"
-            android:textColor="@color/white"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_arrow_forward"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Mois suivant"
+            app:tint="@color/aurora_primary"
             android:layout_marginStart="16dp" />
 
     </LinearLayout>

@@ -125,13 +125,13 @@ public class StudySessionFragment extends Fragment {
                 if (tvTimer != null) {
                     switch (state) {
                         case "running":
-                            tvTimer.setTextColor(getResources().getColor(R.color.navy_blue));
+                            tvTimer.setTextColor(getResources().getColor(R.color.aurora_primary));
                             break;
                         case "paused":
                             tvTimer.setTextColor(getResources().getColor(R.color.medium_gray));
                             break;
                         case "stopped":
-                            tvTimer.setTextColor(getResources().getColor(R.color.navy_blue));
+                            tvTimer.setTextColor(getResources().getColor(R.color.aurora_primary));
                             break;
                     }
                 }
@@ -286,7 +286,7 @@ public class StudySessionFragment extends Fragment {
                 // Paused: Show Resume (Start button) and Stop, hide Pause
                 btnStart.setVisibility(View.VISIBLE);
                 btnStart.setText("Resume");
-                btnStart.setBackgroundTintList(getResources().getColorStateList(R.color.navy_blue));
+                btnStart.setBackgroundTintList(getResources().getColorStateList(R.color.selector_pomodoro_mint));
                 btnPause.setVisibility(View.GONE);
                 btnStop.setVisibility(View.VISIBLE);
                 break;
@@ -295,7 +295,7 @@ public class StudySessionFragment extends Fragment {
                 // Stopped/Idle: Show only Start, hide Pause and Stop
                 btnStart.setVisibility(View.VISIBLE);
                 btnStart.setText("Start");
-                btnStart.setBackgroundTintList(getResources().getColorStateList(R.color.navy_blue));
+                btnStart.setBackgroundTintList(getResources().getColorStateList(R.color.selector_pomodoro_mint));
                 btnPause.setVisibility(View.GONE);
                 btnStop.setVisibility(View.GONE);
                 break;
@@ -311,24 +311,31 @@ public class StudySessionFragment extends Fragment {
         btn45Min.setEnabled(enabled);
         btnCustom.setEnabled(enabled);
 
-        int color = enabled ? R.color.navy_blue : R.color.medium_gray;
-        btn25Min.setBackgroundTintList(getResources().getColorStateList(color));
-        btn45Min.setBackgroundTintList(getResources().getColorStateList(color));
-        btnCustom.setBackgroundTintList(getResources().getColorStateList(color));
+        // Update colors based on enabled state
+        if (enabled) {
+            btn25Min.setBackgroundTintList(getResources().getColorStateList(R.color.selector_pomodoro_blue));
+            btn45Min.setBackgroundTintList(getResources().getColorStateList(R.color.selector_pomodoro_dark_teal));
+            btnCustom.setBackgroundTintList(getResources().getColorStateList(R.color.selector_pomodoro_gold));
+        } else {
+            btn25Min.setBackgroundTintList(getResources().getColorStateList(R.color.button_disabled));
+            btn45Min.setBackgroundTintList(getResources().getColorStateList(R.color.button_disabled));
+            btnCustom.setBackgroundTintList(getResources().getColorStateList(R.color.button_disabled));
+        }
     }
 
     private void updateDurationButtonSelection(Button selectedButton) {
-        // Réinitialiser tous les boutons
-        btn25Min.setBackgroundTintList(getResources().getColorStateList(R.color.navy_blue));
-        btn45Min.setBackgroundTintList(getResources().getColorStateList(R.color.navy_blue));
-        btnCustom.setBackgroundTintList(getResources().getColorStateList(R.color.navy_blue));
+        // Reset all buttons to their default colors
+        btn25Min.setBackgroundTintList(getResources().getColorStateList(R.color.selector_pomodoro_blue));
+        btn45Min.setBackgroundTintList(getResources().getColorStateList(R.color.selector_pomodoro_dark_teal));
+        btnCustom.setBackgroundTintList(getResources().getColorStateList(R.color.selector_pomodoro_gold));
 
-        // Si c'est un bouton prédéfini, mettre à jour son apparence
-        if (selectedButton == btn25Min || selectedButton == btn45Min) {
-            selectedButton.setBackgroundTintList(getResources().getColorStateList(R.color.dark_blue));
+        // Highlight the selected button with a slightly different shade
+        if (selectedButton == btn25Min) {
+            selectedButton.setBackgroundTintList(getResources().getColorStateList(R.color.pomodoro_dark_teal));
+        } else if (selectedButton == btn45Min) {
+            selectedButton.setBackgroundTintList(getResources().getColorStateList(R.color.pomodoro_blue));
         }
-        // Si c'est le bouton personnalisé, il garde sa couleur normale
-        // mais son texte sera mis à jour dans showCustomDurationDialog()
+        // Custom button keeps its gold color
     }
 
     private void hideKeyboard() {
