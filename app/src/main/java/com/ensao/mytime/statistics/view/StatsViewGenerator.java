@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public abstract class StatsViewGenerator {
 
     public static void setupQualityPieArcChart(View qualityView, View backgroundView, int pourcentage,
-            boolean isDisabled) {
+            boolean isDisabled, int progressColor) {
         PieChart qualityPieArcChart = (PieChart) qualityView;
         PieChart backgroundPieChart = (PieChart) backgroundView;
 
@@ -55,9 +55,9 @@ public abstract class StatsViewGenerator {
             dataSet.setSliceSpace(0f);
             dataSet.setSelectionShift(0f);
 
-            // 3. Colors (Bright Cyan for progress, TRANSPARENT for remainder)
+            // 3. Colors (Use provided progressColor, TRANSPARENT for remainder)
             dataSet.setColors(new int[] {
-                    Color.parseColor("#00BCD4"), // Progress color
+                    progressColor, // Progress color (wake = #00b4d8, sleep = #540b0e)
                     Color.TRANSPARENT // Remainder is transparent to show background
             });
 
