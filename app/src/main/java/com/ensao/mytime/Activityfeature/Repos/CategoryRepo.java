@@ -69,7 +69,38 @@ public class CategoryRepo {
 
     }
 
-
+    // Get or create default category (for calendar activities)
+    public void GetOrCreateDefaultCategory(Activity CurrentActivity, CallBackAfterDbOperation<Category> Callback){
+        _executor.execute(()->{
+            Category defaultCategory = _categoryDAO.getDefaultCategory();
+            
+            // If default category doesn't exist, create it
+            if (defaultCategory == null) {
+                com.ensao.mytime.Activityfeature.DataAccess.RepetitionKindDAO repetitionKindDAO = 
+                    ActivityRoomDB.getInstance(CurrentActivity.getApplication())._repetitionKindDao();
+                
+                // Get or create "onetime" repetition kind
+                com.ensao.mytime.Activityfeature.Busniss.RepetitionKind oneTimeKind = 
+                    repetitionKindDAO.getByTitle("onetime");
+                
+                long oneTimeId;
+                if (oneTimeKind != null) {
+                    oneTimeId = oneTimeKind.getId();
+                } else {
+                    oneTimeId = repetitionKindDAO.Insert(
+                        new com.ensao.mytime.Activityfeature.Busniss.RepetitionKind("onetime"));
+                }
+                
+                // Create default category
+                _categoryDAO.Insert(new Category("the default category", "default", oneTimeId));
+                defaultCategory = _categoryDAO.getDefaultCategory();
+            }
+            
+            final Category result = defaultCategory;
+            if(Callback != null)
+                CurrentActivity.runOnUiThread(()-> Callback.onComplete(result));
+        });
+    }
 
 
 

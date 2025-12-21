@@ -14,7 +14,8 @@ import java.util.Date;
     foreignKeys = {@ForeignKey(
             entity = Course.class,
             parentColumns = "id",
-            childColumns = "courseID"
+            childColumns = "courseID",
+            onDelete = ForeignKey.SET_NULL
     ),@ForeignKey(
             entity = Category.class,
             parentColumns = "id",
@@ -39,7 +40,7 @@ public class userActivity {
     private Date EndDate ;
 
     private Date CreatedAt;
-    private long  courseID;
+    private Long courseID;  // Changed to Long (nullable) to allow null foreign key
 
 
     //======================================================setters
@@ -80,7 +81,7 @@ public class userActivity {
         CreatedAt = createdAt;
     }
 
-    public void setCourseID(long courseID) {
+    public void setCourseID(Long courseID) {
         this.courseID = courseID;
     }
 
@@ -120,7 +121,7 @@ public class userActivity {
         return CreatedAt;
     }
 
-    public long getCourseID() {
+    public Long getCourseID() {
         return courseID;
     }
 
@@ -129,7 +130,7 @@ public class userActivity {
     }
 
     @Ignore
-    public userActivity(String title, String description, long categoryID, Boolean isActive, Date startDate, Date endDate, Date createdAt, long courseID) {
+    public userActivity(String title, String description, long categoryID, Boolean isActive, Date startDate, Date endDate, Date createdAt, Long courseID) {
         Title = title;
         Description = description;
         CategoryID = categoryID;

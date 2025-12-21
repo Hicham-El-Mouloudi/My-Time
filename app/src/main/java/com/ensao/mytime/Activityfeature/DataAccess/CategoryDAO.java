@@ -19,6 +19,10 @@ public interface CategoryDAO {
             "on c.RepetitionKindID=r.id ")
     List<CategoryDetailedDTO> GetCategories();
 
+    // Get default category for calendar activities
+    @Query("SELECT * FROM Category WHERE Title = 'default' LIMIT 1")
+    Category getDefaultCategory();
+
 
 
 

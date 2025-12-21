@@ -72,6 +72,47 @@ public class ActivityRepo {
 
     }
 
+    //get activities in date range (for calendar)
+    public void GetActivitiesInRange(long startOfDay, long endOfDay, Activity CurrentActivity, CallBackAfterDbOperation<List<userActivity>> Callback){
+        _executor.execute(()->{
+            List<userActivity> list = _userActivityDAO.getActivitiesInRange(startOfDay, endOfDay);
+            if(Callback!=null)
+                CurrentActivity.runOnUiThread(()-> Callback.onComplete(list));
+        });
+    }
 
+    // Update activity
+    public void Update(long id, String title, String description, long startDate, long endDate, 
+                       Activity CurrentActivity, CallBackAfterDbOperation<Boolean> Callback){
+        _executor.execute(()->{
+            try {
+                _userActivityDAO.Update(id, title, description, startDate, endDate);
+                if(Callback!=null)
+                    CurrentActivity.runOnUiThread(()-> Callback.onComplete(true));
+            } catch (Exception e) {
+                e.printStackTrace();
+                if(Callback!=null)
+                    CurrentActivity.runOnUiThread(()-> Callback.onComplete(false));
+            }
+        });
+    }
+
+
+
+    // Delete activity
+    public void Delete(long id, Activity CurrentActivity, CallBackAfterDbOperation<Boolean> Callback){
+        _executor.execute(()->{
+            try {
+                int deletedRows = _userActivityDAO.Delete(id);
+                if(Callback!=null)
+                    // Consider success if at least one row was deleted
+                    CurrentActivity.runOnUiThread(()-> Callback.onComplete(deletedRows > 0));
+            } catch (Exception e) {
+                e.printStackTrace();
+                if(Callback!=null)
+                    CurrentActivity.runOnUiThread(()-> Callback.onComplete(false));
+            }
+        });
+    }
 
 }

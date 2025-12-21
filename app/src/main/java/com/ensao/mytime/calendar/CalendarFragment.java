@@ -13,11 +13,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ensao.mytime.R;
-import com.ensao.mytime.study.model.DailyActivity;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -27,9 +25,6 @@ public class CalendarFragment extends Fragment {
     private TextView monthYearText;
     private Calendar currentCalendar;
     private CalendarAdapter calendarAdapter;
-
-    // Stocker les activités par date (simulation)
-    private List<DailyActivity> dailyActivities = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,8 +39,7 @@ public class CalendarFragment extends Fragment {
         setupCalendar(); // Appel de la méthode modifiée
         setupNavigationButtons(view);
 
-        // Ajouter des données de test
-        addSampleActivities();
+        // Activities are now loaded from database in DayDetailActivity
 
         return view;
     }
@@ -204,36 +198,5 @@ public class CalendarFragment extends Fragment {
                     .format(currentCalendar.getTime());
             monthYearText.setText(monthYear);
         }
-    }
-
-    // NOTE : Vous pouvez supprimer ces anciennes méthodes si elles ne sont plus utilisées
-    /*
-    private void openDayActivities(String date, int day, int month, int year) {
-        // Ancienne méthode, gardez-la si DayActivitiesActivity existe encore
-        Intent intent = new Intent(getActivity(), DayActivitiesActivity.class);
-        intent.putExtra("SELECTED_DATE", date);
-        intent.putExtra("DAY", day);
-        intent.putExtra("MONTH", month);
-        intent.putExtra("YEAR", year);
-        startActivity(intent);
-    }
-    */
-
-    private List<DailyActivity> getActivitiesForDate(String date) {
-        List<DailyActivity> result = new ArrayList<>();
-        for (DailyActivity activity : dailyActivities) {
-            if (activity.getDate().equals(date)) {
-                result.add(activity);
-            }
-        }
-        return result;
-    }
-
-    private void addSampleActivities() {
-        String today = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
-        // Assurez-vous que DailyActivity a un constructeur à 3 arguments
-        dailyActivities.add(new DailyActivity(today, "09:00", "Révision Mathématiques"));
-        dailyActivities.add(new DailyActivity(today, "14:00", "Session Pomodoro"));
-        dailyActivities.add(new DailyActivity(today, "16:30", "Exercices Physique"));
     }
 }
