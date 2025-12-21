@@ -38,6 +38,11 @@ public class AlarmScheduler {
     public static final String KEY_BLOCKED_APPS_LIST = "BLOCKED_APPS_LIST";
     public static final String KEY_BLOCKED_APP_PACKAGES = "BlockedAppPackages";
 
+    // Clés pour les statistiques de réveil
+    public static final String KEY_FIRST_ALARM_TIME = "first_alarm_time";
+    public static final String KEY_RING_COUNT = "ring_count";
+    public static final String KEY_EXPECTED_WAKE_TIME = "expected_wake_time";
+
     // --- MÉTHODES POUR L'INVOCATION (MATIN/SOIR) ---
     public static void scheduleNextAlarm(Context context, boolean isMorningAlarm) {
         SharedPreferences prefs = context.getSharedPreferences("UserSettings", Context.MODE_PRIVATE);
@@ -70,8 +75,7 @@ public class AlarmScheduler {
                 context,
                 requestCode,
                 intent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-        );
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         scheduleSecurely(alarmManager, calendar.getTimeInMillis(), pendingIntent);
@@ -79,16 +83,19 @@ public class AlarmScheduler {
 
     public static void cancelAllAlarms(Context context) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (alarmManager == null) return;
+        if (alarmManager == null)
+            return;
 
         Intent intent = new Intent(context, NotificationReceiver.class);
         int flags = PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_IMMUTABLE;
 
         PendingIntent morning = PendingIntent.getBroadcast(context, REQUEST_CODE_MORNING, intent, flags);
-        if (morning != null) alarmManager.cancel(morning);
+        if (morning != null)
+            alarmManager.cancel(morning);
 
         PendingIntent evening = PendingIntent.getBroadcast(context, REQUEST_CODE_EVENING, intent, flags);
-        if (evening != null) alarmManager.cancel(evening);
+        if (evening != null)
+            alarmManager.cancel(evening);
     }
 
     // --- MÉTHODES POUR LA PHASE DE PRÉPARATION ---
@@ -98,8 +105,7 @@ public class AlarmScheduler {
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 context, REQUEST_CODE_SLEEP_PREPARATION, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-        );
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         if (alarmManager != null) {
             scheduleSecurely(alarmManager, preparationTimeCalendar.getTimeInMillis(), pendingIntent);
@@ -119,8 +125,7 @@ public class AlarmScheduler {
         Intent intent = new Intent(context, SleepPreparationReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 context, REQUEST_CODE_SLEEP_PREPARATION, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-        );
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         if (alarmManager != null) {
             alarmManager.cancel(pendingIntent);
@@ -137,8 +142,7 @@ public class AlarmScheduler {
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 context, WAKE_UP_REQUEST_CODE, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-        );
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         scheduleSecurely(alarmManager, wakeUpTime.getTimeInMillis(), pendingIntent);
     }
@@ -149,14 +153,15 @@ public class AlarmScheduler {
         intent.setAction(WakeUpReceiver.ACTION_WAKE_UP);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 context, WAKE_UP_REQUEST_CODE, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-        );
-        if (alarmManager != null) alarmManager.cancel(pendingIntent);
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        if (alarmManager != null)
+            alarmManager.cancel(pendingIntent);
     }
 
     // --- UTILITAIRES DE SÉCURITÉ ---
     private static void scheduleSecurely(AlarmManager alarmManager, long triggerTime, PendingIntent pendingIntent) {
-        if (alarmManager == null) return;
+        if (alarmManager == null)
+            return;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (alarmManager.canScheduleExactAlarms()) {
                 alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);

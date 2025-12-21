@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Locale;
 import com.ensao.mytime.R;
 import com.ensao.mytime.alarm.Puzzleable;
+import com.ensao.mytime.statistics.StatisticsHelper;
 
 public class SudoKuMainActivity extends AppCompatActivity implements Puzzleable {
 
@@ -429,6 +430,9 @@ public class SudoKuMainActivity extends AppCompatActivity implements Puzzleable 
         if (alarmId != -1) {
             // Broadcast puzzle completed first (use Puzzleable implementation)
             onPuzzleSolved();
+
+            // Save wake statistics when puzzle is solved
+            StatisticsHelper.saveWakeStatistics(this);
 
             new Thread(() -> {
                 com.ensao.mytime.alarm.database.AlarmRepository repository = new com.ensao.mytime.alarm.database.AlarmRepository(

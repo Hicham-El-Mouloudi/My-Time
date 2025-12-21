@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import com.ensao.mytime.R;
+import com.ensao.mytime.statistics.StatisticsHelper;
 
 import java.io.IOException;
 
@@ -170,7 +171,10 @@ public class RingtoneService extends Service {
         // 3. Vibrate
         startVibration();
 
-        // 4. Start Foreground with Notification (contains FullScreenIntent)
+        // 4. Track statistics for wake session
+        trackAlarmRingStatistics(alarmTime, autoSnoozeCount);
+
+        // 5. Start Foreground with Notification (contains FullScreenIntent)
         startForeground(1, buildNotification(alarmId, alarmTime));
 
         // 5. Explicit startActivity Removed
@@ -227,6 +231,24 @@ public class RingtoneService extends Service {
         handler.postDelayed(autoSnoozeRunnable, AlarmConfig.RING_DURATION_SECONDS * 1000L);
 
         return START_STICKY;
+    }
+
+    /**
+     * Tracks alarm ring statistics for wake session data.
+     * Records first alarm time on first ring, increments ring count on subsequent
+     * rings.
+     *
+     * @param alarmTime       The scheduled alarm time
+     * @param autoSnoozeCount The current auto-snooze count (0 = first ring)
+     */
+    private void trackAlarmRingStatistics(long alarmTime, int autoSnoozeCount) {
+        if (autoSnoozeCount == 0) {
+            // First ring - record the initial alarm time
+            StatisticsHelper.recordFirstAlarmRing(this, alarmTime);
+        } else {
+            // Subsequent ring - increment the count
+            StatisticsHelper.incrementRingCount(this);
+        }
     }
 
     @Override

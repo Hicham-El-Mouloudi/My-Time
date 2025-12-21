@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.ensao.mytime.R;
 import com.ensao.mytime.alarm.Puzzleable;
+import com.ensao.mytime.statistics.StatisticsHelper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -332,6 +333,9 @@ public class JpegChaosActivity extends AppCompatActivity implements Puzzleable {
         if (alarmId != -1) {
             // Broadcast puzzle completed first
             onPuzzleSolved();
+
+            // Save wake statistics when puzzle is solved
+            StatisticsHelper.saveWakeStatistics(this);
 
             new Thread(() -> {
                 com.ensao.mytime.alarm.database.AlarmRepository repository = new com.ensao.mytime.alarm.database.AlarmRepository(

@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.ensao.mytime.R;
 import com.ensao.mytime.alarm.Puzzleable;
+import com.ensao.mytime.statistics.StatisticsHelper;
 
 public class MinesweeperGameActivity extends AppCompatActivity
         implements MinesweeperView.OnCellClickListener, Puzzleable {
@@ -252,6 +253,9 @@ public class MinesweeperGameActivity extends AppCompatActivity
         if (alarmId != -1) {
             // Broadcast puzzle completed first
             onPuzzleSolved();
+
+            // Save wake statistics when puzzle is solved
+            StatisticsHelper.saveWakeStatistics(this);
 
             new Thread(() -> {
                 com.ensao.mytime.alarm.database.AlarmRepository repository = new com.ensao.mytime.alarm.database.AlarmRepository(
