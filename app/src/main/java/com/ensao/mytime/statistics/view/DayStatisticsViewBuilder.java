@@ -16,6 +16,8 @@ import com.ensao.mytime.statistics.view.addons.WakeStyleAddOn;
 
 import java.util.Map;
 
+import android.graphics.Color;
+
 public class DayStatisticsViewBuilder {
 
     private final Context context;
@@ -32,6 +34,10 @@ public class DayStatisticsViewBuilder {
     private Map<String, Object> wakeStats;
 
     private boolean preferSleep = true; // Default
+
+    // Chart colors for wake and sleep
+    private static final int COLOR_WAKE = Color.parseColor("#90e0ef"); // Reveil
+    private static final int COLOR_SLEEP = Color.parseColor("#540b0e"); // Sommeil
 
     // Constructor
     public DayStatisticsViewBuilder(Context context, ViewGroup parent) {
@@ -177,14 +183,14 @@ public class DayStatisticsViewBuilder {
                 new SleepStructureAddOn(sleepView, sleepStats); // Logic in constructor
                 new SleepStyleAddOn(sleepView); // Logic in constructor
 
-                updatePieChart(pbQuality, pbQualityBackground, day.getSleepEfficiency(), false);
+                updatePieChart(pbQuality, pbQualityBackground, day.getSleepEfficiency(), false, COLOR_SLEEP);
 
             } else {
                 if (unavailableSleepLayoutId != 0) {
                     View emptyView = LayoutInflater.from(context).inflate(unavailableSleepLayoutId, container, false);
                     container.addView(emptyView);
                 }
-                updatePieChart(pbQuality, pbQualityBackground, 0, true);
+                updatePieChart(pbQuality, pbQualityBackground, 0, true, COLOR_SLEEP);
             }
         } else {
             // Wake
@@ -195,21 +201,21 @@ public class DayStatisticsViewBuilder {
                 new WakeStructureAddOn(wakeView, wakeStats);
                 new WakeStyleAddOn(wakeView);
 
-                updatePieChart(pbQuality, pbQualityBackground, day.getWakeEfficiency(), false);
+                updatePieChart(pbQuality, pbQualityBackground, day.getWakeEfficiency(), false, COLOR_WAKE);
             } else {
                 if (unavailableWakeLayoutId != 0) {
                     View emptyView = LayoutInflater.from(context).inflate(unavailableWakeLayoutId, container, false);
                     container.addView(emptyView);
                 }
-                updatePieChart(pbQuality, pbQualityBackground, 0, true);
+                updatePieChart(pbQuality, pbQualityBackground, 0, true, COLOR_WAKE);
             }
         }
     }
 
     // Helper for PieChart - borrowing from original logic or create a helper
     // decorator
-    private void updatePieChart(View qualityView, View backgroundView, int percentage, boolean isDisabled) {
+    private void updatePieChart(View qualityView, View backgroundView, int percentage, boolean isDisabled, int color) {
 
-        StatsViewGenerator.setupQualityPieArcChart(qualityView, backgroundView, percentage, isDisabled);
+        StatsViewGenerator.setupQualityPieArcChart(qualityView, backgroundView, percentage, isDisabled, color);
     }
 }

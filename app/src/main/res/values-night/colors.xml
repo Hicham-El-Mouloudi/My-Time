@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand / Semantic Colors -->
+    <color name="brand_primary">#FFFFFF</color>
+    <color name="brand_on_primary">#000000</color>
+
+    <!-- UI Colors (Dark Mode) -->
+    <color name="ui_background">#000000</color> <!-- OLED Black -->
+    <color name="ui_surface">#121212</color>
+    <color name="ui_card_background">#1C1C1E</color>
+    <color name="ui_card_stroke">#2C2C2E</color>
+
+    <!-- Text Colors (Dark Mode) -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#8E8E93</color>
+    <color name="text_tertiary">#3A3A3C</color>
+    <!-- Base colors -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Primary colors (Purple gradient) -->
+    <color name="sudoku_primary">#8B5CF6</color>
+    <color name="primary_dark">#7C3AED</color>
+    <color name="primary_light">#A78BFA</color>
+    <color name="accent">#C4B5FD</color>
+
+    <!-- Background colors -->
+    <color name="background">#0F172A</color>
+    <color name="surface">#1E293B</color>
+    <color name="surface_variant">#334155</color>
+
+    <!-- Grid colors -->
+    <color name="grid_background">#1E293B</color>
+    <color name="grid_line">#334155</color>
+    <color name="grid_line_thick">#94A3B8</color>
+
+    <!-- Cell colors -->
+    <color name="cell_selected">#312E81</color>
+    <color name="cell_selected_border">#8B5CF6</color>
+    <color name="cell_error">#7F1D1D</color>
+    <color name="cell_same_number">#334155</color>
+
+    <!-- Number colors -->
+    <color name="number_clue">#F1F5F9</color>
+    <color name="number_user">#A78BFA</color>
+    <color name="note_text">#64748B</color>
+
+    <!-- Button colors -->
+    <color name="button_background">#8B5CF6</color>
+    <color name="button_text">#FFFFFF</color>
+    <color name="button_disabled">#475569</color>
+
+    <!-- Text colors -->
+    <color name="sudoku_text_primary">#F8FAFC</color>
+    <color name="sudoku_text_secondary">#94A3B8</color>
+
+    <!-- Status colors -->
+    <color name="success">#10B981</color>
+    <color name="error">#EF4444</color>
+    <color name="warning">#F59E0B</color>
+</resources>

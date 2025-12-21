@@ -49,23 +49,27 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.preference)
+
+    implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
+
+
+    implementation("androidx.room:room-runtime:2.8.4")
+    annotationProcessor("androidx.room:room-compiler:2.8.4")
+
+    // Lifecycle components (LiveData, ViewModel)
+    implementation("androidx.lifecycle:lifecycle-livedata:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-common-java8:2.7.0")
+
+    // RecyclerView
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
+
     implementation(libs.mpandroidchart)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
 
-    //ROOM
-    val room_version = "2.8.4"
-
-    implementation("androidx.room:room-runtime:$room_version")
-    annotationProcessor("androidx.room:room-compiler:$room_version")
-
-    // ViewModel and LiveData
-    val lifecycle_version = "2.10.0"
-    // ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:${lifecycle_version}")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:${lifecycle_version}")
-    annotationProcessor("androidx.lifecycle:lifecycle-compiler:$lifecycle_version")
+    annotationProcessor("androidx.lifecycle:lifecycle-compiler:2.7.0")
 
 }

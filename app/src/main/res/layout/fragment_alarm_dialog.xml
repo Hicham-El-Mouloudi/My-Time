@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@color/ui_surface">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set Alarm Time"
+        android:textSize="20sp"
+        android:textColor="@color/text_primary"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"/>
+
+    <TimePicker
+        android:id="@+id/time_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="250dp"
+        android:timePickerMode="spinner"/>
+
+    <!-- Day Selection -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Repeat"
+        android:textColor="@color/text_primary"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <ToggleButton android:id="@+id/day_sun" style="@style/DayToggleWeekend" android:textOn="S" android:textOff="S"/>
+        <ToggleButton android:id="@+id/day_mon" style="@style/DayToggle" android:textOn="M" android:textOff="M"/>
+        <ToggleButton android:id="@+id/day_tue" style="@style/DayToggle" android:textOn="T" android:textOff="T"/>
+        <ToggleButton android:id="@+id/day_wed" style="@style/DayToggle" android:textOn="W" android:textOff="W"/>
+        <ToggleButton android:id="@+id/day_thu" style="@style/DayToggle" android:textOn="T" android:textOff="T"/>
+        <ToggleButton android:id="@+id/day_fri" style="@style/DayToggle" android:textOn="F" android:textOff="F"/>
+        <ToggleButton android:id="@+id/day_sat" style="@style/DayToggleWeekend" android:textOn="S" android:textOff="S"/>
+
+    </LinearLayout>
+
+    <!-- Ringtone Selection -->
+    <LinearLayout
+        android:id="@+id/ringtone_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ringtone"
+            android:textColor="@color/text_primary"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/ringtone_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Default"
+            android:textColor="@color/text_secondary"
+            android:layout_marginTop="4dp"/>
+
+    </LinearLayout>
+    
+    <!-- Sleep Alarm Toggle -->
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/sleep_alarm_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sleep Alarm (Requires Puzzle)"
+        android:textColor="@color/text_primary"
+        android:textSize="16sp"
+        android:layout_marginTop="12dp" />
+
+    <!-- Puzzle Type Selection (visible only when Sleep Alarm is enabled) -->
+    <LinearLayout
+        android:id="@+id/puzzle_type_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:gravity="center_vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Puzzle Type"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp"/>
+
+        <Spinner
+            android:id="@+id/puzzle_type_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="140dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="24dp">
+
+        <Button
+            android:id="@+id/delete_alarm_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:text="Delete"
+            android:textColor="@color/brand_primary"
+            android:visibility="gone"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:text="Cancel"
+            android:textColor="@color/brand_primary"
+            android:layout_marginEnd="8dp"
+            app:strokeColor="@color/brand_primary"
+            app:strokeWidth="1dp" />
+
+        <Button
+            android:id="@+id/save_button"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:backgroundTint="@color/brand_primary"
+            android:textColor="@color/brand_on_primary"/>
+
+    </LinearLayout>
+
+</LinearLayout>

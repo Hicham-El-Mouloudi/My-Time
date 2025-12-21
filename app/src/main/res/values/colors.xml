@@ -1,36 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Base Colors -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- Semantic Colors -->
-    <color name="background_color">#F5F7FA</color> <!-- Soft Blue-Grey Background -->
-    <color name="nav_bar_color">#FFFFFF</color>   <!-- Clean White Nav Bar -->
-    <color name="primary_color">#4A90E2</color>   <!-- Soft Blue -->
-    <color name="secondary_color">#50E3C2</color> <!-- Teal Accent -->
+    <!-- ========== SHARED COLORS ========== -->
+    <color name="background_color">#F5F7FA</color>
+    <color name="nav_bar_color">#FFFFFF</color>
+
+    <!-- ========== FROM ALARM-FEATURE ========== -->
+
+    <!-- Brand / Semantic Colors -->
+    <color name="brand_primary">#000000</color>
+    <color name="brand_on_primary">#FFFFFF</color>
+
+    <!-- Alarm Colors -->
+    <color name="alarm_stop_start">#FF5252</color>
+    <color name="alarm_stop_end">#D32F2F</color>
+
+    <!-- UI Colors (Light Mode) -->
+    <color name="ui_background">#FFFFFF</color>
+    <color name="ui_surface">#F5F5F5</color>
+    <color name="ui_card_background">#FFFFFF</color>
+    <color name="ui_card_stroke">#E0E0E0</color>
+
+    <!-- Text Colors (from alarm-feature - Light Mode) -->
+    <color name="text_primary">#2C3E50</color>
+    <color name="text_secondary">#7F8C8D</color>
+    <color name="text_tertiary">#E0E0E0</color>
+
+    <!-- Sudoku Base Colors -->
+    <color name="sudoku_black">#FF000000</color>
+    <color name="sudoku_white">#FFFFFFFF</color>
+
+    <!-- Sudoku Primary Colors (Purple gradient) -->
+    <color name="sudoku_primary">#6366F1</color>
+    <color name="primary_dark">#4F46E5</color>
+    <color name="primary_light">#8B5CF6</color>
+    <color name="accent">#A78BFA</color>
+
+    <!-- Sudoku Background Colors -->
+    <color name="background">#F9FAFB</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_variant">#F3F4F6</color>
+
+    <!-- Grid Colors -->
+    <color name="grid_background">#FFFFFF</color>
+    <color name="grid_line">#E5E7EB</color>
+    <color name="grid_line_thick">#6B7280</color>
+
+    <!-- Cell Colors -->
+    <color name="cell_selected">#E0E7FF</color>
+    <color name="cell_selected_border">#6366F1</color>
+    <color name="cell_error">#FEE2E2</color>
+    <color name="cell_same_number">#F3F4F6</color>
+
+    <!-- Number Colors -->
+    <color name="number_clue">#1F2937</color>
+    <color name="number_user">#6366F1</color>
+    <color name="note_text">#9CA3AF</color>
+
+    <!-- Button Colors -->
+    <color name="button_background">#6366F1</color>
+    <color name="button_text">#FFFFFF</color>
+    <color name="button_disabled">#D1D5DB</color>
+
+    <!-- Sudoku Text Colors -->
+    <color name="sudoku_text_primary">#111827</color>
+    <color name="sudoku_text_secondary">#6B7280</color>
+
+    <!-- Status Colors -->
+    <color name="success">#10B981</color>
+    <color name="error">#EF4444</color>
+    <color name="warning">#F59E0B</color>
+
+    <!-- ========== FROM MAIN ========== -->
+
+    <!-- Main Semantic Colors -->
+    <color name="primary_color">#4A90E2</color>
+    <color name="secondary_color">#50E3C2</color>
     <color name="surface_color">#FFFFFF</color>
-    <color name="text_primary">#2C3E50</color>    <!-- Dark Blue-Grey Text -->
-    <color name="text_secondary">#7F8C8D</color>  <!-- Grey Text -->
 
+    <!-- Main Text Colors (prefixed to avoid conflict) -->
+    <color name="text_dark">#2C3E50</color>
+    <color name="text_light">#FFFFFF</color>
 
+    <!-- Gray Palette -->
     <color name="navy_blue">#2C3E50</color>
     <color name="light_gray">#ECF0F1</color>
     <color name="medium_gray">#BDC3C7</color>
     <color name="dark_gray">#7F8C8D</color>
-
-    <!-- Couleurs d'accent -->
-    <color name="accent_blue">#3498DB</color>
-    <color name="text_dark">#2C3E50</color>
-    <color name="text_light">#FFFFFF</color>
-    <color name="dark_blue">#1a237e</color>
-
-
-
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="weekend_red">#FFD32F2F</color>
     <color name="gray">#FF9E9E9E</color>
 
+    <!-- Accent Colors -->
+    <color name="accent_blue">#3498DB</color>
+    <color name="dark_blue">#1a237e</color>
+
+    <!-- Purple Palette -->
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+
+    <!-- Special Colors -->
+    <color name="weekend_red">#FFD32F2F</color>
     <color name="success_green">#48DE0E</color>
     <color name="primary_red">#FF1201</color>
     <color name="colorPrimary">#C20AEC</color>

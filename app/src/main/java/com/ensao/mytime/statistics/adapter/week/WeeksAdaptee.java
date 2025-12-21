@@ -1,10 +1,10 @@
 package com.ensao.mytime.statistics.adapter.week;
 
+import com.ensao.mytime.statistics.data.StatisticsCallback;
 import com.ensao.mytime.statistics.data.StatisticsDAO;
 import com.ensao.mytime.statistics.model.WeekData;
 
 import java.util.List;
-import java.lang.UnsupportedOperationException;
 
 public class WeeksAdaptee {
     private StatisticsDAO statisticsDAO;
@@ -13,8 +13,9 @@ public class WeeksAdaptee {
         this.statisticsDAO = statisticsDAO;
     }
 
-    public WeekData getWeekDataForWeekWithIndex(int index) throws UnsupportedOperationException {
-        return statisticsDAO.getWeekData(index);
+    public void getWeekDataForWeekWithIndex(int index, StatisticsCallback<WeekData> callback)
+            throws UnsupportedOperationException {
+        statisticsDAO.getWeekData(index, callback);
     }
 
     /*
@@ -23,9 +24,8 @@ public class WeeksAdaptee {
      * @Note : The week index is the index of the week starting from 0 (the current
      * week) to -n (n weeks before the current week)
      */
-    public List<WeekData> getWeeksDataFromWeekWithIndex(int index, int numberOfWeeks)
+    public void getWeeksDataFromWeekWithIndex(int index, int numberOfWeeks, StatisticsCallback<List<WeekData>> callback)
             throws UnsupportedOperationException {
-        return statisticsDAO.getWeeksData(index, numberOfWeeks);
+        statisticsDAO.getWeeksData(index, numberOfWeeks, callback);
     }
-
 }

@@ -1,5 +1,7 @@
 package com.ensao.mytime.statistics.adapter.week;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,18 +16,24 @@ import com.ensao.mytime.statistics.model.DayData;
 import com.ensao.mytime.statistics.model.WeekData;
 
 import java.time.DayOfWeek;
+import java.util.HashMap;
+import java.util.Map;
 
 public class WeeksAdapter extends RecyclerView.Adapter<WeeksAdapter.WeekViewHolder> {
     private WeeksAdaptee weeksAdaptee;
     private OnDayClickListener listenner;
     private int weeksCount;
     private DayData selectedDay;
+    private Map<Integer, WeekData> cachedWeeks;
+    private Handler mainHandler;
 
     public WeeksAdapter(WeeksAdaptee weeksAdaptee, OnDayClickListener listenner) {
         this.weeksAdaptee = weeksAdaptee;
         this.listenner = listenner;
         this.weeksCount = 2;
         this.selectedDay = null;
+        this.cachedWeeks = new HashMap<>();
+        this.mainHandler = new Handler(Looper.getMainLooper());
     }
 
     public void setSelectedDay(DayData day) {
@@ -46,9 +54,26 @@ public class WeeksAdapter extends RecyclerView.Adapter<WeeksAdapter.WeekViewHold
 
     @Override
     public void onBindViewHolder(@NonNull WeeksAdapter.WeekViewHolder holder, int position) {
-        // The index must be negative to get the week before the current week
-        WeekData weekData = weeksAdaptee.getWeekDataForWeekWithIndex(-1 * position);
-        holder.bind(weekData, listenner, selectedDay);
+        int weekIndex = -1 * position;
+
+        // Check if we have cached data
+        if (cachedWeeks.containsKey(weekIndex)) {
+            holder.bind(cachedWeeks.get(weekIndex), listenner, selectedDay);
+        } else {
+            // Show loading state or empty state initially
+            holder.showLoading();
+
+            // Fetch data asynchronously
+            weeksAdaptee.getWeekDataForWeekWithIndex(weekIndex, weekData -> {
+                cachedWeeks.put(weekIndex, weekData);
+                mainHandler.post(() -> {
+                    // Only update if still the same position
+                    if (holder.getAdapterPosition() == position) {
+                        holder.bind(weekData, listenner, selectedDay);
+                    }
+                });
+            });
+        }
     }
 
     @Override
@@ -72,6 +97,24 @@ public class WeeksAdapter extends RecyclerView.Adapter<WeeksAdapter.WeekViewHold
 
         public WeekViewHolder(@NonNull View itemView) {
             super(itemView);
+        }
+
+        public void showLoading() {
+            // Optionally show a loading indicator or clear the views
+            for (DayOfWeek day : DayOfWeek.values()) {
+                TextView dayNumberView = (TextView) getDayNumberTextViewOf(day);
+                if (dayNumberView != null) {
+                    dayNumberView.setText("-");
+                }
+                View sleepIndicator = getDayIndicatorSleepOf(day);
+                if (sleepIndicator != null) {
+                    sleepIndicator.setVisibility(View.GONE);
+                }
+                View wakeIndicator = getDayIndicatorWakeOf(day);
+                if (wakeIndicator != null) {
+                    wakeIndicator.setVisibility(View.GONE);
+                }
+            }
         }
 
         public void bind(WeekData weekData, OnDayClickListener listener, DayData selectedDay) {

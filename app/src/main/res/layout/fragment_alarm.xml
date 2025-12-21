@@ -1,14 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ensao.mytime.alarm.AlarmFragment">
+    android:background="@color/ui_background"
+    tools:context=".alarm.AlarmFragment">
 
-    <TextView
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:elevation="0dp">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:contentScrim="@android:color/transparent"
+            app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Title"
+            app:toolbarId="@+id/toolbar">
+
+            <!-- Clock Container -->
+            <FrameLayout
+                android:id="@+id/clock_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.7">
+
+                <!-- Analog Clock View -->
+                <com.ensao.mytime.alarm.AnalogClockView
+                    android:id="@+id/analog_clock"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:layout_gravity="center"/>
+
+                <!-- Digital Time (shown when collapsed) -->
+                <TextView
+                    android:id="@+id/digital_clock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/text_primary"
+                    android:textSize="32sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium"
+                    android:alpha="0"
+                    android:visibility="visible"
+                    tools:text="23:24"/>
+
+            </FrameLayout>
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/transparent"
+                app:layout_collapseMode="pin"
+                app:title="Alarm"
+                app:titleTextColor="@color/text_primary"/>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Main Content -->
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="Alarm Fragment" />
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-</FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- RecyclerView for alarms -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/alarms_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"/>
+
+            <!-- Empty state -->
+            <LinearLayout
+                android:id="@+id/empty_state"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No alarms"
+                    android:textSize="20sp"
+                    android:textColor="@color/text_primary"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tap + to add an alarm"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Floating Action Button -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_delete_selected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="16dp"
+        android:contentDescription="Delete selected alarms"
+        app:srcCompat="@android:drawable/ic_menu_delete"
+        app:tint="@color/brand_on_primary"
+        app:backgroundTint="#CF6679"
+        android:visibility="gone"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_add_alarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:contentDescription="Add alarm"
+        app:srcCompat="@android:drawable/ic_input_add"
+        app:tint="@color/brand_on_primary"
+        app:backgroundTint="@color/brand_primary"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
