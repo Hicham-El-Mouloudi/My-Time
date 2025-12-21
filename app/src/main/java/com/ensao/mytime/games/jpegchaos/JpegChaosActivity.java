@@ -1,6 +1,7 @@
 package com.ensao.mytime.games.jpegchaos;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioAttributes;
@@ -16,11 +17,12 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.ensao.mytime.R;
+import com.ensao.mytime.alarm.Puzzleable;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-public class JpegChaosActivity extends AppCompatActivity {
+public class JpegChaosActivity extends AppCompatActivity implements Puzzleable {
     public final String TAG = "MainActivity";
     private final int COLS = 3;
     private final int ROWS = 5;
@@ -45,6 +47,7 @@ public class JpegChaosActivity extends AppCompatActivity {
 
     // Alarm integration
     private int alarmId = -1;
+    private boolean puzzleActive = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +111,35 @@ public class JpegChaosActivity extends AppCompatActivity {
 
         // Get alarm ID if launched from alarm
         alarmId = getIntent().getIntExtra("ALARM_ID", -1);
+        if (alarmId != -1) {
+            onPuzzleModeActivated(alarmId);
+        }
+    }
+
+    // Puzzleable interface implementation
+    @Override
+    public void onPuzzleModeActivated(int alarmId) {
+        this.alarmId = alarmId;
+        this.puzzleActive = true;
+    }
+
+    @Override
+    public boolean isPuzzleActive() {
+        return puzzleActive;
+    }
+
+    @Override
+    public int getAssociatedAlarmId() {
+        return alarmId;
+    }
+
+    @Override
+    public void onPuzzleSolved() {
+        puzzleActive = false;
+        // Broadcast puzzle completed to stop alarm and let service know
+        Intent puzzleCompleteIntent = new Intent(Puzzleable.ACTION_PUZZLE_COMPLETED);
+        puzzleCompleteIntent.putExtra(Puzzleable.EXTRA_ALARM_ID, alarmId);
+        sendBroadcast(puzzleCompleteIntent);
     }
 
     private void initAudio() {
@@ -298,6 +330,9 @@ public class JpegChaosActivity extends AppCompatActivity {
 
     private void disableAlarmIfNeeded() {
         if (alarmId != -1) {
+            // Broadcast puzzle completed first
+            onPuzzleSolved();
+
             new Thread(() -> {
                 com.ensao.mytime.alarm.database.AlarmRepository repository = new com.ensao.mytime.alarm.database.AlarmRepository(
                         getApplication());

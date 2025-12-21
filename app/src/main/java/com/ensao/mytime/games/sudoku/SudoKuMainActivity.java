@@ -1,6 +1,7 @@
 package com.ensao.mytime.games.sudoku;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,8 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import com.ensao.mytime.R;
+import com.ensao.mytime.alarm.Puzzleable;
 
-public class SudoKuMainActivity extends AppCompatActivity {
+public class SudoKuMainActivity extends AppCompatActivity implements Puzzleable {
 
     private SudokuView sudokuView;
     private SudokuBoard board;
@@ -58,6 +60,7 @@ public class SudoKuMainActivity extends AppCompatActivity {
 
     // Alarm integration
     private int alarmId = -1;
+    private boolean puzzleActive = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +120,35 @@ public class SudoKuMainActivity extends AppCompatActivity {
 
         // Get alarm ID if launched from alarm
         alarmId = getIntent().getIntExtra("ALARM_ID", -1);
+        if (alarmId != -1) {
+            onPuzzleModeActivated(alarmId);
+        }
+    }
+
+    // Puzzleable interface implementation
+    @Override
+    public void onPuzzleModeActivated(int alarmId) {
+        this.alarmId = alarmId;
+        this.puzzleActive = true;
+    }
+
+    @Override
+    public boolean isPuzzleActive() {
+        return puzzleActive;
+    }
+
+    @Override
+    public int getAssociatedAlarmId() {
+        return alarmId;
+    }
+
+    @Override
+    public void onPuzzleSolved() {
+        puzzleActive = false;
+        // Broadcast puzzle completed to stop alarm and let service know
+        Intent puzzleCompleteIntent = new Intent(Puzzleable.ACTION_PUZZLE_COMPLETED);
+        puzzleCompleteIntent.putExtra(Puzzleable.EXTRA_ALARM_ID, alarmId);
+        sendBroadcast(puzzleCompleteIntent);
     }
 
     private void setupNumberButtons() {
@@ -191,7 +223,7 @@ public class SudoKuMainActivity extends AppCompatActivity {
 
             // Check if puzzle is solved
             if (board.isSolved()) {
-                onPuzzleSolved();
+                onPuzzleSolvedCallback();
             }
         }
 
@@ -286,7 +318,7 @@ public class SudoKuMainActivity extends AppCompatActivity {
                     updateHintDisplay();
 
                     if (board.isSolved()) {
-                        onPuzzleSolved();
+                        onPuzzleSolvedCallback();
                     }
                     return;
                 }
@@ -367,7 +399,7 @@ public class SudoKuMainActivity extends AppCompatActivity {
         timerText.setText(String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds));
     }
 
-    private void onPuzzleSolved() {
+    private void onPuzzleSolvedCallback() {
         isTimerRunning = false;
         timerHandler.removeCallbacks(timerRunnable);
 
@@ -395,6 +427,9 @@ public class SudoKuMainActivity extends AppCompatActivity {
 
     private void disableAlarmIfNeeded() {
         if (alarmId != -1) {
+            // Broadcast puzzle completed first (use Puzzleable implementation)
+            onPuzzleSolved();
+
             new Thread(() -> {
                 com.ensao.mytime.alarm.database.AlarmRepository repository = new com.ensao.mytime.alarm.database.AlarmRepository(
                         getApplication());
