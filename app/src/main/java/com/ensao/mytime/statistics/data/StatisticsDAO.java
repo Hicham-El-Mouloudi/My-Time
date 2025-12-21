@@ -6,33 +6,28 @@ import com.ensao.mytime.statistics.model.WeekData;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import static java.time.temporal.TemporalAdjusters.*;
-import java.time.LocalDate;
 import java.util.List;
-import java.lang.UnsupportedOperationException;
 
 /*
-* @Author : Hicham El Mouloudi
+ * @Author : Hicham El Mouloudi
  * @Brief : Statistics Data Access Object
- * @Note : This interface is used to access the statistics data
+ * @Note : This interface is used to access the statistics data asynchronously
  */
 public interface StatisticsDAO {
+
     /*
      * @Brief : Get the days data for a specific month and year
      * 
-     * @Param : month, year
-     * 
-     * @Return : List of days data
+     * @Param : month, year, callback
      */
-    List<DayData> getDays(int month, int year);
+    void getDays(int month, int year, StatisticsCallback<List<DayData>> callback);
 
     /*
      * @Brief : Get the day data for a specific date
      * 
-     * @Param : date
-     * 
-     * @Return : Day data
+     * @Param : date, callback
      */
-    DayData getDayData(LocalDate date);
+    void getDayData(LocalDate date, StatisticsCallback<DayData> callback);
 
     /*
      * @Brief : Get the week data for a specific week index
@@ -42,7 +37,7 @@ public interface StatisticsDAO {
      * 
      * @Note: The days are ordered from Monday to Sunday
      */
-    WeekData getWeekData(int index) throws UnsupportedOperationException;
+    void getWeekData(int index, StatisticsCallback<WeekData> callback) throws UnsupportedOperationException;
 
     /*
      * @Brief : Get a number of weeks data starting from a specific week index
@@ -52,7 +47,8 @@ public interface StatisticsDAO {
      * 
      * @Note: The weeks are ordered from past to future
      */
-    List<WeekData> getWeeksData(int index, int numberOfWeeks) throws UnsupportedOperationException;
+    void getWeeksData(int index, int numberOfWeeks, StatisticsCallback<List<WeekData>> callback)
+            throws UnsupportedOperationException;
 
     /*
      * @Brief : Get the date of a specific day of a specific week
@@ -66,6 +62,5 @@ public interface StatisticsDAO {
         }
         LocalDate currentWeekMondayDate = LocalDate.now().with(previousOrSame(DayOfWeek.MONDAY));
         return currentWeekMondayDate.minusWeeks(-weekIndex).with(nextOrSame(day));
-
     }
 }
