@@ -10,30 +10,107 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
+/**
+ * Mock implementation of StatisticsDAO that generates random data.
+ * Uses async callbacks for consistency with the interface pattern.
+ */
 public class StatisticsDAOProxy implements StatisticsDAO {
-    
-    @Override
-    public List<DayData> getDays(int month, int year) {
-        List<DayData> days = new ArrayList<>();
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.MONTH, month);
-        calendar.set(Calendar.YEAR, year);
-        int maxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 
-        Random random = new Random();
+    private final Executor executor;
 
-        for (int i = 1; i <= maxDays; i++) {
-            calendar.set(Calendar.DAY_OF_MONTH, i);
-            boolean hasSleep = random.nextBoolean();
-            boolean hasWake = random.nextBoolean();
-            days.add(new DayData(calendar.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), hasSleep, hasWake));
-        }
-        return days;
+    public StatisticsDAOProxy() {
+        this.executor = Executors.newSingleThreadExecutor();
     }
 
     @Override
-    public DayData getDayData(LocalDate date) {
+    public void getDays(int month, int year, StatisticsCallback<List<DayData>> callback) {
+        executor.execute(() -> {
+            List<DayData> days = new ArrayList<>();
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.MONTH, month);
+            calendar.set(Calendar.YEAR, year);
+            int maxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+            Random random = new Random();
+
+            for (int i = 1; i <= maxDays; i++) {
+                calendar.set(Calendar.DAY_OF_MONTH, i);
+                boolean hasSleep = random.nextBoolean();
+                boolean hasWake = random.nextBoolean();
+                days.add(new DayData(calendar.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+                        hasSleep, hasWake));
+            }
+
+            if (callback != null) {
+                callback.onComplete(days);
+            }
+        });
+    }
+
+    @Override
+    public void getDayData(LocalDate date, StatisticsCallback<DayData> callback) {
+        executor.execute(() -> {
+            DayData data = generateDayData(date);
+            if (callback != null) {
+                callback.onComplete(data);
+            }
+        });
+    }
+
+    @Override
+    public void getWeekData(int index, StatisticsCallback<WeekData> callback) throws UnsupportedOperationException {
+        if (index > 0) {
+            throw new UnsupportedOperationException("StatisticsDAO : the index of a week must be 0 or less !");
+        }
+
+        executor.execute(() -> {
+            WeekData weekData = new WeekData(index);
+            List<DayData> daysOfWeek = new ArrayList<>();
+            for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
+                LocalDate dayDate = getDateOf(index, dayOfWeek);
+                daysOfWeek.add(generateDayData(dayDate));
+            }
+            weekData.setDays(daysOfWeek);
+
+            if (callback != null) {
+                callback.onComplete(weekData);
+            }
+        });
+    }
+
+    @Override
+    public void getWeeksData(int index, int numberOfWeeks, StatisticsCallback<List<WeekData>> callback)
+            throws UnsupportedOperationException {
+        if (index > 0) {
+            throw new UnsupportedOperationException("StatisticsDAO : the index of a week must be 0 or less !");
+        }
+
+        executor.execute(() -> {
+            List<WeekData> weeksData = new ArrayList<>();
+            for (int i = 0; i > (-1 * numberOfWeeks); i--) {
+                WeekData weekData = new WeekData(i);
+                List<DayData> daysOfWeek = new ArrayList<>();
+                for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
+                    LocalDate dayDate = getDateOf(i, dayOfWeek);
+                    daysOfWeek.add(generateDayData(dayDate));
+                }
+                weekData.setDays(daysOfWeek);
+                weeksData.add(weekData);
+            }
+
+            if (callback != null) {
+                callback.onComplete(weeksData);
+            }
+        });
+    }
+
+    /**
+     * Generate mock day data for a given date (synchronous internal method)
+     */
+    private DayData generateDayData(LocalDate date) {
         // Use the date as a seed for deterministic randomness
         Random random = new Random(date.toEpochDay());
 
@@ -76,33 +153,5 @@ public class StatisticsDAOProxy implements StatisticsDAO {
         data.setWakeVariance(variance);
 
         return data;
-    }
-
-    @Override
-    public WeekData getWeekData(int index) throws UnsupportedOperationException {
-        if (index > 0) {
-            throw new UnsupportedOperationException("StatisticsDAO : the index of a week must be 0 or less !");
-        }
-        WeekData weekData = new WeekData(index);
-        List<DayData> daysOfWeek = new ArrayList<>();
-        for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
-            LocalDate dayDate = getDateOf(index, dayOfWeek);
-            daysOfWeek.add(getDayData(dayDate));
-        }
-        weekData.setDays(daysOfWeek);
-        return weekData;
-    }
-
-    @Override
-    public List<WeekData> getWeeksData(int index, int numberOfWeeks) throws UnsupportedOperationException {
-        if (index > 0) {
-            throw new UnsupportedOperationException("StatisticsDAO : the index of a week must be 0 or less !");
-        }
-        //
-        List<WeekData> weeksData = new ArrayList<>();
-        for (int i = 0; i > (-1 * numberOfWeeks); i--) {
-            weeksData.add(getWeekData(i));
-        }
-        return weeksData;
     }
 }
