@@ -16,7 +16,7 @@
         android:textColor="@color/text_primary"
         android:layout_marginBottom="12dp" />
 
-    <!-- Row 1: Durée du sommeil + Efficacité du sommeil -->
+    <!-- Row 1: Durée du sommeil + Temps passé au lit -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -44,15 +44,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Durée"
-                    android:textSize="12sp"
+                    android:textSize="14sp"
                     android:textColor="@color/text_secondary" />
 
                 <TextView
                     android:id="@+id/tv_sleep_duration_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textSize="20sp"
+                    android:layout_marginTop="8dp"
+                    android:textSize="24sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary" />
 
@@ -60,80 +60,18 @@
                     android:id="@+id/tv_sleep_duration_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:textSize="11sp"
-                    android:textColor="@color/secondary_color" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Efficacité du sommeil -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="6dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="@color/surface_color">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Efficacité"
-                    android:textSize="12sp"
-                    android:textColor="@color/text_secondary" />
-
-                <TextView
-                    android:id="@+id/tv_sleep_efficiency_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary" />
-
-                <TextView
-                    android:id="@+id/tv_sleep_efficiency_status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:textSize="11sp"
+                    android:textSize="12sp"
                     android:textColor="@color/secondary_color" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-    </LinearLayout>
-
-    <!-- Section Header: Durée de sommeil nette -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Détails du sommeil"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="@color/text_primary"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="12dp" />
-
-    <!-- Row 2: Temps passé au lit + Latence -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="12dp">
 
         <!-- Temps passé au lit -->
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginEnd="6dp"
+            android:layout_marginStart="6dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="2dp"
             app:cardBackgroundColor="@color/surface_color">
@@ -149,88 +87,26 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Temps au lit"
-                    android:textSize="12sp"
+                    android:textSize="14sp"
                     android:textColor="@color/text_secondary" />
 
                 <TextView
                     android:id="@+id/tv_time_in_bed_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textSize="20sp"
+                    android:layout_marginTop="8dp"
+                    android:textSize="24sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+                
+                <!-- Spacer to match height if status is present on left, or just keeping it simple -->
+                 <View
+                    android:layout_width="1dp"
+                    android:layout_height="18dp" 
+                    android:layout_marginTop="4dp"/>
 
-        <!-- Latence -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="6dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="@color/surface_color">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Latence"
-                    android:textSize="12sp"
-                    android:textColor="@color/text_secondary" />
-
-                <TextView
-                    android:id="@+id/tv_sleep_latency_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </LinearLayout>
-
-    <!-- Réveil pendant sommeil (full width highlight) -->
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="2dp"
-        app:cardBackgroundColor="@color/secondary_color">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp"
-            android:gravity="center">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Réveil pendant sommeil"
-                android:textSize="14sp"
-                android:textColor="@color/white"
-                android:alpha="0.9" />
-
-            <TextView
-                android:id="@+id/tv_wake_during_sleep_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                android:textColor="@color/white" />
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
 
 </LinearLayout>

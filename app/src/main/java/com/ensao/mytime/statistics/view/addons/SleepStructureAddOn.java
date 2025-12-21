@@ -4,36 +4,66 @@ import android.view.View;
 import android.widget.TextView;
 import com.ensao.mytime.R;
 import com.ensao.mytime.statistics.view.StatsViewGenerator;
+import java.util.Locale;
 import java.util.Map;
 
 public class SleepStructureAddOn extends StatsViewGenerator {
 
+    private enum SleepStatus {
+        MAUVAIS("Mauvais"),
+        MOYEN("Moyen"),
+        BON("Bon");
+
+        private final String label;
+
+        SleepStatus(String label) {
+            this.label = label;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+    }
+
     public SleepStructureAddOn(View view, Map<String, Object> stats) {
         // Find Views
         TextView tvDuration = view.findViewById(R.id.tv_sleep_duration_value);
-        TextView tvEfficiency = view.findViewById(R.id.tv_sleep_efficiency_value);
         TextView tvTimeInBed = view.findViewById(R.id.tv_time_in_bed_value);
-        TextView tvLatency = view.findViewById(R.id.tv_sleep_latency_value);
-        TextView tvWakeDuringSleep = view.findViewById(R.id.tv_wake_during_sleep_value);
-
         TextView tvDurationStatus = view.findViewById(R.id.tv_sleep_duration_status);
-        TextView tvEfficiencyStatus = view.findViewById(R.id.tv_sleep_efficiency_status);
 
         // Populate Data
-        if (tvDuration != null)
-            tvDuration.setText(stats.get("sleepDuration") + " h");
-        if (tvEfficiency != null)
-            tvEfficiency.setText(stats.get("sleepEfficiency") + " %");
-        if (tvTimeInBed != null)
-            tvTimeInBed.setText(stats.get("timeInBed") + " h");
-        if (tvLatency != null)
-            tvLatency.setText(stats.get("sleepLatency") + " min");
-        if (tvWakeDuringSleep != null)
-            tvWakeDuringSleep.setText(stats.get("wakeDuringSleep") + " min");
+        if (tvDuration != null) {
+            Object durationObj = stats.get("sleepDuration");
+            float duration = 0;
+            if (durationObj instanceof Number) {
+                duration = ((Number) durationObj).floatValue();
+            }
+            tvDuration.setText(String.format(Locale.getDefault(), "%.1f h", duration));
 
-        if (tvDurationStatus != null)
-            tvDurationStatus.setText("Bon"); // Logic for status could be more complex
-        if (tvEfficiencyStatus != null)
-            tvEfficiencyStatus.setText("Bon");
+            // Set Status
+            if (tvDurationStatus != null) {
+                SleepStatus status = getSleepStatus(duration);
+                tvDurationStatus.setText(status.getLabel());
+            }
+        }
+
+        if (tvTimeInBed != null) {
+            Object timeInBedObj = stats.get("timeInBed");
+            float timeInBed = 0;
+            if (timeInBedObj instanceof Number) {
+                timeInBed = ((Number) timeInBedObj).floatValue();
+            }
+            tvTimeInBed.setText(String.format(Locale.getDefault(), "%.1f h", timeInBed));
+        }
+    }
+
+    private SleepStatus getSleepStatus(float duration) {
+        if (duration < 6.0f) {
+            return SleepStatus.MAUVAIS;
+        } else if (duration <= 7.0f) {
+            return SleepStatus.MOYEN;
+        } else {
+            return SleepStatus.BON;
+        }
     }
 }
