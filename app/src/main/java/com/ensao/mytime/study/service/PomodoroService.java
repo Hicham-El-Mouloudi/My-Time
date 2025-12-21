@@ -115,6 +115,7 @@ public class PomodoroService extends Service {
             countDownTimer.cancel();
             isTimerRunning = false;
             ispaused = true;
+            countDownTimer = null;
             Log.d("TIMER_DEBUG", "Timer mis en pause. Temps restant: " + timeLeftInMillis + "ms");
         }
     }

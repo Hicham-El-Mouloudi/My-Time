@@ -74,8 +74,8 @@ public class StudySessionFragment extends Fragment {
         btnAddSubject = view.findViewById(R.id.btn_add_subject);
         rvSubjects = view.findViewById(R.id.rv_subjects);
 
-        // Initialiser l'état des boutons
-        updateButtonStates(false);
+        // Initialiser l'état des boutons (idle state)
+        updateButtonVisibility("stopped");
     }
 
     private void setupRecyclerView() {
@@ -111,27 +111,29 @@ public class StudySessionFragment extends Fragment {
             }
         });
 
-        // Observer l'état du timer
-        studyViewModel.getIsTimerRunning().observe(getViewLifecycleOwner(), isRunning -> {
-            if (isRunning != null) {
-                updateButtonStates(isRunning);
-                updateDurationButtonsState(isRunning);
-            }
-        });
-
-        // Observer l'état textuel du timer
+        // Observer l'état textuel du timer for button visibility and color
         studyViewModel.getTimerState().observe(getViewLifecycleOwner(), state -> {
-            if (state != null && tvTimer != null) {
-                switch (state) {
-                    case "running":
-                        tvTimer.setTextColor(getResources().getColor(R.color.navy_blue));
-                        break;
-                    case "paused":
-                        tvTimer.setTextColor(getResources().getColor(R.color.medium_gray));
-                        break;
-                    case "stopped":
-                        tvTimer.setTextColor(getResources().getColor(R.color.navy_blue));
-                        break;
+            if (state != null) {
+                // Update button visibility based on state
+                updateButtonVisibility(state);
+
+                // Update duration buttons state
+                boolean isRunning = "running".equals(state) || "paused".equals(state);
+                updateDurationButtonsState(isRunning);
+
+                // Update timer text color
+                if (tvTimer != null) {
+                    switch (state) {
+                        case "running":
+                            tvTimer.setTextColor(getResources().getColor(R.color.navy_blue));
+                            break;
+                        case "paused":
+                            tvTimer.setTextColor(getResources().getColor(R.color.medium_gray));
+                            break;
+                        case "stopped":
+                            tvTimer.setTextColor(getResources().getColor(R.color.navy_blue));
+                            break;
+                    }
                 }
             }
         });
@@ -201,24 +203,25 @@ public class StudySessionFragment extends Fragment {
     private void setupButtonListeners() {
         // Contrôles du timer
         btnStart.setOnClickListener(v -> {
-            studyViewModel.startTimer();
-            Log.d("", "btn start");
-            updateButtonAppearance(true);
-            updateButtonStates(true);
-
+            // Check if we're resuming from pause
+            String currentState = studyViewModel.getTimerState().getValue();
+            if ("paused".equals(currentState)) {
+                studyViewModel.resumeTimer();
+                Log.d("TIMER", "btn resume");
+            } else {
+                studyViewModel.startTimer();
+                Log.d("TIMER", "btn start");
+            }
         });
 
         btnPause.setOnClickListener(v -> {
             studyViewModel.pauseTimer();
-            updateButtonAppearance(false);
-            updateButtonStates(false);
-
+            Log.d("TIMER", "btn pause");
         });
 
         btnStop.setOnClickListener(v -> {
             studyViewModel.stopTimer();
-            updateButtonAppearance(false);
-            updateDurationButtonsState(false);
+            Log.d("TIMER", "btn stop");
         });
 
         // Boutons de durée
@@ -262,27 +265,45 @@ public class StudySessionFragment extends Fragment {
         }
     }
 
-    private void updateButtonStates(boolean isTimerRunning) {
-        if (btnStart != null) {
-            btnStart.setEnabled(!isTimerRunning);
-        }
-        if (btnPause != null) {
-            btnPause.setEnabled(isTimerRunning);
-        }
-        if (btnStop != null) {
-            btnStop.setEnabled(true);
+    /**
+     * Update button visibility based on timer state.
+     * - stopped: Show only Start button
+     * - running: Show Pause and Stop buttons
+     * - paused: Show Resume (Start button) and Stop buttons
+     */
+    private void updateButtonVisibility(String state) {
+        if (btnStart == null || btnPause == null || btnStop == null)
+            return;
+
+        switch (state) {
+            case "running":
+                // Running: Show Pause and Stop, hide Start
+                btnStart.setVisibility(View.GONE);
+                btnPause.setVisibility(View.VISIBLE);
+                btnStop.setVisibility(View.VISIBLE);
+                break;
+            case "paused":
+                // Paused: Show Resume (Start button) and Stop, hide Pause
+                btnStart.setVisibility(View.VISIBLE);
+                btnStart.setText("Resume");
+                btnStart.setBackgroundTintList(getResources().getColorStateList(R.color.navy_blue));
+                btnPause.setVisibility(View.GONE);
+                btnStop.setVisibility(View.VISIBLE);
+                break;
+            case "stopped":
+            default:
+                // Stopped/Idle: Show only Start, hide Pause and Stop
+                btnStart.setVisibility(View.VISIBLE);
+                btnStart.setText("Start");
+                btnStart.setBackgroundTintList(getResources().getColorStateList(R.color.navy_blue));
+                btnPause.setVisibility(View.GONE);
+                btnStop.setVisibility(View.GONE);
+                break;
         }
     }
 
-    private void updateButtonAppearance(boolean isTimerRunning) {
-        if (isTimerRunning) {
-            btnStart.setBackgroundTintList(getResources().getColorStateList(R.color.medium_gray));
-            btnPause.setBackgroundTintList(getResources().getColorStateList(R.color.navy_blue));
-        } else {
-            btnStart.setBackgroundTintList(getResources().getColorStateList(R.color.navy_blue));
-            btnPause.setBackgroundTintList(getResources().getColorStateList(R.color.medium_gray));
-        }
-    }
+    // updateButtonAppearance is no longer needed as visibility is now managed by
+    // updateButtonVisibility
 
     private void updateDurationButtonsState(boolean isTimerRunning) {
         boolean enabled = !isTimerRunning;
