@@ -1,12 +1,12 @@
 package com.ensao.mytime.statistics;
 
-import java.time.LocalDate;
 import java.util.*;
 import java.text.*;
 
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.ensao.mytime.R;
@@ -29,19 +30,14 @@ import com.ensao.mytime.statistics.data.StatisticsDAOProxy;
 import com.ensao.mytime.statistics.data.StatisticsDAOProxyDB;
 import com.ensao.mytime.statistics.model.DayData;
 import com.ensao.mytime.statistics.view.StatsViewGenerator;
-import com.github.mikephil.charting.charts.PieChart;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.content.Context;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.Map;
@@ -68,6 +64,7 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
     private DayData currentDay;
     private boolean isSleepTabSelected = true; // Default to Sleep
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -123,6 +120,7 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onDayClick(DayData day) {
         this.currentDay = day;
@@ -131,6 +129,7 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
         updateContent(day);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void updateSelectedDayText(DayData day) {
         if (day == null || tvSelectedDay == null)
             return;
