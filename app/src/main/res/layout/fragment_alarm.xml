@@ -6,7 +6,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/ui_background"
+    android:background="@drawable/color_background"
     tools:context=".alarm.AlarmFragment">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -133,7 +133,7 @@
         android:contentDescription="Delete selected alarms"
         app:srcCompat="@android:drawable/ic_menu_delete"
         app:tint="@color/brand_on_primary"
-        app:backgroundTint="#CF6679"
+        app:backgroundTint="@color/alarm_delete"
         android:visibility="gone"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

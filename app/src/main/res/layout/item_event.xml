@@ -20,7 +20,7 @@
             android:text="14:30"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:textColor="#2196F3" />
+            android:textColor="@color/info" />
 
         <EditText
             android:id="@+id/event_title"
@@ -40,7 +40,7 @@
             android:layout_height="40dp"
             android:text="×"
             android:textSize="18sp"
-            android:textColor="#F44336"
+            android:textColor="@color/error"
             android:background="?android:attr/selectableItemBackground" />
 
     </LinearLayout>
