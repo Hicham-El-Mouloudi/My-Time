@@ -14,7 +14,7 @@ import com.ensao.mytime.Activityfeature.Busniss.*;
 import com.ensao.mytime.Activityfeature.DataAccess.*;
 
 
-@Database(entities = {userActivity.class, RepetitionKind.class,CourseContent.class,Course.class, Category.class,ActivityHistory.class},version = 1)
+@Database(entities = {userActivity.class, RepetitionKind.class,CourseContent.class,Course.class, Category.class,ActivityHistory.class},version = 2)
 @TypeConverters({Converters.class})
 public abstract class ActivityRoomDB extends RoomDatabase {
 
@@ -41,6 +41,7 @@ public abstract class ActivityRoomDB extends RoomDatabase {
 
             Instance = Room.databaseBuilder(context.getApplicationContext(),ActivityRoomDB.class,"activity_db")
                     .addCallback(callback)
+                    .fallbackToDestructiveMigration()  // Allow destructive migration during development
                     .build();
 
 
@@ -56,19 +57,15 @@ public abstract class ActivityRoomDB extends RoomDatabase {
         @Override
         public void onOpen(@NonNull SupportSQLiteDatabase db) {
             super.onOpen(db);
-            //here we initialise the Tables with known values
-            //like repetition kinds
-            //and main activity categories
-            //but we can use the room generated insert directly
-            // we need to do it as an asynchronous operation
-
-            new populateDbAsync(Instance).execute();
-
+            // No initialization here - it would run every time and cause duplicate inserts!
         }
 
         @Override
         public void onCreate(@NonNull SupportSQLiteDatabase db) {
             super.onCreate(db);
+            // Initialize tables with known values ONLY on first database creation
+            // This runs only once when the database is first created
+            new populateDbAsync(Instance).execute();
         }
     };
 

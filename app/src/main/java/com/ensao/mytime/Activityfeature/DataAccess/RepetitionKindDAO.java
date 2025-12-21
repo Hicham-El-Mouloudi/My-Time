@@ -20,7 +20,8 @@ public interface RepetitionKindDAO {
     @Query("select * from RepetitionKind")
     List<RepetitionKind> getRepetitionKinds();
 
-
+    @Query("SELECT * FROM RepetitionKind WHERE Title = :title LIMIT 1")
+    RepetitionKind getByTitle(String title);
 
 
 }

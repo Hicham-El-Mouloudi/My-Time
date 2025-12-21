@@ -72,6 +72,15 @@ public class ActivityRepo {
 
     }
 
+    //get activities in date range (for calendar)
+    public void GetActivitiesInRange(long startOfDay, long endOfDay, Activity CurrentActivity, CallBackAfterDbOperation<List<userActivity>> Callback){
+        _executor.execute(()->{
+            List<userActivity> list = _userActivityDAO.getActivitiesInRange(startOfDay, endOfDay);
+            if(Callback!=null)
+                CurrentActivity.runOnUiThread(()-> Callback.onComplete(list));
+        });
+    }
+
 
 
 }

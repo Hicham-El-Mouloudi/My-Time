@@ -28,16 +28,26 @@ public interface userActivityDAO {
 
 
     //get Activitys of date
-    @Query("select a.* from activities as a inner join Category as c on a.CategoryID= c.id inner join  RepetitionKind as r on r.id=c.RepetitionKindID " +
-            "where a.IsActive = 1 and (  r.Title='eachday'  " +
-            "or (r.Title = 'eachweek' and  CAST(strftime('%w', a.StartDate) as integer) =  Cast(strftime('%w', :date) as integer)) " +
-            "or (r.Title = 'eachmonth' and  CAST(strftime('%d', a.StartDate) as integer) = Cast(strftime('%d', :date) as integer))  " +
-            "or (r.Title = 'onetime' and  a.StartDate =  :date)) ")
+    // Note: Room stores Date as milliseconds (Long), so we divide by 1000 to get Unix timestamp for strftime
+    // Using 'unixepoch', 'localtime' to convert to local timezone for proper comparison
+    @Query("SELECT a.* FROM activities AS a " +
+            "INNER JOIN Category AS c ON a.CategoryID = c.id " +
+            "INNER JOIN RepetitionKind AS r ON r.id = c.RepetitionKindID " +
+            "WHERE a.IsActive = 1 AND (" +
+            "  r.Title = 'eachday' " +
+            "  OR (r.Title = 'eachweek' AND CAST(strftime('%w', a.StartDate / 1000, 'unixepoch', 'localtime') AS INTEGER) = CAST(strftime('%w', :date / 1000, 'unixepoch', 'localtime') AS INTEGER)) " +
+            "  OR (r.Title = 'eachmonth' AND CAST(strftime('%d', a.StartDate / 1000, 'unixepoch', 'localtime') AS INTEGER) = CAST(strftime('%d', :date / 1000, 'unixepoch', 'localtime') AS INTEGER)) " +
+            "  OR (r.Title = 'onetime' AND date(a.StartDate / 1000, 'unixepoch', 'localtime') = date(:date / 1000, 'unixepoch', 'localtime'))" +
+            ")")
     List<userActivity> getActivities(Date date);
 
+    // Simpler query - get activities for a specific date range (for debugging or alternative use)
+    @Query("SELECT * FROM activities WHERE IsActive = 1 AND StartDate >= :startOfDay AND StartDate < :endOfDay")
+    List<userActivity> getActivitiesInRange(long startOfDay, long endOfDay);
 
-
-
+    // Get all active activities (for debugging)
+    @Query("SELECT * FROM activities WHERE IsActive = 1")
+    List<userActivity> getAllActiveActivities();
 
 
 }
