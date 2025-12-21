@@ -1,15 +1,12 @@
 package com.ensao.mytime;
 
 import android.Manifest;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
@@ -33,7 +30,6 @@ import com.ensao.mytime.home.view.SettingsFragment;
 import com.ensao.mytime.sleep.view.SleepFragment;
 import com.ensao.mytime.statistics.StatisticsFragment;
 import com.ensao.mytime.study.fragments.StudySessionFragment;
-import com.ensao.mytime.study.service.PomodoroService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity
@@ -41,29 +37,11 @@ public class MainActivity extends AppCompatActivity
 
     private AlertDialog blockedDialog = null;
     private BottomNavigationView bottomNavigationView;
-    private PomodoroService pomodoroService;
-    private boolean isServiceBound = false;
 
     private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
             isGranted -> {
             });
-
-    private final ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            PomodoroService.LocalBinder binder = (PomodoroService.LocalBinder) service;
-            pomodoroService = binder.getService();
-            isServiceBound = true;
-            transferServiceToCurrentFragment();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            isServiceBound = false;
-            pomodoroService = null;
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +72,6 @@ public class MainActivity extends AppCompatActivity
             return insets;
         });
 
-        startAndBindPomodoroService();
         setupNavigation();
         requestNotificationPermission();
 
@@ -213,11 +190,6 @@ public class MainActivity extends AppCompatActivity
         // Unregister preference listener (from alarm-feature)
         PreferenceManager.getDefaultSharedPreferences(this)
                 .unregisterOnSharedPreferenceChangeListener(this);
-        // Unbind service (from main)
-        if (isServiceBound) {
-            unbindService(serviceConnection);
-            isServiceBound = false;
-        }
     }
 
     private void requestNotificationPermission() {
@@ -229,22 +201,12 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void startAndBindPomodoroService() {
-        Intent serviceIntent = new Intent(this, PomodoroService.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(serviceIntent);
-        } else {
-            startService(serviceIntent);
-        }
-        bindService(serviceIntent, serviceConnection, BIND_AUTO_CREATE);
-    }
-
+    // Pomodoro logic moved to StudyViewModel
     private void setupNavigation() {
         bottomNavigationView.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = navigateTo(item.getItemId());
             if (selectedFragment != null) {
                 loadFragment(selectedFragment);
-                transferServiceToFragment(selectedFragment);
                 return true;
             }
             return false;
@@ -274,19 +236,6 @@ public class MainActivity extends AppCompatActivity
                 .replace(R.id.mainContent, fragment)
                 .addToBackStack(null)
                 .commit();
-    }
-
-    private void transferServiceToCurrentFragment() {
-        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.mainContent);
-        if (currentFragment != null) {
-            transferServiceToFragment(currentFragment);
-        }
-    }
-
-    private void transferServiceToFragment(Fragment fragment) {
-        if (fragment instanceof StudySessionFragment && isServiceBound) {
-            ((StudySessionFragment) fragment).setPomodoroService(pomodoroService, isServiceBound);
-        }
     }
 
     @Override
