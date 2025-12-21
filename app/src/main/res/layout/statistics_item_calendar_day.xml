@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="4dp"
+    android:background="?attr/selectableItemBackground">
+
+    <TextView
+        android:id="@+id/tv_day_number"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:gravity="center"
+        android:text="1"
+        android:textSize="14sp"
+        android:textColor="@color/text_primary"
+        android:background="@drawable/ic_launcher_background" 
+        android:backgroundTint="@android:color/transparent" />
+        <!-- Note: backgroundTint transparent by default, change to primary_color for selected day -->
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="2dp"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/iv_indicator_sleep"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:src="@drawable/ic_sleep_session"
+            app:tint="@color/secondary_color"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:layout_marginEnd="2dp"
+            android:contentDescription="Sleep Data Available" />
+
+        <ImageView
+            android:id="@+id/iv_indicator_wake"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:src="@drawable/ic_alarm"
+            app:tint="@color/primary_color"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:contentDescription="Wake Data Available" />
+    </LinearLayout>
+
+</LinearLayout>

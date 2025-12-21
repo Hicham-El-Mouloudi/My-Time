@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal">
+
+    <!-- Monday -->
+    <LinearLayout 
+        android:id="@+id/ll_monday"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="4dp"
+        android:background="?attr/selectableItemBackground">
+
+        <TextView
+            android:id="@+id/monday_day_number"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:gravity="center"
+            android:text="1"
+            android:textSize="14sp"
+            android:textColor="@color/text_primary"
+            android:background="@drawable/ic_launcher_background"
+            android:backgroundTint="@android:color/transparent" />
+        <!-- Note: backgroundTint transparent by default, change to primary_color for selected day -->
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="2dp"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/iv_monday_indicator_sleep"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:src="@drawable/ic_sleep_session"
+                app:tint="@color/secondary_color"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:layout_marginEnd="2dp"
+                android:contentDescription="Sleep Data Available" />
+
+            <ImageView
+                android:id="@+id/iv_monday_indicator_wake"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:src="@drawable/ic_alarm"
+                app:tint="@color/primary_color"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:contentDescription="Wake Data Available" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Tuesday -->
+    <LinearLayout 
+        android:id="@+id/ll_tuesday"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="4dp"
+        android:background="?attr/selectableItemBackground">
+
+        <TextView
+            android:id="@+id/tuesday_day_number"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:gravity="center"
+            android:text="2"
+            android:textSize="14sp"
+            android:textColor="@color/text_primary"
+            android:background="@drawable/ic_launcher_background"
+            android:backgroundTint="@android:color/transparent" />
+        <!-- Note: backgroundTint transparent by default, change to primary_color for selected day -->
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="2dp"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/iv_tuesday_indicator_sleep"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:src="@drawable/ic_sleep_session"
+                app:tint="@color/secondary_color"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:layout_marginEnd="2dp"
+                android:contentDescription="Sleep Data Available" />
+
+            <ImageView
+                android:id="@+id/iv_tuesday_indicator_wake"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:src="@drawable/ic_alarm"
+                app:tint="@color/primary_color"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:contentDescription="Wake Data Available" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Wednesday -->
+    <LinearLayout 
+        android:id="@+id/ll_wednesday"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="4dp"
+        android:background="?attr/selectableItemBackground">
+
+        <TextView
+            android:id="@+id/wednesday_day_number"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:gravity="center"
+            android:text="3"
+            android:textSize="14sp"
+            android:textColor="@color/text_primary"
+            android:background="@drawable/ic_launcher_background"
+            android:backgroundTint="@android:color/transparent" />
+        <!-- Note: backgroundTint transparent by default, change to primary_color for selected day -->
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="2dp"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/iv_wednesday_indicator_sleep"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:src="@drawable/ic_sleep_session"
+                app:tint="@color/secondary_color"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:layout_marginEnd="2dp"
+                android:contentDescription="Sleep Data Available" />
+
+            <ImageView
+                android:id="@+id/iv_wednesday_indicator_wake"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:src="@drawable/ic_alarm"
+                app:tint="@color/primary_color"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:contentDescription="Wake Data Available" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Thursday -->
+    <LinearLayout 
+        android:id="@+id/ll_thursday"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="4dp"
+        android:background="?attr/selectableItemBackground">
+
+        <TextView
+            android:id="@+id/thursday_day_number"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:gravity="center"
+            android:text="4"
+            android:textSize="14sp"
+            android:textColor="@color/text_primary"
+            android:background="@drawable/ic_launcher_background"
+            android:backgroundTint="@android:color/transparent" />
+        <!-- Note: backgroundTint transparent by default, change to primary_color for selected day -->
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="2dp"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/iv_thursday_indicator_sleep"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:src="@drawable/ic_sleep_session"
+                app:tint="@color/secondary_color"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:layout_marginEnd="2dp"
+                android:contentDescription="Sleep Data Available" />
+
+            <ImageView
+                android:id="@+id/iv_thursday_indicator_wake"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:src="@drawable/ic_alarm"
+                app:tint="@color/primary_color"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:contentDescription="Wake Data Available" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Friday -->
+    <LinearLayout 
+        android:id="@+id/ll_friday"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="4dp"
+        android:background="?attr/selectableItemBackground">
+
+        <TextView
+            android:id="@+id/friday_day_number"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:gravity="center"
+            android:text="5"
+            android:textSize="14sp"
+            android:textColor="@color/text_primary"
+            android:background="@drawable/ic_launcher_background"
+            android:backgroundTint="@android:color/transparent" />
+        <!-- Note: backgroundTint transparent by default, change to primary_color for selected day -->
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="2dp"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/iv_friday_indicator_sleep"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:src="@drawable/ic_sleep_session"
+                app:tint="@color/secondary_color"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:layout_marginEnd="2dp"
+                android:contentDescription="Sleep Data Available" />
+
+            <ImageView
+                android:id="@+id/iv_friday_indicator_wake"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:src="@drawable/ic_alarm"
+                app:tint="@color/primary_color"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:contentDescription="Wake Data Available" />
+        </LinearLayout>
+
+    </LinearLayout>
+    
+    <!-- Saturday -->
+    <LinearLayout 
+        android:id="@+id/ll_saturday"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="4dp"
+        android:background="?attr/selectableItemBackground">
+
+        <TextView
+            android:id="@+id/saturday_day_number"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:gravity="center"
+            android:text="6"
+            android:textSize="14sp"
+            android:textColor="@color/text_primary"
+            android:background="@drawable/ic_launcher_background"
+            android:backgroundTint="@android:color/transparent" />
+        <!-- Note: backgroundTint transparent by default, change to primary_color for selected day -->
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="2dp"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/iv_saturday_indicator_sleep"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:src="@drawable/ic_sleep_session"
+                app:tint="@color/secondary_color"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:layout_marginEnd="2dp"
+                android:contentDescription="Sleep Data Available" />
+
+            <ImageView
+                android:id="@+id/iv_saturday_indicator_wake"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:src="@drawable/ic_alarm"
+                app:tint="@color/primary_color"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:contentDescription="Wake Data Available" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+<!-- Sunday -->
+    <LinearLayout 
+        android:id="@+id/ll_sunday"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="4dp"
+        android:background="?attr/selectableItemBackground">
+
+        <TextView
+            android:id="@+id/sunday_day_number"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:gravity="center"
+            android:text="7"
+            android:textSize="14sp"
+            android:textColor="@color/text_primary"
+            android:background="@drawable/ic_launcher_background"
+            android:backgroundTint="@android:color/transparent" />
+        <!-- Note: backgroundTint transparent by default, change to primary_color for selected day -->
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="2dp"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/iv_sunday_indicator_sleep"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:src="@drawable/ic_sleep_session"
+                app:tint="@color/secondary_color"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:layout_marginEnd="2dp"
+                android:contentDescription="Sleep Data Available" />
+
+            <ImageView
+                android:id="@+id/iv_sunday_indicator_wake"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:src="@drawable/ic_alarm"
+                app:tint="@color/primary_color"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:contentDescription="Wake Data Available" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

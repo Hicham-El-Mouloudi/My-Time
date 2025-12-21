@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.MyTime" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Colors -->
-        <item name="colorPrimary">@color/brand_primary</item>
+        <item name="alarm_colorPrimary">@color/brand_primary</item>
         <item name="colorOnPrimary">@color/brand_on_primary</item>
         <item name="colorSecondary">@color/brand_primary</item>
         <item name="colorOnSecondary">@color/brand_on_primary</item>
@@ -14,6 +14,11 @@
         <!-- Status Bar -->
         <item name="android:statusBarColor">@color/ui_background</item>
         <item name="android:windowLightStatusBar">true</item> <!-- Adjusts automatically in DayNight -->
+        <!-- Customize your light theme here. -->
+        <item name="colorPrimary">@color/primary_color</item>
+        <!-- Status bar styling -->
+        <item name="android:statusBarColor">@color/surface_color</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
     <style name="Theme.MyTime" parent="Base.Theme.MyTime" />
@@ -64,5 +69,8 @@
         <item name="android:textColor">@color/sudoku_primary</item>
         <item name="android:textSize">24sp</item>
         <item name="android:textStyle">bold</item>
+    <style name="RoundedImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
     </style>
 </resources>
