@@ -66,6 +66,13 @@
     <color name="button_disabled">#3a5a7a</color>
     <color name="button_text">#0b2545</color>
 
+    <!-- ========== POMODORO TIMER BUTTONS (Vibrant) ========== -->
+    <color name="pomodoro_coral">#ef476f</color>
+    <color name="pomodoro_gold">#ffd166</color>
+    <color name="pomodoro_mint">#06d6a0</color>
+    <color name="pomodoro_blue">#118ab2</color>
+    <color name="pomodoro_dark_teal">#073b4c</color>
+
     <!-- ========== GAME/PUZZLE COLORS ========== -->
     <color name="game_accent">#8da9c4</color>
     <color name="game_accent_light">#a8c4df</color>
