@@ -32,19 +32,34 @@ public class WakeStructureAddOn extends StatsViewGenerator {
         TextView tvAverageWake = view.findViewById(R.id.tv_average_wake_time_value);
         LineChart chart = view.findViewById(R.id.chart_wake_weekly);
 
-        // Populate Text
-        if (tvLatency != null)
-            tvLatency.setText(stats.get("wakeLatency") + " min");
+        // Populate Text with proper type casting
+        if (tvLatency != null) {
+            Object latencyObj = stats.get("wakeLatency");
+            float latency = latencyObj instanceof Number ? ((Number) latencyObj).floatValue() : 0;
+            tvLatency.setText(String.format(Locale.getDefault(), "%.1f min", latency));
+        }
+
         if (tvRingCount != null)
             tvRingCount.setText(String.valueOf(stats.get("ringCount")));
-        if (tvTimeVariability != null)
-            tvTimeVariability.setText(stats.get("timeVariability") + " min");
+
+        if (tvTimeVariability != null) {
+            Object variabilityObj = stats.get("timeVariability");
+            float variability = variabilityObj instanceof Number ? ((Number) variabilityObj).floatValue() : 0;
+            tvTimeVariability.setText(String.format(Locale.getDefault(), "%.1f min", variability));
+        }
+
         if (tvFirstAlarm != null)
             tvFirstAlarm.setText((String) stats.get("firstAlarm"));
+
         if (tvLastOff != null)
             tvLastOff.setText((String) stats.get("lastOff"));
-        if (tvWakeDuration != null)
-            tvWakeDuration.setText(stats.get("wakeDuration") + " min");
+
+        if (tvWakeDuration != null) {
+            Object durationObj = stats.get("wakeDuration");
+            float duration = durationObj instanceof Number ? ((Number) durationObj).floatValue() : 0;
+            tvWakeDuration.setText(String.format(Locale.getDefault(), "%.1f min", duration));
+        }
+
         if (tvAverageWake != null)
             tvAverageWake.setText((String) stats.get("averageWakeTime"));
 
