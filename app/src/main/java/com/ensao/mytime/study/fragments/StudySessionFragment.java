@@ -16,7 +16,7 @@ import com.ensao.mytime.R;
 import com.ensao.mytime.study.adapter.SubjectAdapter;
 import com.ensao.mytime.study.model.Subject;
 import com.ensao.mytime.study.service.PomodoroService;
-import com.example.studysession.viewmodel.StudyViewModel;
+import com.ensao.mytime.study.viewmodel.StudyViewModel;
 import java.util.ArrayList;
 
 public class StudySessionFragment extends Fragment {

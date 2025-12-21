@@ -1,4 +1,4 @@
-package com.example.studysession.viewmodel;
+package com.ensao.mytime.study.viewmodel;
 
 import android.app.Application;
 import android.content.ComponentName;
