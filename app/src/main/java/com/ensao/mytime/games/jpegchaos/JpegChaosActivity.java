@@ -360,15 +360,31 @@ public class JpegChaosActivity extends AppCompatActivity {
     }
 
     private Bitmap loadScaledBitmap(String filename) throws IOException {
-        InputStream is = getAssets().open("images/" + filename);
+        // First pass: get image dimensions only
+        InputStream is = null;
         BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeStream(is, null, options);
-        is.close();
+        try {
+            is = new java.io.BufferedInputStream(getAssets().open("images/" + filename));
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(is, null, options);
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException ignored) {
+                }
+            }
+        }
 
         int origWidth = options.outWidth;
         int origHeight = options.outHeight;
         android.util.Log.i(TAG, "Original image size: " + origWidth + "x" + origHeight);
+
+        // Validate that we got valid dimensions
+        if (origWidth <= 0 || origHeight <= 0) {
+            android.util.Log.e(TAG, "Failed to read image dimensions for: " + filename);
+            return null;
+        }
 
         // Target 2:3 ratio (portrait), aiming for reasonable size like 720x1080
         int targetWidth = 720;
@@ -377,12 +393,38 @@ public class JpegChaosActivity extends AppCompatActivity {
         // Calculate inSampleSize
         options.inSampleSize = calculateInSampleSize(options, targetWidth, targetHeight);
         options.inJustDecodeBounds = false;
+        // Force ARGB_8888 for best quality and to prevent gray/washed-out images
+        options.inPreferredConfig = android.graphics.Bitmap.Config.ARGB_8888;
+        // Prevent scaling based on density which can cause issues
+        options.inScaled = false;
 
-        is = getAssets().open("images/" + filename);
-        Bitmap bitmap = BitmapFactory.decodeStream(is, null, options);
-        is.close();
+        // Second pass: decode the actual bitmap with a fresh stream
+        Bitmap bitmap = null;
+        is = null;
+        try {
+            is = new java.io.BufferedInputStream(getAssets().open("images/" + filename));
+            bitmap = BitmapFactory.decodeStream(is, null, options);
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException ignored) {
+                }
+            }
+        }
 
+        // Validate the decoded bitmap
         if (bitmap == null) {
+            android.util.Log.e(TAG, "BitmapFactory.decodeStream returned null for: " + filename);
+            return null;
+        }
+
+        // Check for potential gray/corrupted image (very small dimensions indicate a
+        // problem)
+        if (bitmap.getWidth() <= 1 || bitmap.getHeight() <= 1) {
+            android.util.Log.e(TAG, "Decoded bitmap has invalid dimensions: " +
+                    bitmap.getWidth() + "x" + bitmap.getHeight() + " for: " + filename);
+            bitmap.recycle();
             return null;
         }
 
