@@ -13,53 +13,55 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.ensao.mytime.Activityfeature.Busniss.*;
 import com.ensao.mytime.Activityfeature.DataAccess.*;
 
-
-@Database(entities = {userActivity.class, RepetitionKind.class,CourseContent.class,Course.class, Category.class,ActivityHistory.class},version = 1)
-@TypeConverters({Converters.class})
+@Database(entities = { userActivity.class, RepetitionKind.class, CourseContent.class, Course.class, Category.class,
+        ActivityHistory.class, StatisticsSleepSession.class, StatisticsWakeSession.class }, version = 2)
+@TypeConverters({ Converters.class })
 public abstract class ActivityRoomDB extends RoomDatabase {
 
     private static volatile ActivityRoomDB Instance;
 
-
-    //entities ===========================================================================
+    // entities
+    // ===========================================================================
 
     public abstract RepetitionKindDAO _repetitionKindDao();
+
     public abstract userActivityDAO _userActivityDAO();
+
     public abstract CourseDAO _CourseDAO();
+
     public abstract CourseContentDAO _CourseContentDAO();
+
     public abstract CategoryDAO _CategoryDAO();
+
     public abstract ActivityHistoryDAO _ActivityHistoryDAO();
 
-    //====================================================================================
+    public abstract StatisticsSleepSessionDAO statisticsSleepSessionDAO();
 
+    public abstract StatisticsWakeSessionDAO statisticsWakeSessionDAO();
 
+    // ====================================================================================
 
+    public static synchronized ActivityRoomDB getInstance(Context context) {
+        if (Instance == null) {
 
-
-    public static synchronized ActivityRoomDB getInstance(Context context){
-        if(Instance ==null){
-
-            Instance = Room.databaseBuilder(context.getApplicationContext(),ActivityRoomDB.class,"activity_db")
+            Instance = Room.databaseBuilder(context.getApplicationContext(), ActivityRoomDB.class, "activity_db")
                     .addCallback(callback)
+                    .fallbackToDestructiveMigration()
                     .build();
-
-
 
         }
 
         return Instance;
     }
 
-
-
     private static RoomDatabase.Callback callback = new RoomDatabase.Callback() {
         @Override
         public void onOpen(@NonNull SupportSQLiteDatabase db) {
             super.onOpen(db);
-            //here we initialise the Tables with known values
-            //like repetition kinds
-            //and main activity categories
-            //but we can use the room generated insert directly
+            // here we initialise the Tables with known values
+            // like repetition kinds
+            // and main activity categories
+            // but we can use the room generated insert directly
             // we need to do it as an asynchronous operation
 
             new populateDbAsync(Instance).execute();
@@ -72,43 +74,32 @@ public abstract class ActivityRoomDB extends RoomDatabase {
         }
     };
 
-
-
-
-
-
-    //this approch is deprecated
+    // this approch is deprecated
     // but am too lazy to use the executorService with handler ('~')
-    private static class populateDbAsync extends AsyncTask<Void,Void,Void>{
+    private static class populateDbAsync extends AsyncTask<Void, Void, Void> {
 
         private RepetitionKindDAO _repetitionKindDao;
         private CategoryDAO _categoryDao;
 
+        public populateDbAsync(ActivityRoomDB db) {
 
-
-
-        public populateDbAsync(ActivityRoomDB db){
-
-            _repetitionKindDao=db._repetitionKindDao();
-            _categoryDao =db._CategoryDAO();
+            _repetitionKindDao = db._repetitionKindDao();
+            _categoryDao = db._CategoryDAO();
         }
-
-
 
         @Override
         protected Void doInBackground(Void... voids) {
 
-            //populate the repetition kinds table
+            // populate the repetition kinds table
 
             long EachDayID = _repetitionKindDao.Insert(new RepetitionKind("eachday"));
             long EachMonthID = _repetitionKindDao.Insert(new RepetitionKind("eachmonth"));
             long EachDWeekID = _repetitionKindDao.Insert(new RepetitionKind("eachweek"));
             long OneTimeID = _repetitionKindDao.Insert(new RepetitionKind("onetime"));
 
-            //if we wanted we can add some default categories here
+            // if we wanted we can add some default categories here
 
-            _categoryDao.Insert(new Category("the dafault category","default",OneTimeID));
-
+            _categoryDao.Insert(new Category("the dafault category", "default", OneTimeID));
 
             return null;
         }
