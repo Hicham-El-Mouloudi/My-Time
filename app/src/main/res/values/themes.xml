@@ -11,8 +11,7 @@
         <item name="colorSurface">@color/ui_surface</item>
         
         <!-- Status Bar -->
-        <item name="android:statusBarColor">@color/ui_background</item>
-        <item name="android:windowLightStatusBar">true</item> <!-- Adjusts automatically in DayNight -->
+         <!-- Adjusts automatically in DayNight -->
         <!-- Customize your light theme here. -->
         <item name="colorPrimary">@color/primary_color</item>
         <!-- Status bar styling -->
