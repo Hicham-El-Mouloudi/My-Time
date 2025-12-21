@@ -24,7 +24,9 @@ import com.ensao.mytime.statistics.adapter.week.WeeksAdaptee;
 import com.ensao.mytime.statistics.adapter.week.WeeksAdapter;
 import com.ensao.mytime.statistics.calculation.MockSleepStatsCalculator;
 import com.ensao.mytime.statistics.calculation.MockWakeStatsCalculator;
+import com.ensao.mytime.statistics.data.StatisticsDAO;
 import com.ensao.mytime.statistics.data.StatisticsDAOProxy;
+import com.ensao.mytime.statistics.data.StatisticsDAOProxyDB;
 import com.ensao.mytime.statistics.model.DayData;
 import com.ensao.mytime.statistics.view.StatsViewGenerator;
 import com.github.mikephil.charting.charts.PieChart;
@@ -51,7 +53,7 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
     private ImageView btnCalendar;
     private TextView tvSelectedDay;
 
-    private StatisticsDAOProxy daoProxy;
+    private StatisticsDAO daoProxy;
 
     private WeeksAdaptee weeksAdaptee;
     private WeeksAdapter weeksAdapter;
@@ -73,7 +75,7 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
         View view = inflater.inflate(R.layout.fragment_statistics, container, false);
 
         // Initialize Components
-        daoProxy = new StatisticsDAOProxy();
+        daoProxy = new StatisticsDAOProxyDB(this.getActivity().getApplication(), this.getActivity());
         calendarDialog = new Dialog(getContext());
         calendarAdaptee = new CalendarDaysAdaptee(daoProxy);
         calendarAdapter = new CalendarDaysAdapter(calendarAdaptee, day -> {
