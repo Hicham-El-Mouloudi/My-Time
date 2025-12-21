@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@color/light_gray">
+    android:background="@drawable/color_background">
 
     <!-- En-tête du calendrier -->
     <TextView
@@ -13,7 +13,7 @@
         android:text="Calendrier des Sessions"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:textColor="@color/navy_blue"
+        android:textColor="@color/aurora_primary"
         android:gravity="center"
         android:layout_marginBottom="16dp" />
 
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:text="◀"
             android:textSize="18sp"
-            android:backgroundTint="@color/navy_blue"
+            android:backgroundTint="@color/aurora_primary"
             android:textColor="@color/white"
             android:layout_marginEnd="16dp" />
 
@@ -42,7 +42,7 @@
             android:text="Mois Année"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="@color/navy_blue" />
+            android:textColor="@color/aurora_primary" />
 
         <Button
             android:id="@+id/btnNextMonth"
@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:text="▶"
             android:textSize="18sp"
-            android:backgroundTint="@color/navy_blue"
+            android:backgroundTint="@color/aurora_primary"
             android:textColor="@color/white"
             android:layout_marginStart="16dp" />
 
@@ -71,7 +71,7 @@
             android:textSize="14sp"
             android:textStyle="bold"
             android:gravity="center"
-            android:textColor="@color/navy_blue" />
+            android:textColor="@color/aurora_primary" />
 
         <TextView
             android:layout_width="0dp"
@@ -81,7 +81,7 @@
             android:textSize="14sp"
             android:textStyle="bold"
             android:gravity="center"
-            android:textColor="@color/navy_blue" />
+            android:textColor="@color/aurora_primary" />
 
         <TextView
             android:layout_width="0dp"
@@ -91,7 +91,7 @@
             android:textSize="14sp"
             android:textStyle="bold"
             android:gravity="center"
-            android:textColor="@color/navy_blue" />
+            android:textColor="@color/aurora_primary" />
 
         <TextView
             android:layout_width="0dp"
@@ -101,7 +101,7 @@
             android:textSize="14sp"
             android:textStyle="bold"
             android:gravity="center"
-            android:textColor="@color/navy_blue" />
+            android:textColor="@color/aurora_primary" />
 
         <TextView
             android:layout_width="0dp"
@@ -111,7 +111,7 @@
             android:textSize="14sp"
             android:textStyle="bold"
             android:gravity="center"
-            android:textColor="@color/navy_blue" />
+            android:textColor="@color/aurora_primary" />
 
         <TextView
             android:layout_width="0dp"

@@ -32,7 +32,7 @@
         android:layout_height="200dp"
         android:text="[ Puzzle Game Placeholder ]"
         android:gravity="center"
-        android:background="#33FFFFFF"
+        android:background="@color/surface_variant"
         android:textColor="@color/text_primary"
         android:layout_marginBottom="32dp"/>
 

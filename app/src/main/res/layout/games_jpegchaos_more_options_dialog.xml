@@ -25,7 +25,7 @@
             android:layout_height="32dp"
             android:src="@android:drawable/ic_menu_rotate"
             android:contentDescription="Reset"
-            app:tint="#FF5722" />
+            app:tint="@color/error" />
 
         <TextView
             android:layout_width="0dp"
@@ -33,7 +33,7 @@
             android:layout_weight="1"
             android:text="Reset"
             android:textSize="16sp"
-            android:textColor="#333333"
+            android:textColor="@color/text_primary"
             android:layout_marginStart="16dp"/>
 
     </LinearLayout>
@@ -57,7 +57,7 @@
             android:layout_height="32dp"
             android:src="@android:drawable/ic_lock_silent_mode_off"
             android:contentDescription="Sound"
-            app:tint="#4CAF50"/>
+            app:tint="@color/success"/>
 
         <TextView
             android:layout_width="0dp"
@@ -65,7 +65,7 @@
             android:layout_weight="1"
             android:text="Sound"
             android:textSize="16sp"
-            android:textColor="#333333"
+            android:textColor="@color/text_primary"
             android:layout_marginStart="16dp"/>
 
     </LinearLayout>
@@ -89,7 +89,7 @@
             android:layout_height="32dp"
             android:src="@android:drawable/ic_media_play"
             android:contentDescription="Music"
-            app:tint="#2196F3" />
+            app:tint="@color/info" />
 
         <TextView
             android:layout_width="0dp"
@@ -97,7 +97,7 @@
             android:layout_weight="1"
             android:text="Music"
             android:textSize="16sp"
-            android:textColor="#333333"
+            android:textColor="@color/text_primary"
             android:layout_marginStart="16dp"/>
 
     </LinearLayout>
