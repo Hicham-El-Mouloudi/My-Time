@@ -1,5 +1,7 @@
 package com.ensao.mytime.alarm;
 
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -150,13 +152,13 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
             }
         }
 
-        private String getRepetitionString(int daysOfWeek) {
+        private CharSequence getRepetitionString(int daysOfWeek) {
             if (daysOfWeek == 0)
                 return "Once";
             if (daysOfWeek == 127)
                 return "Daily"; // All days selected (1+2+4+8+16+32+64 = 127)
 
-            StringBuilder sb = new StringBuilder();
+            SpannableStringBuilder sb = new SpannableStringBuilder();
             String[] shortWeekdays = new DateFormatSymbols().getShortWeekdays(); // Sun=1
             // Our bitmask: Sun=1 (1<<0), Mon=2 (1<<1), ..., Sat=64 (1<<6)
             // Calendar constants: SUNDAY=1, MONDAY=2, ... SATURDAY=7
@@ -172,16 +174,29 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
                     java.util.Calendar.SATURDAY
             };
 
+            // Weekend dark red color
+            int weekendColor = 0xFFB71C1C; // Dark red
+
             int count = 0;
             for (int i = 0; i < 7; i++) {
                 if ((daysOfWeek & (1 << i)) != 0) {
                     if (count > 0)
                         sb.append(", ");
-                    sb.append(shortWeekdays[calendarDays[i]]);
+
+                    String dayName = shortWeekdays[calendarDays[i]];
+                    int start = sb.length();
+                    sb.append(dayName);
+
+                    // Color weekends (Sunday = index 0, Saturday = index 6)
+                    if (i == 0 || i == 6) {
+                        sb.setSpan(new ForegroundColorSpan(weekendColor),
+                                start, sb.length(),
+                                SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
                     count++;
                 }
             }
-            return sb.toString();
+            return sb;
         }
     }// alarmViewHolder
 }// adapter

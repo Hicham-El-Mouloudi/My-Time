@@ -173,8 +173,11 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
                 analogClock.setScaleY(analogScale);
                 analogClock.setAlpha(analogAlpha);
 
-                // Animate digital clock: fade in as we scroll
+                // Animate digital clock: fade in and translate upward as we scroll
                 digitalClock.setAlpha(scrollProgress);
+                // Move up by 20dp worth of pixels as we collapse
+                float maxTranslation = -27 * getResources().getDisplayMetrics().density;
+                digitalClock.setTranslationY(maxTranslation * scrollProgress);
             }
         });
     }
