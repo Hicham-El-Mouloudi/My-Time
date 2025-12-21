@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Apply theme before view creation (from alarm-feature)
+
         applyTheme();
 
         super.onCreate(savedInstanceState);
@@ -101,10 +102,17 @@ public class MainActivity extends AppCompatActivity
     private void applyTheme() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String theme = prefs.getString("theme", "light");
-        if ("dark".equals(theme)) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
+        // Check the actual current night mode from configuration
+        int currentNightMode = getResources().getConfiguration().uiMode
+                & android.content.res.Configuration.UI_MODE_NIGHT_MASK;
+        boolean isDarkModeActive = (currentNightMode == android.content.res.Configuration.UI_MODE_NIGHT_YES);
+        boolean shouldBeDark = "dark".equals(theme);
+
+        // Only change the mode if it's actually different from what's currently applied
+        if (isDarkModeActive != shouldBeDark) {
+            int desiredMode = shouldBeDark ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO;
+            AppCompatDelegate.setDefaultNightMode(desiredMode);
         }
     }
 
@@ -145,6 +153,12 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences prefs = getSharedPreferences(AlarmScheduler.PREFS_NAME, Context.MODE_PRIVATE);
         boolean isSessionActive = prefs.getBoolean(AlarmScheduler.KEY_IS_SESSION_ACTIVE, false);
 
+        // Check the actual current night mode from configuration
+        int currentNightMode = getResources().getConfiguration().uiMode
+                & android.content.res.Configuration.UI_MODE_NIGHT_MASK;
+        boolean isDarkModeActive = (currentNightMode == android.content.res.Configuration.UI_MODE_NIGHT_YES);
+
+        boolean shouldBeDark;
         if (isSessionActive) {
             long now = System.currentTimeMillis();
             long sleepTime = prefs.getLong(AlarmScheduler.KEY_SLEEP_TIME, 0);
@@ -152,20 +166,19 @@ public class MainActivity extends AppCompatActivity
 
             long startTime = sleepTime - (2 * 60 * 60 * 1000);
 
-            boolean shouldBeDark;
             if (wakeUpTime > startTime) {
                 shouldBeDark = (now >= startTime && now <= wakeUpTime);
             } else {
                 shouldBeDark = (now >= startTime || now <= wakeUpTime);
             }
-
-            if (shouldBeDark) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            }
         } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            shouldBeDark = false;
+        }
+
+        // Only change the mode if it's different from the current applied mode
+        if (isDarkModeActive != shouldBeDark) {
+            int desiredMode = shouldBeDark ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO;
+            AppCompatDelegate.setDefaultNightMode(desiredMode);
         }
     }
 

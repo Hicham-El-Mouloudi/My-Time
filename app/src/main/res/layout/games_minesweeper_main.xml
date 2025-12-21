@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:id="@+id/rootLayout"
-    android:background="#1A1A2E">
+    android:background="@color/game_minesweeper_bg">
 
     <!-- Header Section -->
     <LinearLayout
@@ -33,14 +33,14 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:fontFamily="monospace"
-                android:textColor="#FFA502"/>
+                android:textColor="@color/game_minesweeper_timer"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="FLAGS"
                 android:textSize="10sp"
-                android:textColor="#6C63FF"/>
+                android:textColor="@color/game_minesweeper_accent"/>
         </LinearLayout>
 
         <!-- Flag/Reveal Mode Toggle -->
@@ -51,7 +51,7 @@
             android:src="@drawable/ic_shovel"
             android:scaleType="centerInside"
             android:padding="10dp"
-            android:backgroundTint="#6C63FF"
+            android:backgroundTint="@color/game_minesweeper_accent"
             android:layout_marginEnd="4dp"/>
 
         <!-- Spacer -->
@@ -68,7 +68,7 @@
             android:src="@drawable/ic_face_smile"
             android:scaleType="centerInside"
             android:padding="8dp"
-            android:backgroundTint="#6C63FF"/>
+            android:backgroundTint="@color/game_minesweeper_accent"/>
 
         <!-- Spacer -->
         <View
@@ -92,14 +92,14 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:fontFamily="monospace"
-                android:textColor="#00D2FF"/>
+                android:textColor="@color/game_minesweeper_info"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="SECONDS"
                 android:textSize="10sp"
-                android:textColor="#6C63FF"/>
+                android:textColor="@color/game_minesweeper_accent"/>
         </LinearLayout>
 
         <!-- Dark Mode Toggle -->
@@ -110,7 +110,7 @@
             android:src="@drawable/ic_mode_dark"
             android:scaleType="centerInside"
             android:padding="10dp"
-            android:backgroundTint="#252A3E"/>
+            android:backgroundTint="@color/game_minesweeper_button"/>
 
     </LinearLayout>
 

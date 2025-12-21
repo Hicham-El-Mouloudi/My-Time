@@ -75,8 +75,8 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
         View view = inflater.inflate(R.layout.fragment_statistics, container, false);
 
         // Initialize Components
-        //daoProxy = new StatisticsDAOProxyDB(this.getActivity().getApplication(), this.getActivity());
-        daoProxy = new StatisticsDAOProxy();
+        daoProxy = new StatisticsDAOProxyDB(this.getActivity().getApplication(), this.getActivity());
+        // daoProxy = new StatisticsDAOProxy();
         calendarDialog = new Dialog(getContext());
         calendarAdaptee = new CalendarDaysAdaptee(daoProxy);
         calendarAdapter = new CalendarDaysAdapter(calendarAdaptee, day -> {

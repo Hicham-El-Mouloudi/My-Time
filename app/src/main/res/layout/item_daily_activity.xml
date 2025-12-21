@@ -49,7 +49,7 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@android:drawable/ic_menu_delete"
         android:contentDescription="Supprimer"
-        android:tint="#FF5252"
+        android:tint="@color/error"
         android:padding="8dp" />
 
 </LinearLayout>

@@ -11,7 +11,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/light_gray"
+    android:background="@drawable/color_background"
     android:padding="16dp">
 
     <!-- Header avec titre POMODORO -->
@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/navy_blue"
+        android:background="@color/aurora_primary"
         android:padding="20dp"
         android:elevation="4dp"
         android:layout_marginBottom="24dp">
@@ -67,7 +67,7 @@
             android:text="25:00"
             android:textSize="48sp"
             android:textStyle="bold"
-            android:textColor="@color/navy_blue"
+            android:textColor="@color/aurora_primary"
             android:layout_centerInParent="true"
             android:fontFamily="monospace" />
 
@@ -88,7 +88,7 @@
             android:layout_weight="1"
             android:text="25 min"
             android:textSize="14sp"
-            android:backgroundTint="@color/navy_blue"
+            android:backgroundTint="@color/aurora_primary"
             android:textColor="@color/white"
             android:layout_marginEnd="8dp"
             android:elevation="2dp"
@@ -101,7 +101,7 @@
             android:layout_weight="1"
             android:text="45 min"
             android:textSize="14sp"
-            android:backgroundTint="@color/navy_blue"
+            android:backgroundTint="@color/aurora_primary"
             android:textColor="@color/white"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
@@ -138,7 +138,7 @@
             android:layout_weight="1"
             android:text="Start"
             android:textSize="16sp"
-            android:backgroundTint="@color/navy_blue"
+            android:backgroundTint="@color/aurora_primary"
             android:textColor="@color/white"
             android:layout_marginEnd="8dp"
             android:elevation="4dp"
@@ -180,7 +180,7 @@
         android:text="Ajouter une Matière"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:textColor="@color/navy_blue"
+        android:textColor="@color/aurora_primary"
         android:layout_marginBottom="12dp" />
 
     <LinearLayout
@@ -208,7 +208,7 @@
             android:layout_height="55dp"
             android:text="Ajouter"
             android:textSize="16sp"
-            android:backgroundTint="@color/navy_blue"
+            android:backgroundTint="@color/aurora_primary"
             android:textColor="@color/white"
             android:elevation="4dp"
             style="@style/Widget.Material3.Button" />
@@ -222,7 +222,7 @@
         android:text="Matières à Étudier"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:textColor="@color/navy_blue"
+        android:textColor="@color/aurora_primary"
         android:layout_marginBottom="12dp" />
 
     <androidx.recyclerview.widget.RecyclerView

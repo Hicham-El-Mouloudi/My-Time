@@ -22,7 +22,7 @@
             android:fontFamily="sans-serif-medium"
             android:letterSpacing="0.2"
             android:text="AURORA"
-            android:textColor="#F612172F"
+            android:textColor="@color/text_primary"
             android:textSize="24dp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            app:cardBackgroundColor="#9FA6AE"
+            app:cardBackgroundColor="@color/card_date"
             app:cardCornerRadius="12dp"
             app:cardElevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -58,7 +58,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-medium"
-                    android:textColor="#ffffff"
+                    android:textColor="@color/text_on_dark"
                     android:textSize="18sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -74,7 +74,7 @@
             app:contentPadding="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:cardBackgroundColor="#E6E7E7"
+            app:cardBackgroundColor="@color/card_quote"
             app:layout_constraintTop_toBottomOf="@id/date_card">
 
             <LinearLayout
@@ -124,7 +124,7 @@
             android:text="Invocations"
             android:textSize="18sp"
             app:cornerRadius="12dp"
-            app:backgroundTint="@color/navy_blue"
+            app:backgroundTint="@color/aurora_primary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/analog_clock" />
