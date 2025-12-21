@@ -25,7 +25,8 @@ import java.util.Locale;
 
 public class DayDetailActivity extends AppCompatActivity
         implements AddActivityDialog.OnActivityAddedListener,
-        DayActivitiesAdapter.OnActivityClickListener {
+        DayActivitiesAdapter.OnActivityClickListener,
+        EditActivityDialog.OnActivityEditedListener {
 
     private TextView dateTextView;
     private RecyclerView activitiesRecyclerView;
@@ -122,6 +123,8 @@ public class DayDetailActivity extends AppCompatActivity
             // Insert using ActivityRepo
             activityRepo.Insert(newActivity, this, insertedId -> {
                 if (insertedId > 0) {
+                    // Set the ID on the activity for future editing
+                    activity.setId(insertedId);
                     activities.add(activity);
                     adapter.notifyDataSetChanged();
                     Toast.makeText(this, "Activité ajoutée", Toast.LENGTH_SHORT).show();
@@ -138,14 +141,79 @@ public class DayDetailActivity extends AppCompatActivity
 
     @Override
     public void onActivityEdit(int position, DailyActivity activity) {
-        Toast.makeText(this, "Modifier: " + activity.getDescription(), Toast.LENGTH_SHORT).show();
+        // Open edit dialog with existing activity data
+        EditActivityDialog dialog = EditActivityDialog.newInstance(position, activity, this);
+        dialog.show(getSupportFragmentManager(), "EditActivityDialog");
+    }
+
+    @Override
+    public void onActivityEdited(int position, DailyActivity updatedActivity) {
+        // Check if activity has valid ID
+        if (updatedActivity.getId() <= 0) {
+            Toast.makeText(this, "Erreur: ID d'activité invalide", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try {
+            // Parse date and time to create timestamp
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            Date activityDate = sdf.parse(updatedActivity.getDate());
+            
+            String[] timeParts = updatedActivity.getTime().split(":");
+            int hour = Integer.parseInt(timeParts[0]);
+            int minute = Integer.parseInt(timeParts[1]);
+            
+            java.util.Calendar calendar = java.util.Calendar.getInstance();
+            calendar.setTime(activityDate);
+            calendar.set(java.util.Calendar.HOUR_OF_DAY, hour);
+            calendar.set(java.util.Calendar.MINUTE, minute);
+            calendar.set(java.util.Calendar.SECOND, 0);
+            calendar.set(java.util.Calendar.MILLISECOND, 0);
+            long timestamp = calendar.getTimeInMillis();
+            
+            // Update using ActivityRepo
+            activityRepo.Update(
+                    updatedActivity.getId(),
+                    updatedActivity.getDescription(),
+                    updatedActivity.getDescription(),
+                    timestamp,
+                    timestamp,
+                    this,
+                    success -> {
+                        if (success) {
+                            // Update local list
+                            activities.set(position, updatedActivity);
+                            adapter.notifyItemChanged(position);
+                            Toast.makeText(this, "Activité modifiée", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this, "Erreur lors de la modification", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+            );
+            
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Erreur lors de la modification", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public void onActivityDelete(int position, DailyActivity activity) {
-        activities.remove(position);
-        adapter.notifyItemRemoved(position);
-        Toast.makeText(this, "Activité supprimée", Toast.LENGTH_SHORT).show();
+        if (activity.getId() > 0) {
+            activityRepo.Delete(activity.getId(), this, success -> {
+                if (success) {
+                    activities.remove(position);
+                    adapter.notifyItemRemoved(position);
+                    Toast.makeText(this, "Activité supprimée", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Erreur lors de la suppression", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            // If ID is invalid (e.g. -1 for unsaved activity, though unlikely with current logic)
+            activities.remove(position);
+            adapter.notifyItemRemoved(position);
+        }
     }
 
     private String formatDate(String dateString) {
@@ -182,13 +250,14 @@ public class DayDetailActivity extends AppCompatActivity
             
             // Use ActivityRepo to get activities in range
             activityRepo.GetActivitiesInRange(startOfDay, endOfDay, this, dbActivities -> {
-                // Convert to DailyActivity format for adapter
+                // Convert to DailyActivity format for adapter (including ID for editing)
                 List<DailyActivity> loadedActivities = new ArrayList<>();
                 SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
                 
                 for (userActivity ua : dbActivities) {
                     String time = ua.getStartDate() != null ? timeFormat.format(ua.getStartDate()) : "00:00";
-                    loadedActivities.add(new DailyActivity(date, time, ua.getTitle()));
+                    // Include database ID for editing/deleting
+                    loadedActivities.add(new DailyActivity(ua.getId(), date, time, ua.getTitle()));
                 }
                 
                 // Update UI (already on main thread due to repo callback)
