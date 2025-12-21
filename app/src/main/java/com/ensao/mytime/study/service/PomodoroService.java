@@ -112,7 +112,9 @@ public class PomodoroService extends Service {
     }
 
     public void resumeTimer() {
-        if (!isTimerRunning && ispaused && timeLeftInMillis > 0) {
+        // Relaxed condition: if timer is not running and we have time left, we can
+        // resume
+        if (!isTimerRunning && timeLeftInMillis > 0) {
             // Resume from paused state - don't reset totalTime
             this.ispaused = false;
 
@@ -126,8 +128,7 @@ public class PomodoroService extends Service {
             Log.d("TIMER_DEBUG", "Timer repris: " + timeLeftInMillis + "ms");
         } else {
             Log.d("TIMER_DEBUG",
-                    "Impossible de reprendre - état: running=" + isTimerRunning + ", paused=" + ispaused + ", timeLeft="
-                            + timeLeftInMillis);
+                    "Impossible de reprendre - état: running=" + isTimerRunning + ", timeLeft=" + timeLeftInMillis);
         }
     }
 
