@@ -33,6 +33,8 @@ public class PomodoroService extends Service {
 
         void onTimerStarted();
 
+        void onTimerPaused();
+
         void onTimerStopped();
     }
 
@@ -70,73 +72,114 @@ public class PomodoroService extends Service {
 
     // === MÉTHODES POUR LE MINUTEUR ===
 
+    /**
+     * Start a fresh timer with the given duration.
+     * This resets all state and starts counting down from the beginning.
+     */
     public void startTimer(long duration) {
-        // ARRÊTER le timer existant s'il est en cours
+        // Cancel any existing timer first
+        cancelCurrentTimer();
+
+        // Reset all state for fresh start
+        this.totalTime = duration;
+        this.timeLeftInMillis = duration;
+        this.ispaused = false;
+
+        // Create and start the countdown
+        createAndStartCountdown(duration);
+
+        if (listener != null) {
+            listener.onTimerStarted();
+        }
+
+        Log.d("TIMER_DEBUG", "Timer démarré (fresh): " + duration + "ms");
+    }
+
+    public void pauseTimer() {
+        if (countDownTimer != null && isTimerRunning) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+            isTimerRunning = false;
+            ispaused = true;
+
+            // Notify listener about pause state
+            if (listener != null) {
+                listener.onTimerPaused();
+            }
+
+            Log.d("TIMER_DEBUG", "Timer mis en pause. Temps restant: " + timeLeftInMillis + "ms");
+        }
+    }
+
+    public void resumeTimer() {
+        if (!isTimerRunning && ispaused && timeLeftInMillis > 0) {
+            // Resume from paused state - don't reset totalTime
+            this.ispaused = false;
+
+            // Create and start countdown with remaining time
+            createAndStartCountdown(timeLeftInMillis);
+
+            if (listener != null) {
+                listener.onTimerStarted();
+            }
+
+            Log.d("TIMER_DEBUG", "Timer repris: " + timeLeftInMillis + "ms");
+        } else {
+            Log.d("TIMER_DEBUG",
+                    "Impossible de reprendre - état: running=" + isTimerRunning + ", paused=" + ispaused + ", timeLeft="
+                            + timeLeftInMillis);
+        }
+    }
+
+    /**
+     * Helper method to cancel the current timer if it exists.
+     */
+    private void cancelCurrentTimer() {
         if (countDownTimer != null) {
             countDownTimer.cancel();
+            countDownTimer = null;
         }
-        this.totalTime = duration;
-        if (!ispaused)
-            this.timeLeftInMillis = duration;
-        ispaused = false;
+    }
+
+    /**
+     * Helper method to create and start a new CountDownTimer.
+     * This centralizes the timer creation logic.
+     */
+    private void createAndStartCountdown(long durationMillis) {
         this.isTimerRunning = true;
 
-        countDownTimer = new CountDownTimer(timeLeftInMillis, 1000) {
+        countDownTimer = new CountDownTimer(durationMillis, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                timeLeftInMillis = millisUntilFinished;
-                if (listener != null) {
-                    listener.onTimerTick(millisUntilFinished);
+                // Only update if still running (prevents ghost ticks after cancel)
+                if (isTimerRunning) {
+                    timeLeftInMillis = millisUntilFinished;
+                    if (listener != null) {
+                        listener.onTimerTick(millisUntilFinished);
+                    }
+                    Log.d("TIMER_DEBUG", "Tick: " + millisUntilFinished + "ms");
+                    updateNotification(millisUntilFinished);
                 }
-                Log.d("  ", millisUntilFinished + "  ");
-                updateNotification(millisUntilFinished);
             }
 
             @Override
             public void onFinish() {
                 timeLeftInMillis = 0;
                 isTimerRunning = false;
+                ispaused = false;
                 if (listener != null) {
                     listener.onTimerFinished();
                 }
                 updateNotification(0);
             }
         }.start();
-
-        if (listener != null) {
-            listener.onTimerStarted();
-        }
-
-        Log.d("TIMER_DEBUG", "Timer démarré: " + duration + "ms");
-    }
-
-    public void pauseTimer() {
-        if (countDownTimer != null && isTimerRunning) {
-            countDownTimer.cancel();
-            isTimerRunning = false;
-            ispaused = true;
-            countDownTimer = null;
-            Log.d("TIMER_DEBUG", "Timer mis en pause. Temps restant: " + timeLeftInMillis + "ms");
-        }
-    }
-
-    public void resumeTimer() {
-        if (!isTimerRunning && timeLeftInMillis > 0) {
-            // Redémarrer avec le temps restant
-            startTimer(timeLeftInMillis);
-            Log.d("TIMER_DEBUG", "Timer repris: " + timeLeftInMillis + "ms");
-        } else {
-            Log.d("TIMER_DEBUG",
-                    "Impossible de reprendre - état: running=" + isTimerRunning + ", timeLeft=" + timeLeftInMillis);
-        }
     }
 
     public void stopTimer() {
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-            countDownTimer = null;
-        }
+        cancelCurrentTimer();
+
         isTimerRunning = false;
+        ispaused = false; // Reset paused state on stop
         timeLeftInMillis = totalTime;
 
         if (listener != null) {
@@ -224,9 +267,7 @@ public class PomodoroService extends Service {
     @Override
     public void onDestroy() {
         // Arrêter le timer si running
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
+        cancelCurrentTimer();
 
         // Notifier l'arrêt
         if (listener != null) {
