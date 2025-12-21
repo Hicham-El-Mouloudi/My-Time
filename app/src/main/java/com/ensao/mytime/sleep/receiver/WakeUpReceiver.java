@@ -9,6 +9,7 @@ import android.util.Log;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.ensao.mytime.home.AlarmScheduler;
+import com.ensao.mytime.statistics.StatisticsHelper;
 
 public class WakeUpReceiver extends BroadcastReceiver {
 
@@ -16,10 +17,13 @@ public class WakeUpReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent == null || !ACTION_WAKE_UP.equals(intent.getAction())) return;
+        if (intent == null || !ACTION_WAKE_UP.equals(intent.getAction()))
+            return;
 
         Log.d("WakeUpReceiver", "Réveil détecté : Fin de la session de nuit.");
 
+        // Save sleep statistics before resetting the session
+        StatisticsHelper.saveSleepStatistics(context);
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
@@ -31,9 +35,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
         editor.remove(AlarmScheduler.KEY_PREP_START_TIME);
         editor.apply();
 
-
         AlarmScheduler.cancelSleepPreparation(context);
-
 
         Log.d("WakeUpReceiver", "Session désactivée avec succès.");
     }

@@ -183,7 +183,9 @@ public class DayStatisticsViewBuilder {
                 new SleepStructureAddOn(sleepView, sleepStats); // Logic in constructor
                 new SleepStyleAddOn(sleepView); // Logic in constructor
 
-                updatePieChart(pbQuality, pbQualityBackground, day.getSleepEfficiency(), false, COLOR_SLEEP);
+                // Calculate Sleep Quality Dynamically
+                int quality = calculateSleepQuality(day.getSleepDuration());
+                updatePieChart(pbQuality, pbQualityBackground, quality, false, COLOR_SLEEP);
 
             } else {
                 if (unavailableSleepLayoutId != 0) {
@@ -201,7 +203,9 @@ public class DayStatisticsViewBuilder {
                 new WakeStructureAddOn(wakeView, wakeStats);
                 new WakeStyleAddOn(wakeView);
 
-                updatePieChart(pbQuality, pbQualityBackground, day.getWakeEfficiency(), false, COLOR_WAKE);
+                // Calculate Wake Quality Dynamically
+                int quality = calculateWakeQuality(day.getWakeLatency());
+                updatePieChart(pbQuality, pbQualityBackground, quality, false, COLOR_WAKE);
             } else {
                 if (unavailableWakeLayoutId != 0) {
                     View emptyView = LayoutInflater.from(context).inflate(unavailableWakeLayoutId, container, false);
@@ -210,6 +214,26 @@ public class DayStatisticsViewBuilder {
                 updatePieChart(pbQuality, pbQualityBackground, 0, true, COLOR_WAKE);
             }
         }
+    }
+
+    private int calculateSleepQuality(float hoursSlept) {
+        float normalRange = 8.0f; // 8 hours target
+        float quality = hoursSlept / normalRange;
+        if (quality > 1.0f)
+            quality = 1.0f;
+        return (int) (quality * 100);
+    }
+
+    private int calculateWakeQuality(int wakeLatencyMins) {
+        float normalThreshold = 10.0f; // 10 minutes target response
+        if (wakeLatencyMins <= 0)
+            wakeLatencyMins = 1; // Avoid division by zero
+        // Wake quality is better if latency is lower
+        // Formula: Threshold / Actual
+        float quality = normalThreshold / (float) wakeLatencyMins;
+        if (quality > 1.0f)
+            quality = 1.0f;
+        return (int) (quality * 100);
     }
 
     // Helper for PieChart - borrowing from original logic or create a helper
