@@ -2,7 +2,6 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.MyTime" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Colors -->
-        <item name="alarm_colorPrimary">@color/brand_primary</item>
         <item name="colorOnPrimary">@color/brand_on_primary</item>
         <item name="colorSecondary">@color/brand_primary</item>
         <item name="colorOnSecondary">@color/brand_on_primary</item>
@@ -69,6 +68,7 @@
         <item name="android:textColor">@color/sudoku_primary</item>
         <item name="android:textSize">24sp</item>
         <item name="android:textStyle">bold</item>
+    </style>
     <style name="RoundedImageView" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">16dp</item>
