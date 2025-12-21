@@ -66,6 +66,11 @@
             android:exported="false"
             android:foregroundServiceType="mediaPlayback" />
 
+        <service
+            android:name=".study.service.PomodoroService"
+            android:enabled="true"
+            android:exported="false" />
+
         <activity
             android:name=".alarm.AlarmFullScreenUI"
             android:exported="true"
