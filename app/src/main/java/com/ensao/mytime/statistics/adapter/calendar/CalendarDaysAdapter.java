@@ -1,5 +1,7 @@
 package com.ensao.mytime.statistics.adapter.calendar;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,7 @@ import com.ensao.mytime.statistics.adapter.OnDayClickListener;
 import com.ensao.mytime.statistics.model.DayData;
 
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -24,15 +27,30 @@ public class CalendarDaysAdapter extends RecyclerView.Adapter<CalendarDaysAdapte
     private final Calendar calendar;
     private int selectedMonth;
     private int selectedYear;
+    private Handler mainHandler;
 
     public CalendarDaysAdapter(CalendarDaysAdaptee adaptee, OnDayClickListener listener) {
         this.adaptee = adaptee;
         this.listener = listener;
-        // Initial load for current month (example)
+        this.days = new ArrayList<>();
+        this.mainHandler = new Handler(Looper.getMainLooper());
+
+        // Initial load for current month
         calendar = Calendar.getInstance();
         selectedMonth = calendar.get(Calendar.MONTH);
         selectedYear = calendar.get(Calendar.YEAR);
-        this.days = adaptee.getDaysForMonth(calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR));
+        loadDaysForCurrentMonth();
+    }
+
+    private void loadDaysForCurrentMonth() {
+        adaptee.getDaysForMonth(calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR), loadedDays -> {
+            mainHandler.post(() -> {
+                this.days = loadedDays;
+                this.selectedMonth = calendar.get(Calendar.MONTH);
+                this.selectedYear = calendar.get(Calendar.YEAR);
+                notifyDataSetChanged();
+            });
+        });
     }
 
     public int getSelectedMonth() {
@@ -47,13 +65,6 @@ public class CalendarDaysAdapter extends RecyclerView.Adapter<CalendarDaysAdapte
         return calendar;
     }
 
-    private void setDays(List<DayData> days) {
-        this.days = days;
-        this.selectedMonth = calendar.get(Calendar.MONTH);
-        this.selectedYear = calendar.get(Calendar.YEAR);
-        notifyDataSetChanged();
-    }
-
     public void nextMonth() {
         // Prevent navigation past current month
         Calendar now = Calendar.getInstance();
@@ -63,32 +74,41 @@ public class CalendarDaysAdapter extends RecyclerView.Adapter<CalendarDaysAdapte
             return; // Already at current month or beyond, don't advance
         }
         calendar.add(Calendar.MONTH, 1);
-        setDays(adaptee.getDaysForMonth(calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR)));
+        loadDaysForCurrentMonth();
     }
 
     public void previousMonth() {
         calendar.add(Calendar.MONTH, -1);
-        setDays(adaptee.getDaysForMonth(calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR)));
+        loadDaysForCurrentMonth();
     }
 
     public void initializeDayContentOfListener() {
-        int currentDayIndex = calendar.get(Calendar.DAY_OF_MONTH) - 1; // -1 because list is 0-indexed
-        if (currentDayIndex >= 0 && currentDayIndex < days.size()) {
-            listener.onDayClick(days.get(currentDayIndex));
-        }
+        // Load current month and then initialize the listener with today
+        adaptee.getDaysForMonth(calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR), loadedDays -> {
+            mainHandler.post(() -> {
+                this.days = loadedDays;
+                int currentDayIndex = calendar.get(Calendar.DAY_OF_MONTH) - 1; // -1 because list is 0-indexed
+                if (currentDayIndex >= 0 && currentDayIndex < days.size()) {
+                    listener.onDayClick(days.get(currentDayIndex));
+                }
+            });
+        });
     }
 
     @NonNull
     @Override
     public DayViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.statistics_item_calendar_day, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.statistics_item_calendar_day, parent,
+                false);
         return new DayViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull DayViewHolder holder, int position) {
-        DayData day = days.get(position);
-        holder.bind(day, listener);
+        if (position < days.size()) {
+            DayData day = days.get(position);
+            holder.bind(day, listener);
+        }
     }
 
     @Override
