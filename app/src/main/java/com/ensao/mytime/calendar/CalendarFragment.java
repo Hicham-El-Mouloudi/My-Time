@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -28,7 +28,7 @@ public class CalendarFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+            Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
 
         // Initialisation avec les bons IDs de votre layout
@@ -51,9 +51,10 @@ public class CalendarFragment extends Fragment {
         String monthYear = new SimpleDateFormat("MM-yyyy", Locale.getDefault())
                 .format(currentCalendar.getTime());
 
-        // MODIFICATION : Utilisation de OnDateClickListener avec ouverture de DayDetailActivity
+        // MODIFICATION : Utilisation de OnDateClickListener avec ouverture de
+        // DayDetailActivity
         calendarAdapter = new CalendarAdapter(calendarDays,
-                new CalendarAdapter.OnDateClickListener(){
+                new CalendarAdapter.OnDateClickListener() {
                     @Override
                     public void onDateClick(CalendarDay day) {
                         // Vérifier si c'est un jour du mois courant
@@ -80,8 +81,8 @@ public class CalendarFragment extends Fragment {
 
     private void setupNavigationButtons(View view) {
         // Utiliser les bons IDs de votre layout
-        Button btnPreviousMonth = view.findViewById(R.id.btnPreviousMonth);
-        Button btnNextMonth = view.findViewById(R.id.btnNextMonth);
+        ImageButton btnPreviousMonth = view.findViewById(R.id.btnPreviousMonth);
+        ImageButton btnNextMonth = view.findViewById(R.id.btnNextMonth);
 
         if (btnPreviousMonth != null) {
             btnPreviousMonth.setOnClickListener(v -> {
@@ -107,7 +108,7 @@ public class CalendarFragment extends Fragment {
 
             // Créer un nouvel adapter avec le nouveau mois/année
             calendarAdapter = new CalendarAdapter(calendarDays,
-                    new CalendarAdapter.OnDateClickListener(){
+                    new CalendarAdapter.OnDateClickListener() {
                         @Override
                         public void onDateClick(CalendarDay day) {
                             if (day.isCurrentMonth()) {
@@ -121,8 +122,7 @@ public class CalendarFragment extends Fragment {
                             }
                         }
                     },
-                    monthYear
-            );
+                    monthYear);
             calendarRecyclerView.setAdapter(calendarAdapter);
         }
         updateMonthYearHeader();
@@ -148,7 +148,8 @@ public class CalendarFragment extends Fragment {
 
         // Ajuster pour que lundi soit le premier jour de la semaine
         int emptyDays = (firstDayOfWeek - Calendar.MONDAY + 7) % 7;
-        if (emptyDays < 0) emptyDays += 7;
+        if (emptyDays < 0)
+            emptyDays += 7;
 
         // Ajouter les jours vides du mois précédent
         Calendar prevMonth = (Calendar) calendar.clone();
