@@ -34,10 +34,58 @@ public class RingtoneService extends Service {
     private android.os.Handler handler;
     private Runnable autoSnoozeRunnable;
 
+    // Puzzle mode state tracking
+    private static boolean isPuzzleActive = false;
+    private static int puzzleAlarmId = -1;
+    private android.content.BroadcastReceiver puzzleReceiver;
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        registerPuzzleReceiver();
+    }
+
+    private void registerPuzzleReceiver() {
+        puzzleReceiver = new android.content.BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent == null || intent.getAction() == null)
+                    return;
+
+                int alarmId = intent.getIntExtra(Puzzleable.EXTRA_ALARM_ID, -1);
+
+                switch (intent.getAction()) {
+                    case Puzzleable.ACTION_PUZZLE_STARTED:
+                        // User clicked stop on puzzle alarm, entering puzzle mode
+                        isPuzzleActive = true;
+                        puzzleAlarmId = alarmId;
+                        break;
+                    case Puzzleable.ACTION_PUZZLE_COMPLETED:
+                        // Puzzle solved, deactivate alarm
+                        isPuzzleActive = false;
+                        puzzleAlarmId = -1;
+                        // Stop service if we're still running
+                        stopSelf();
+                        break;
+                }
+            }
+        };
+
+        android.content.IntentFilter filter = new android.content.IntentFilter();
+        filter.addAction(Puzzleable.ACTION_PUZZLE_STARTED);
+        filter.addAction(Puzzleable.ACTION_PUZZLE_COMPLETED);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(puzzleReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            registerReceiver(puzzleReceiver, filter);
+        }
     }
 
     @Override
@@ -84,9 +132,17 @@ public class RingtoneService extends Service {
         int alarmId = intent.getIntExtra("ALARM_ID", -1);
         long alarmTime = intent.getLongExtra("ALARM_TIME", System.currentTimeMillis());
 
+        // Check if puzzle is active for this alarm - skip if user is solving puzzle
+        if (isPuzzleActive && puzzleAlarmId == alarmId) {
+            // User is actively solving puzzle for this alarm, ignore this trigger
+            return START_NOT_STICKY;
+        }
+
         if (ACTION_SNOOZE.equals(intent.getAction())) {
-            // Schedule Snooze
-            long triggerTime = System.currentTimeMillis() + (AlarmConfig.SNOOZE_DELAY_SECONDS * 1000L);
+            // Schedule Snooze - use puzzle mode delay if puzzle is active
+            int snoozeDelay = isPuzzleActive ? AlarmConfig.PUZZLE_MODE_AUTO_SNOOZE_DELAY_SECONDS
+                    : AlarmConfig.SNOOZE_DELAY_SECONDS;
+            long triggerTime = System.currentTimeMillis() + (snoozeDelay * 1000L);
             AlarmScheduler.scheduleSnooze(this, alarmId, triggerTime, 0);
             stopSelf();
             return START_NOT_STICKY;
@@ -133,10 +189,23 @@ public class RingtoneService extends Service {
         }
 
         autoSnoozeRunnable = () -> {
+            // If puzzle is active for this alarm, skip auto-snooze trigger
+            if (isPuzzleActive && puzzleAlarmId == alarmId) {
+                // Reschedule with puzzle mode delay - alarm will trigger again later
+                long triggerTime = System.currentTimeMillis()
+                        + (AlarmConfig.PUZZLE_MODE_AUTO_SNOOZE_DELAY_SECONDS * 1000L);
+                AlarmScheduler.scheduleSnooze(this, alarmId, triggerTime, autoSnoozeCount);
+                stopSelf();
+                return;
+            }
+
             // Check max auto snoozes
             if (autoSnoozeCount < AlarmConfig.MAX_AUTO_SNOOZES) {
-                // Schedule Auto Snooze with incremented count
-                long triggerTime = System.currentTimeMillis() + (AlarmConfig.AUTO_SNOOZE_DELAY_SECONDS * 1000L);
+                // Schedule Auto Snooze with incremented count - use puzzle mode delay if
+                // applicable
+                int autoSnoozeDelay = isPuzzleActive ? AlarmConfig.PUZZLE_MODE_AUTO_SNOOZE_DELAY_SECONDS
+                        : AlarmConfig.AUTO_SNOOZE_DELAY_SECONDS;
+                long triggerTime = System.currentTimeMillis() + (autoSnoozeDelay * 1000L);
                 AlarmScheduler.scheduleSnooze(this, alarmId, triggerTime, autoSnoozeCount + 1);
             } else {
                 // Limit reached, just stop (Alarm "turned down")
@@ -176,6 +245,15 @@ public class RingtoneService extends Service {
         }
         if (handler != null && autoSnoozeRunnable != null) {
             handler.removeCallbacks(autoSnoozeRunnable);
+        }
+
+        // Unregister puzzle broadcast receiver
+        if (puzzleReceiver != null) {
+            try {
+                unregisterReceiver(puzzleReceiver);
+            } catch (Exception e) {
+                // Receiver might not be registered
+            }
         }
     }
 

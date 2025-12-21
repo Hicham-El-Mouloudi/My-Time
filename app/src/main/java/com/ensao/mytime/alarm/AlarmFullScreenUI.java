@@ -139,12 +139,21 @@ public class AlarmFullScreenUI extends AppCompatActivity {
                         getApplication());
                 com.ensao.mytime.alarm.database.Alarm alarm = repository.getAlarmByIdSync(alarmId);
 
-                // Stop Ringing (Common for both)
+                // Stop Ringing (Common for both - user requested ringtone stops on click)
                 Intent serviceIntent = new Intent(this, RingtoneService.class);
                 stopService(serviceIntent);
 
                 if (alarm != null && alarm.isSleepAlarm()) {
+                    // Broadcast that puzzle mode is starting
+                    // This tells the service to use puzzle-mode auto-snooze delays
+                    // and to ignore subsequent alarm triggers while puzzle is active
+                    Intent puzzleStartIntent = new Intent(Puzzleable.ACTION_PUZZLE_STARTED);
+                    puzzleStartIntent.putExtra(Puzzleable.EXTRA_ALARM_ID, alarmId);
+                    sendBroadcast(puzzleStartIntent);
+
                     // Redirect to selected puzzle game
+                    // NOTE: Alarm deactivation happens ONLY when puzzle is solved (in game
+                    // activity)
                     String puzzleType = alarm.getPuzzleType();
                     Intent puzzleIntent;
                     switch (puzzleType != null ? puzzleType : "jpegchaos") {
