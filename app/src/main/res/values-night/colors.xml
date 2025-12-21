@@ -4,151 +4,151 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- ========== PRIMARY BRAND COLORS (Aurora Theme - Dark) ========== -->
-    <color name="aurora_primary">#7B7FE8</color>
-    <color name="aurora_primary_light">#9B9FFF</color>
-    <color name="aurora_primary_dark">#5E60CE</color>
+    <!-- ========== PRIMARY BRAND COLORS (Deep Blue Theme - Dark Mode) ========== -->
+    <color name="aurora_primary">#8da9c4</color>
+    <color name="aurora_primary_light">#a8c4df</color>
+    <color name="aurora_primary_dark">#6b8fb3</color>
 
     <!-- ========== WAKE THEME (Morning/Alarm) ========== -->
-    <color name="wake_primary">#48CAE4</color>
-    <color name="wake_secondary">#00B4D8</color>
-    <color name="wake_soft">#023E8A</color>
-    <color name="wake_chart">#48CAE4</color>
+    <color name="wake_primary">#8da9c4</color>
+    <color name="wake_secondary">#a8c4df</color>
+    <color name="wake_soft">#13315c</color>
+    <color name="wake_chart">#8da9c4</color>
 
     <!-- ========== SLEEP THEME (Night/Rest) ========== -->
-    <color name="sleep_primary">#9D4EDD</color>
-    <color name="sleep_secondary">#7B2CBF</color>
-    <color name="sleep_soft">#240046</color>
-    <color name="sleep_chart">#9D4EDD</color>
+    <color name="sleep_primary">#8da9c4</color>
+    <color name="sleep_secondary">#6b8fb3</color>
+    <color name="sleep_soft">#0b2545</color>
+    <color name="sleep_chart">#8da9c4</color>
 
     <!-- ========== BACKGROUND COLORS ========== -->
-    <color name="bg_primary">#0D1117</color>
-    <color name="bg_secondary">#161B22</color>
-    <color name="bg_tertiary">#21262D</color>
-    <color name="bg_gradient_start">#0D1117</color>
-    <color name="bg_gradient_end">#161B22</color>
+    <color name="bg_primary">#0b2545</color>
+    <color name="bg_secondary">#13315c</color>
+    <color name="bg_tertiary">#1a4270</color>
+    <color name="bg_gradient_start">#0b2545</color>
+    <color name="bg_gradient_end">#13315c</color>
 
     <!-- ========== SURFACE COLORS ========== -->
-    <color name="surface_color">#161B22</color>
-    <color name="surface_variant">#21262D</color>
-    <color name="surface_elevated">#1C2128</color>
+    <color name="surface_color">#13315c</color>
+    <color name="surface_variant">#1a4270</color>
+    <color name="surface_elevated">#1e4976</color>
 
     <!-- ========== TEXT COLORS ========== -->
-    <color name="text_primary">#F0F6FC</color>
-    <color name="text_secondary">#8B949E</color>
-    <color name="text_tertiary">#484F58</color>
-    <color name="text_on_primary">#FFFFFF</color>
+    <color name="text_primary">#eef4ed</color>
+    <color name="text_secondary">#8da9c4</color>
+    <color name="text_tertiary">#5a7a9a</color>
+    <color name="text_on_primary">#0b2545</color>
     <color name="text_on_dark">#FFFFFF</color>
 
     <!-- ========== SEMANTIC COLORS ========== -->
-    <color name="success">#3FB950</color>
-    <color name="warning">#D29922</color>
-    <color name="error">#F85149</color>
-    <color name="info">#58A6FF</color>
+    <color name="success">#4caf50</color>
+    <color name="warning">#f9a825</color>
+    <color name="error">#ef5350</color>
+    <color name="info">#8da9c4</color>
 
     <!-- ========== CARD COLORS ========== -->
-    <color name="card_background">#161B22</color>
-    <color name="card_stroke">#30363D</color>
-    <color name="card_elevated">#1C2128</color>
-    <color name="card_date">#8B949E</color>
-    <color name="card_quote">#21262D</color>
+    <color name="card_background">#13315c</color>
+    <color name="card_stroke">#1a4270</color>
+    <color name="card_elevated">#1e4976</color>
+    <color name="card_date">#8da9c4</color>
+    <color name="card_quote">#1a4270</color>
 
     <!-- ========== NAVIGATION ========== -->
-    <color name="nav_bar_color">#161B22</color>
-    <color name="nav_icon_active">#7B7FE8</color>
-    <color name="nav_icon_inactive">#484F58</color>
+    <color name="nav_bar_color">#0b2545</color>
+    <color name="nav_icon_active">#8da9c4</color>
+    <color name="nav_icon_inactive">#5a7a9a</color>
 
     <!-- ========== BUTTON COLORS ========== -->
-    <color name="button_primary">#7B7FE8</color>
-    <color name="button_primary_pressed">#5E60CE</color>
-    <color name="button_secondary">#48CAE4</color>
-    <color name="button_danger">#F85149</color>
-    <color name="button_disabled">#30363D</color>
-    <color name="button_text">#FFFFFF</color>
+    <color name="button_primary">#8da9c4</color>
+    <color name="button_primary_pressed">#6b8fb3</color>
+    <color name="button_secondary">#134074</color>
+    <color name="button_danger">#ef5350</color>
+    <color name="button_disabled">#3a5a7a</color>
+    <color name="button_text">#0b2545</color>
 
     <!-- ========== GAME/PUZZLE COLORS ========== -->
-    <color name="game_accent">#818CF8</color>
-    <color name="game_accent_light">#A5B4FC</color>
-    <color name="game_highlight">#312E81</color>
-    <color name="game_bg">#1E293B</color>
-    <color name="game_grid_line">#334155</color>
-    <color name="game_grid_thick">#94A3B8</color>
-    <color name="game_cell_selected">#312E81</color>
-    <color name="game_cell_error">#7F1D1D</color>
-    <color name="game_number_clue">#F1F5F9</color>
-    <color name="game_number_user">#A78BFA</color>
-    <color name="game_note">#64748B</color>
-    <color name="game_minesweeper_bg">#0D1117</color>
-    <color name="game_minesweeper_accent">#818CF8</color>
-    <color name="game_minesweeper_info">#48CAE4</color>
-    <color name="game_minesweeper_timer">#F59E0B</color>
-    <color name="game_minesweeper_button">#21262D</color>
-    <color name="game_win_gold">#FFD700</color>
+    <color name="game_accent">#8da9c4</color>
+    <color name="game_accent_light">#a8c4df</color>
+    <color name="game_highlight">#1a4270</color>
+    <color name="game_bg">#0b2545</color>
+    <color name="game_grid_line">#1a4270</color>
+    <color name="game_grid_thick">#8da9c4</color>
+    <color name="game_cell_selected">#1e4976</color>
+    <color name="game_cell_error">#5c2020</color>
+    <color name="game_number_clue">#eef4ed</color>
+    <color name="game_number_user">#8da9c4</color>
+    <color name="game_note">#5a7a9a</color>
+    <color name="game_minesweeper_bg">#0b2545</color>
+    <color name="game_minesweeper_accent">#8da9c4</color>
+    <color name="game_minesweeper_info">#8da9c4</color>
+    <color name="game_minesweeper_timer">#f9a825</color>
+    <color name="game_minesweeper_button">#13315c</color>
+    <color name="game_win_gold">#f9a825</color>
 
     <!-- ========== CALENDAR/STATISTICS COLORS ========== -->
-    <color name="calendar_header">#7B7FE8</color>
-    <color name="calendar_weekday">#7B7FE8</color>
-    <color name="calendar_date">#F0F6FC</color>
-    <color name="calendar_selected">#7B7FE8</color>
-    <color name="day_selected_bg">#7B7FE8</color>
-    <color name="weekend_highlight">#F85149</color>
+    <color name="calendar_header">#8da9c4</color>
+    <color name="calendar_weekday">#8da9c4</color>
+    <color name="calendar_date">#eef4ed</color>
+    <color name="calendar_selected">#8da9c4</color>
+    <color name="day_selected_bg">#8da9c4</color>
+    <color name="weekend_highlight">#ef5350</color>
 
     <!-- ========== TOGGLE/SWITCH COLORS ========== -->
-    <color name="toggle_active">#7B7FE8</color>
-    <color name="toggle_inactive">#30363D</color>
+    <color name="toggle_active">#8da9c4</color>
+    <color name="toggle_inactive">#3a5a7a</color>
 
     <!-- ========== ALARM SPECIFIC ========== -->
-    <color name="alarm_stop_start">#FF6B6B</color>
-    <color name="alarm_stop_end">#EF4444</color>
-    <color name="alarm_delete">#F85149</color>
+    <color name="alarm_stop_start">#ef5350</color>
+    <color name="alarm_stop_end">#c62828</color>
+    <color name="alarm_delete">#ef5350</color>
 
     <!-- ========== LEGACY COMPATIBILITY ========== -->
-    <color name="background_color">#0D1117</color>
-    <color name="primary_color">#7B7FE8</color>
-    <color name="secondary_color">#48CAE4</color>
-    <color name="brand_primary">#7B7FE8</color>
-    <color name="brand_on_primary">#FFFFFF</color>
-    <color name="ui_background">#0D1117</color>
-    <color name="ui_surface">#161B22</color>
-    <color name="ui_card_background">#161B22</color>
-    <color name="ui_card_stroke">#30363D</color>
-    <color name="navy_blue">#F0F6FC</color>
-    <color name="light_gray">#21262D</color>
-    <color name="medium_gray">#30363D</color>
-    <color name="dark_gray">#8B949E</color>
-    <color name="gray">#8B949E</color>
-    <color name="accent_blue">#48CAE4</color>
-    <color name="dark_blue">#58A6FF</color>
-    <color name="purple_500">#7B7FE8</color>
-    <color name="purple_700">#5E60CE</color>
-    <color name="success_green">#3FB950</color>
-    <color name="primary_red">#F85149</color>
-    <color name="weekend_red">#F85149</color>
-    <color name="colorPrimary">#7B7FE8</color>
-    <color name="text_dark">#F0F6FC</color>
+    <color name="background_color">#0b2545</color>
+    <color name="primary_color">#8da9c4</color>
+    <color name="secondary_color">#8da9c4</color>
+    <color name="brand_primary">#8da9c4</color>
+    <color name="brand_on_primary">#0b2545</color>
+    <color name="ui_background">#0b2545</color>
+    <color name="ui_surface">#13315c</color>
+    <color name="ui_card_background">#13315c</color>
+    <color name="ui_card_stroke">#1a4270</color>
+    <color name="navy_blue">#eef4ed</color>
+    <color name="light_gray">#1a4270</color>
+    <color name="medium_gray">#3a5a7a</color>
+    <color name="dark_gray">#8da9c4</color>
+    <color name="gray">#5a7a9a</color>
+    <color name="accent_blue">#8da9c4</color>
+    <color name="dark_blue">#8da9c4</color>
+    <color name="purple_500">#8da9c4</color>
+    <color name="purple_700">#6b8fb3</color>
+    <color name="success_green">#4caf50</color>
+    <color name="primary_red">#ef5350</color>
+    <color name="weekend_red">#ef5350</color>
+    <color name="colorPrimary">#8da9c4</color>
+    <color name="text_dark">#eef4ed</color>
     <color name="text_light">#FFFFFF</color>
 
     <!-- ========== SUDOKU LEGACY ========== -->
     <color name="sudoku_black">#FF000000</color>
     <color name="sudoku_white">#FFFFFFFF</color>
-    <color name="sudoku_primary">#818CF8</color>
-    <color name="primary_dark">#5E60CE</color>
-    <color name="primary_light">#9B9FFF</color>
-    <color name="accent">#A5B4FC</color>
-    <color name="background">#0D1117</color>
-    <color name="surface">#161B22</color>
-    <color name="grid_background">#161B22</color>
-    <color name="grid_line">#334155</color>
-    <color name="grid_line_thick">#94A3B8</color>
-    <color name="cell_selected">#312E81</color>
-    <color name="cell_selected_border">#818CF8</color>
-    <color name="cell_error">#7F1D1D</color>
-    <color name="cell_same_number">#21262D</color>
-    <color name="number_clue">#F1F5F9</color>
-    <color name="number_user">#A78BFA</color>
-    <color name="note_text">#64748B</color>
-    <color name="button_background">#7B7FE8</color>
-    <color name="button_text_legacy">#FFFFFF</color>
-    <color name="sudoku_text_primary">#F0F6FC</color>
-    <color name="sudoku_text_secondary">#8B949E</color>
+    <color name="sudoku_primary">#8da9c4</color>
+    <color name="primary_dark">#6b8fb3</color>
+    <color name="primary_light">#a8c4df</color>
+    <color name="accent">#a8c4df</color>
+    <color name="background">#0b2545</color>
+    <color name="surface">#13315c</color>
+    <color name="grid_background">#13315c</color>
+    <color name="grid_line">#1a4270</color>
+    <color name="grid_line_thick">#8da9c4</color>
+    <color name="cell_selected">#1e4976</color>
+    <color name="cell_selected_border">#8da9c4</color>
+    <color name="cell_error">#5c2020</color>
+    <color name="cell_same_number">#1a4270</color>
+    <color name="number_clue">#eef4ed</color>
+    <color name="number_user">#8da9c4</color>
+    <color name="note_text">#5a7a9a</color>
+    <color name="button_background">#8da9c4</color>
+    <color name="button_text_legacy">#0b2545</color>
+    <color name="sudoku_text_primary">#eef4ed</color>
+    <color name="sudoku_text_secondary">#8da9c4</color>
 </resources>
