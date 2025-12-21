@@ -1,108 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Base Colors -->
+    <!-- ========== BASE COLORS ========== -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- ========== SHARED COLORS ========== -->
-    <color name="background_color">#F5F7FA</color>
+    <!-- ========== PRIMARY BRAND COLORS (Aurora Theme) ========== -->
+    <color name="aurora_primary">#5E60CE</color>
+    <color name="aurora_primary_light">#7B7FE8</color>
+    <color name="aurora_primary_dark">#4A4CB8</color>
+
+    <!-- ========== WAKE THEME (Morning/Alarm) ========== -->
+    <color name="wake_primary">#00B4D8</color>
+    <color name="wake_secondary">#0096C7</color>
+    <color name="wake_soft">#90E0EF</color>
+    <color name="wake_chart">#00B4D8</color>
+
+    <!-- ========== SLEEP THEME (Night/Rest) ========== -->
+    <color name="sleep_primary">#7B2CBF</color>
+    <color name="sleep_secondary">#5A189A</color>
+    <color name="sleep_soft">#E0AAFF</color>
+    <color name="sleep_chart">#540B0E</color>
+
+    <!-- ========== BACKGROUND COLORS ========== -->
+    <color name="bg_primary">#F8F9FA</color>
+    <color name="bg_secondary">#FFFFFF</color>
+    <color name="bg_tertiary">#E9ECEF</color>
+    <color name="bg_gradient_start">#E0E5EC</color>
+    <color name="bg_gradient_end">#F8F9FA</color>
+
+    <!-- ========== SURFACE COLORS ========== -->
+    <color name="surface_color">#FFFFFF</color>
+    <color name="surface_variant">#F1F3F5</color>
+    <color name="surface_elevated">#FFFFFF</color>
+
+    <!-- ========== TEXT COLORS ========== -->
+    <color name="text_primary">#1A1A2E</color>
+    <color name="text_secondary">#495057</color>
+    <color name="text_tertiary">#6C757D</color>
+    <color name="text_on_primary">#FFFFFF</color>
+    <color name="text_on_dark">#FFFFFF</color>
+
+    <!-- ========== SEMANTIC COLORS ========== -->
+    <color name="success">#2DC653</color>
+    <color name="warning">#F59E0B</color>
+    <color name="error">#EF4444</color>
+    <color name="info">#3B82F6</color>
+
+    <!-- ========== CARD COLORS ========== -->
+    <color name="card_background">#FFFFFF</color>
+    <color name="card_stroke">#DEE2E6</color>
+    <color name="card_elevated">#FFFFFF</color>
+    <color name="card_date">#868E96</color>
+    <color name="card_quote">#F1F3F5</color>
+
+    <!-- ========== NAVIGATION ========== -->
     <color name="nav_bar_color">#FFFFFF</color>
+    <color name="nav_icon_active">#5E60CE</color>
+    <color name="nav_icon_inactive">#6C757D</color>
 
-    <!-- ========== FROM ALARM-FEATURE ========== -->
+    <!-- ========== BUTTON COLORS ========== -->
+    <color name="button_primary">#5E60CE</color>
+    <color name="button_primary_pressed">#4A4CB8</color>
+    <color name="button_secondary">#00B4D8</color>
+    <color name="button_danger">#EF4444</color>
+    <color name="button_disabled">#CED4DA</color>
+    <color name="button_text">#FFFFFF</color>
 
-    <!-- Brand / Semantic Colors -->
-    <color name="brand_primary">#000000</color>
-    <color name="brand_on_primary">#FFFFFF</color>
+    <!-- ========== GAME/PUZZLE COLORS ========== -->
+    <color name="game_accent">#6366F1</color>
+    <color name="game_accent_light">#818CF8</color>
+    <color name="game_highlight">#EEF2FF</color>
+    <color name="game_bg">#F1F5F9</color>
+    <color name="game_grid_line">#E5E7EB</color>
+    <color name="game_grid_thick">#6B7280</color>
+    <color name="game_cell_selected">#E0E7FF</color>
+    <color name="game_cell_error">#FEE2E2</color>
+    <color name="game_number_clue">#1F2937</color>
+    <color name="game_number_user">#6366F1</color>
+    <color name="game_note">#9CA3AF</color>
+    <color name="game_minesweeper_bg">#1A1A2E</color>
+    <color name="game_minesweeper_accent">#6C63FF</color>
+    <color name="game_minesweeper_info">#00D2FF</color>
+    <color name="game_minesweeper_timer">#FFA502</color>
+    <color name="game_minesweeper_button">#252A3E</color>
+    <color name="game_win_gold">#FFD700</color>
 
-    <!-- Alarm Colors -->
+    <!-- ========== CALENDAR/STATISTICS COLORS ========== -->
+    <color name="calendar_header">#5E60CE</color>
+    <color name="calendar_weekday">#5E60CE</color>
+    <color name="calendar_date">#1A1A2E</color>
+    <color name="calendar_selected">#5E60CE</color>
+    <color name="day_selected_bg">#5E60CE</color>
+    <color name="weekend_highlight">#EF4444</color>
+
+    <!-- ========== TOGGLE/SWITCH COLORS ========== -->
+    <color name="toggle_active">#5E60CE</color>
+    <color name="toggle_inactive">#CED4DA</color>
+
+    <!-- ========== ALARM SPECIFIC ========== -->
     <color name="alarm_stop_start">#FF5252</color>
     <color name="alarm_stop_end">#D32F2F</color>
+    <color name="alarm_delete">#CF6679</color>
 
-    <!-- UI Colors (Light Mode) -->
-    <color name="ui_background">#FFFFFF</color>
-    <color name="ui_surface">#F5F5F5</color>
+    <!-- ========== LEGACY COMPATIBILITY ========== -->
+    <color name="background_color">#F8F9FA</color>
+    <color name="primary_color">#5E60CE</color>
+    <color name="secondary_color">#00B4D8</color>
+    <color name="brand_primary">#5E60CE</color>
+    <color name="brand_on_primary">#FFFFFF</color>
+    <color name="ui_background">#F8F9FA</color>
+    <color name="ui_surface">#FFFFFF</color>
     <color name="ui_card_background">#FFFFFF</color>
-    <color name="ui_card_stroke">#E0E0E0</color>
+    <color name="ui_card_stroke">#DEE2E6</color>
+    <color name="navy_blue">#1A1A2E</color>
+    <color name="light_gray">#E9ECEF</color>
+    <color name="medium_gray">#DEE2E6</color>
+    <color name="dark_gray">#495057</color>
+    <color name="gray">#FF9E9E9E</color>
+    <color name="accent_blue">#00B4D8</color>
+    <color name="dark_blue">#1a237e</color>
+    <color name="purple_500">#5E60CE</color>
+    <color name="purple_700">#4A4CB8</color>
+    <color name="success_green">#2DC653</color>
+    <color name="primary_red">#EF4444</color>
+    <color name="weekend_red">#EF4444</color>
+    <color name="colorPrimary">#5E60CE</color>
+    <color name="text_dark">#1A1A2E</color>
+    <color name="text_light">#FFFFFF</color>
 
-    <!-- Text Colors (from alarm-feature - Light Mode) -->
-    <color name="text_primary">#2C3E50</color>
-    <color name="text_secondary">#7F8C8D</color>
-    <color name="text_tertiary">#E0E0E0</color>
-
-    <!-- Sudoku Base Colors -->
+    <!-- ========== SUDOKU LEGACY ========== -->
     <color name="sudoku_black">#FF000000</color>
     <color name="sudoku_white">#FFFFFFFF</color>
-
-    <!-- Sudoku Primary Colors (Purple gradient) -->
     <color name="sudoku_primary">#6366F1</color>
-    <color name="primary_dark">#4F46E5</color>
-    <color name="primary_light">#8B5CF6</color>
-    <color name="accent">#A78BFA</color>
-
-    <!-- Sudoku Background Colors -->
-    <color name="background">#F9FAFB</color>
+    <color name="primary_dark">#4A4CB8</color>
+    <color name="primary_light">#7B7FE8</color>
+    <color name="accent">#818CF8</color>
+    <color name="background">#F8F9FA</color>
     <color name="surface">#FFFFFF</color>
-    <color name="surface_variant">#F3F4F6</color>
-
-    <!-- Grid Colors -->
     <color name="grid_background">#FFFFFF</color>
     <color name="grid_line">#E5E7EB</color>
     <color name="grid_line_thick">#6B7280</color>
-
-    <!-- Cell Colors -->
     <color name="cell_selected">#E0E7FF</color>
     <color name="cell_selected_border">#6366F1</color>
     <color name="cell_error">#FEE2E2</color>
-    <color name="cell_same_number">#F3F4F6</color>
-
-    <!-- Number Colors -->
+    <color name="cell_same_number">#F1F3F5</color>
     <color name="number_clue">#1F2937</color>
     <color name="number_user">#6366F1</color>
     <color name="note_text">#9CA3AF</color>
-
-    <!-- Button Colors -->
-    <color name="button_background">#6366F1</color>
-    <color name="button_text">#FFFFFF</color>
-    <color name="button_disabled">#D1D5DB</color>
-
-    <!-- Sudoku Text Colors -->
-    <color name="sudoku_text_primary">#111827</color>
-    <color name="sudoku_text_secondary">#6B7280</color>
-
-    <!-- Status Colors -->
-    <color name="success">#10B981</color>
-    <color name="error">#EF4444</color>
-    <color name="warning">#F59E0B</color>
-
-    <!-- ========== FROM MAIN ========== -->
-
-    <!-- Main Semantic Colors -->
-    <color name="primary_color">#4A90E2</color>
-    <color name="secondary_color">#50E3C2</color>
-    <color name="surface_color">#FFFFFF</color>
-
-    <!-- Main Text Colors (prefixed to avoid conflict) -->
-    <color name="text_dark">#2C3E50</color>
-    <color name="text_light">#FFFFFF</color>
-
-    <!-- Gray Palette -->
-    <color name="navy_blue">#2C3E50</color>
-    <color name="light_gray">#ECF0F1</color>
-    <color name="medium_gray">#BDC3C7</color>
-    <color name="dark_gray">#7F8C8D</color>
-    <color name="gray">#FF9E9E9E</color>
-
-    <!-- Accent Colors -->
-    <color name="accent_blue">#3498DB</color>
-    <color name="dark_blue">#1a237e</color>
-
-    <!-- Purple Palette -->
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-
-    <!-- Special Colors -->
-    <color name="weekend_red">#FFD32F2F</color>
-    <color name="success_green">#48DE0E</color>
-    <color name="primary_red">#FF1201</color>
-    <color name="colorPrimary">#C20AEC</color>
+    <color name="button_background">#5E60CE</color>
+    <color name="button_text_legacy">#FFFFFF</color>
+    <color name="sudoku_text_primary">#1A1A2E</color>
+    <color name="sudoku_text_secondary">#495057</color>
 </resources>

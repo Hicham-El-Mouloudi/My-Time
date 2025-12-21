@@ -1,22 +1,39 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.MyTime" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Colors -->
-        <item name="colorOnPrimary">@color/brand_on_primary</item>
-        <item name="colorSecondary">@color/brand_primary</item>
-        <item name="colorOnSecondary">@color/brand_on_primary</item>
+        <!-- Primary Colors -->
+        <item name="colorPrimary">@color/aurora_primary</item>
+        <item name="colorOnPrimary">@color/text_on_primary</item>
+        <item name="colorPrimaryContainer">@color/aurora_primary_light</item>
+        <item name="colorOnPrimaryContainer">@color/text_primary</item>
         
-        <!-- Backgrounds -->
-        <item name="android:colorBackground">@color/ui_background</item>
-        <item name="colorSurface">@color/ui_surface</item>
+        <!-- Secondary Colors -->
+        <item name="colorSecondary">@color/wake_primary</item>
+        <item name="colorOnSecondary">@color/text_on_primary</item>
+        <item name="colorSecondaryContainer">@color/wake_soft</item>
+        <item name="colorOnSecondaryContainer">@color/text_primary</item>
+        
+        <!-- Tertiary Colors -->
+        <item name="colorTertiary">@color/sleep_primary</item>
+        <item name="colorOnTertiary">@color/text_on_primary</item>
+        
+        <!-- Background & Surface -->
+        <item name="android:colorBackground">@color/bg_primary</item>
+        <item name="colorSurface">@color/surface_color</item>
+        <item name="colorSurfaceVariant">@color/surface_variant</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="colorOnSurfaceVariant">@color/text_secondary</item>
+        
+        <!-- Error -->
+        <item name="colorError">@color/error</item>
+        <item name="colorOnError">@color/text_on_primary</item>
         
         <!-- Status Bar -->
-         <!-- Adjusts automatically in DayNight -->
-        <!-- Customize your light theme here. -->
-        <item name="colorPrimary">@color/primary_color</item>
-        <!-- Status bar styling -->
-        <item name="android:statusBarColor">@color/surface_color</item>
+        <item name="android:statusBarColor">@color/bg_primary</item>
         <item name="android:windowLightStatusBar">true</item>
+        
+        <!-- Navigation Bar -->
+        <item name="android:navigationBarColor">@color/nav_bar_color</item>
     </style>
 
     <style name="Theme.MyTime" parent="Base.Theme.MyTime" />
@@ -36,7 +53,7 @@
         <item name="background">@drawable/selector_day_toggle_background</item>
     </style>
 
-    <!-- Weekend style with dark red highlight -->
+    <!-- Weekend style with highlight -->
     <style name="DayToggleWeekend" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:layout_width">36dp</item>
         <item name="android:layout_height">36dp</item>
@@ -51,9 +68,11 @@
         <item name="android:background">@drawable/selector_day_toggle_background_weekend</item>
         <item name="background">@drawable/selector_day_toggle_background_weekend</item>
     </style>
+    
     <style name="Base.Theme.Sudoku" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/game_accent</item>
+        <item name="colorSecondary">@color/game_accent_light</item>
+        <item name="android:colorBackground">@color/game_bg</item>
     </style>
 
     <style name="Theme.Sudoku" parent="Base.Theme.Sudoku" />
@@ -64,10 +83,11 @@
         <item name="android:layout_weight">1</item>
         <item name="android:layout_margin">2dp</item>
         <item name="android:background">?attr/selectableItemBackground</item>
-        <item name="android:textColor">@color/sudoku_primary</item>
+        <item name="android:textColor">@color/game_accent</item>
         <item name="android:textSize">24sp</item>
         <item name="android:textStyle">bold</item>
     </style>
+    
     <style name="RoundedImageView" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">16dp</item>
