@@ -28,8 +28,11 @@ public class PomodoroService extends Service {
     // Interface pour la communication avec le ViewModel
     public interface PomodoroListener {
         void onTimerTick(long remainingTime);
+
         void onTimerFinished();
+
         void onTimerStarted();
+
         void onTimerStopped();
     }
 
@@ -73,9 +76,9 @@ public class PomodoroService extends Service {
             countDownTimer.cancel();
         }
         this.totalTime = duration;
-        if(!ispaused)
+        if (!ispaused)
             this.timeLeftInMillis = duration;
-        ispaused=false;
+        ispaused = false;
         this.isTimerRunning = true;
 
         countDownTimer = new CountDownTimer(timeLeftInMillis, 1000) {
@@ -85,7 +88,7 @@ public class PomodoroService extends Service {
                 if (listener != null) {
                     listener.onTimerTick(millisUntilFinished);
                 }
-                Log.d("  ",millisUntilFinished+"  ");
+                Log.d("  ", millisUntilFinished + "  ");
                 updateNotification(millisUntilFinished);
             }
 
@@ -107,12 +110,11 @@ public class PomodoroService extends Service {
         Log.d("TIMER_DEBUG", "Timer démarré: " + duration + "ms");
     }
 
-
     public void pauseTimer() {
         if (countDownTimer != null && isTimerRunning) {
             countDownTimer.cancel();
             isTimerRunning = false;
-            ispaused=true;
+            ispaused = true;
             Log.d("TIMER_DEBUG", "Timer mis en pause. Temps restant: " + timeLeftInMillis + "ms");
         }
     }
@@ -123,7 +125,8 @@ public class PomodoroService extends Service {
             startTimer(timeLeftInMillis);
             Log.d("TIMER_DEBUG", "Timer repris: " + timeLeftInMillis + "ms");
         } else {
-            Log.d("TIMER_DEBUG", "Impossible de reprendre - état: running=" + isTimerRunning + ", timeLeft=" + timeLeftInMillis);
+            Log.d("TIMER_DEBUG",
+                    "Impossible de reprendre - état: running=" + isTimerRunning + ", timeLeft=" + timeLeftInMillis);
         }
     }
 
@@ -156,6 +159,7 @@ public class PomodoroService extends Service {
         this.totalTime = durationInMillis;
         if (!isTimerRunning) {
             this.timeLeftInMillis = durationInMillis;
+            this.ispaused = false;
             // Mettre à jour l'affichage même si le timer ne tourne pas
             if (listener != null) {
                 listener.onTimerTick(durationInMillis);
@@ -170,8 +174,7 @@ public class PomodoroService extends Service {
             NotificationChannel channel = new NotificationChannel(
                     CHANNEL_ID,
                     "Pomodoro Timer",
-                    NotificationManager.IMPORTANCE_LOW
-            );
+                    NotificationManager.IMPORTANCE_LOW);
             channel.setDescription("Pomodoro timer notifications");
 
             NotificationManager manager = getSystemService(NotificationManager.class);

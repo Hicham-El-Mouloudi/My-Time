@@ -22,8 +22,6 @@ import java.util.ArrayList;
 public class StudySessionFragment extends Fragment {
 
     private StudyViewModel studyViewModel;
-    private PomodoroService pomodoroService;
-    private boolean isServiceBound = false;
 
     // Éléments UI - adaptés à votre layout
     private TextView tvTimer;
@@ -38,7 +36,7 @@ public class StudySessionFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+            Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_study_session, container, false);
 
         // Initialiser le ViewModel
@@ -158,8 +156,8 @@ public class StudySessionFragment extends Fragment {
 
     // Ajoutez cette méthode dans StudySessionFragment.java
     private void showCustomDurationDialog() {
-        androidx.appcompat.app.AlertDialog.Builder builder =
-                new androidx.appcompat.app.AlertDialog.Builder(requireContext());
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(
+                requireContext());
 
         builder.setTitle("Durée personnalisée");
 
@@ -204,7 +202,7 @@ public class StudySessionFragment extends Fragment {
         // Contrôles du timer
         btnStart.setOnClickListener(v -> {
             studyViewModel.startTimer();
-            Log.d("","btn start");
+            Log.d("", "btn start");
             updateButtonAppearance(true);
             updateButtonStates(true);
 
@@ -316,19 +314,10 @@ public class StudySessionFragment extends Fragment {
         if (getActivity() != null && etSubjectName != null) {
             View view = getActivity().getCurrentFocus();
             if (view != null) {
-                android.view.inputmethod.InputMethodManager imm =
-                        (android.view.inputmethod.InputMethodManager) getActivity().getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
+                android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) getActivity()
+                        .getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
-        }
-    }
-
-    public void setPomodoroService(PomodoroService service, boolean bound) {
-        this.pomodoroService = service;
-        this.isServiceBound = bound;
-
-        if (isServiceBound && pomodoroService != null) {
-            Log.d("SERVICE_DEBUG", "Service Pomodoro lié au fragment");
         }
     }
 
