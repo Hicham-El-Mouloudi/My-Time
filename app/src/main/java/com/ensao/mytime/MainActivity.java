@@ -22,9 +22,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
-
-
-import com.ensao.mytime.*;
+import androidx.preference.PreferenceManager;
 
 import com.ensao.mytime.alarm.AlarmFragment;
 import com.ensao.mytime.calendar.CalendarFragment;
@@ -38,7 +36,8 @@ import com.ensao.mytime.study.fragments.StudySessionFragment;
 import com.ensao.mytime.study.service.PomodoroService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity implements InvocationFragment.InvocationListener {
+public class MainActivity extends AppCompatActivity 
+        implements InvocationFragment.InvocationListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private AlertDialog blockedDialog = null;
     private BottomNavigationView bottomNavigationView;
@@ -68,7 +67,15 @@ public class MainActivity extends AppCompatActivity implements InvocationFragmen
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Apply theme before view creation (from alarm-feature)
+        applyTheme();
+
         super.onCreate(savedInstanceState);
+
+        // Register preference listener (from alarm-feature)
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .registerOnSharedPreferenceChangeListener(this);
+
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
@@ -94,14 +101,14 @@ public class MainActivity extends AppCompatActivity implements InvocationFragmen
             bottomNavigationView.setSelectedItemId(R.id.navigation_home);
         }
 
-        // ✅ Vérification du blocage au lancement
+        // Check for blocking on launch (from main)
         checkIntentForBlocking(getIntent());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // ✅ Mise à jour automatique du mode sombre selon l'heure
+        // Dynamic night mode based on sleep session (from main)
         checkNightModeDynamic();
     }
 
@@ -112,7 +119,26 @@ public class MainActivity extends AppCompatActivity implements InvocationFragmen
         checkIntentForBlocking(intent);
     }
 
-    // --- LOGIQUE DE BLOCAGE ---
+    // --- THEME HANDLING (from alarm-feature) ---
+
+    private void applyTheme() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String theme = prefs.getString("theme", "light");
+        if ("dark".equals(theme)) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if ("theme".equals(key)) {
+            applyTheme();
+        }
+    }
+
+    // --- BLOCKING LOGIC (from main) ---
 
     private void checkIntentForBlocking(Intent intent) {
         if (intent != null && intent.getBooleanExtra("is_blocked_mode", false)) {
@@ -121,7 +147,6 @@ public class MainActivity extends AppCompatActivity implements InvocationFragmen
     }
 
     private void showBlockedMessage() {
-        // ✅ Empêche d'avoir plusieurs boîtes de dialogue empilées
         if (blockedDialog != null && blockedDialog.isShowing()) {
             return;
         }
@@ -130,7 +155,6 @@ public class MainActivity extends AppCompatActivity implements InvocationFragmen
                 .setTitle("Mode Sommeil Actif 🌙")
                 .setMessage("Cette application est bloquée pour vous aider à mieux dormir.")
                 .setPositiveButton("Retourner à MyTime", (dialog, which) -> {
-                    // Nettoyer l'intent pour éviter que le dialogue revienne au changement de fragment
                     getIntent().removeExtra("is_blocked_mode");
                     blockedDialog = null;
                 })
@@ -138,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements InvocationFragmen
                 .show();
     }
 
-    // --- LOGIQUE MODE SOMBRE DYNAMIQUE ---
+    // --- DYNAMIC NIGHT MODE LOGIC (from main) ---
 
     public void checkNightModeDynamic() {
         SharedPreferences prefs = getSharedPreferences(AlarmScheduler.PREFS_NAME, Context.MODE_PRIVATE);
@@ -149,10 +173,8 @@ public class MainActivity extends AppCompatActivity implements InvocationFragmen
             long sleepTime = prefs.getLong(AlarmScheduler.KEY_SLEEP_TIME, 0);
             long wakeUpTime = prefs.getLong(AlarmScheduler.KEY_WAKE_UP_TIME, 0);
 
-            // Fenêtre de 2h avant le coucher
             long startTime = sleepTime - (2 * 60 * 60 * 1000);
 
-            // Gère le passage à minuit
             boolean shouldBeDark;
             if (wakeUpTime > startTime) {
                 shouldBeDark = (now >= startTime && now <= wakeUpTime);
@@ -166,16 +188,19 @@ public class MainActivity extends AppCompatActivity implements InvocationFragmen
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             }
         } else {
-            // Si la session est désactivée, retour au mode clair
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
     }
 
-    // --- LOGIQUE NAVIGATION ET SERVICES ---
+    // --- NAVIGATION AND SERVICES (from main + alarm-feature cleanup) ---
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        // Unregister preference listener (from alarm-feature)
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
+        // Unbind service (from main)
         if (isServiceBound) {
             unbindService(serviceConnection);
             isServiceBound = false;
@@ -192,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements InvocationFragmen
 
     private void startAndBindPomodoroService() {
         Intent serviceIntent = new Intent(this, PomodoroService.class);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(serviceIntent);
         } else {
             startService(serviceIntent);

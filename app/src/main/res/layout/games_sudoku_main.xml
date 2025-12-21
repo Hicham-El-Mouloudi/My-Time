@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="8dp"
+        tools:context=".MainActivity">
+
+        <!-- Top Control Bar Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/surface">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <!-- First Row: Undo/Redo + Timer + Hint -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="8dp">
+
+                    <!-- Undo/Redo Container -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="6dp"
+                        android:paddingVertical="4dp"
+                        android:layout_marginEnd="8dp">
+
+                        <ImageButton
+                            android:id="@+id/btnUndo"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:src="@drawable/ic_undo"
+                            android:contentDescription="@string/undo"
+                            app:tint="@color/sudoku_primary" />
+
+                        <ImageButton
+                            android:id="@+id/btnRedo"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:src="@drawable/ic_redo"
+                            android:contentDescription="Redo"
+                            android:layout_marginStart="4dp"
+                            app:tint="@color/sudoku_primary" />
+                    </LinearLayout>
+
+                    <!-- Timer (Centered) -->
+                    <TextView
+                        android:id="@+id/timerText"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="00:00"
+                        android:textColor="@color/sudoku_primary"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:fontFamily="monospace"
+                        android:gravity="center"
+                        android:letterSpacing="0.05" />
+
+                    <!-- Hint Section -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="6dp"
+                        android:layout_marginStart="8dp">
+
+                        <ImageButton
+                            android:id="@+id/btnHint"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:src="@drawable/ic_hint"
+                            android:contentDescription="@string/hint"
+                            app:tint="@color/sudoku_primary" />
+
+                        <TextView
+                            android:id="@+id/hintCountText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="3"
+                            android:textColor="@color/sudoku_primary"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:layout_marginStart="6dp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/grid_line"
+                    android:layout_marginVertical="6dp" />
+
+                <!-- Second Row: Theme Toggle + Refresh + Difficulty -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:paddingTop="2dp">
+
+                    <ImageButton
+                        android:id="@+id/btnThemeToggle"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_dark_mode"
+                        android:contentDescription="Toggle Theme"
+                        android:layout_marginEnd="12dp"
+                        app:tint="@color/sudoku_primary" />
+
+                    <ImageButton
+                        android:id="@+id/btnRefresh"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_refresh"
+                        android:contentDescription="New Game"
+                        android:layout_marginEnd="12dp"
+                        app:tint="@color/sudoku_primary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Level:"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="14sp"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:id="@+id/difficultyText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/difficulty_medium"
+                        android:textColor="@color/sudoku_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Sudoku Grid Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="12dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="8dp"
+            app:cardBackgroundColor="@color/grid_background">
+
+            <com.ensao.mytime.games.sudoku.SudokuView
+                android:id="@+id/sudokuView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_margin="4dp" />
+        </androidx.cardview.widget.CardView>
+
+        <!-- Number Input Panel -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="6dp"
+            app:cardBackgroundColor="@color/surface">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="8dp">
+
+                <!-- First row: 1-5 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="6dp">
+
+                    <Button
+                        android:id="@+id/btn1"
+                        style="@style/NumberButtonStyle"
+                        android:text="@string/number_1" />
+
+                    <Button
+                        android:id="@+id/btn2"
+                        style="@style/NumberButtonStyle"
+                        android:text="@string/number_2" />
+
+                    <Button
+                        android:id="@+id/btn3"
+                        style="@style/NumberButtonStyle"
+                        android:text="@string/number_3" />
+
+                    <Button
+                        android:id="@+id/btn4"
+                        style="@style/NumberButtonStyle"
+                        android:text="@string/number_4" />
+
+                    <Button
+                        android:id="@+id/btn5"
+                        style="@style/NumberButtonStyle"
+                        android:text="@string/number_5" />
+                </LinearLayout>
+
+                <!-- Second row: 6-9 + Erase -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btn6"
+                        style="@style/NumberButtonStyle"
+                        android:text="@string/number_6" />
+
+                    <Button
+                        android:id="@+id/btn7"
+                        style="@style/NumberButtonStyle"
+                        android:text="@string/number_7" />
+
+                    <Button
+                        android:id="@+id/btn8"
+                        style="@style/NumberButtonStyle"
+                        android:text="@string/number_8" />
+
+                    <Button
+                        android:id="@+id/btn9"
+                        style="@style/NumberButtonStyle"
+                        android:text="@string/number_9" />
+
+                    <Button
+                        android:id="@+id/btnErase"
+                        style="@style/NumberButtonStyle"
+                        android:text="✕"
+                        android:textSize="20sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+</ScrollView>
