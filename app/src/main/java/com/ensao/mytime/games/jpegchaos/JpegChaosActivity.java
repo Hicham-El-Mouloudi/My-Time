@@ -61,6 +61,12 @@ public class JpegChaosActivity extends AppCompatActivity implements Puzzleable {
         hintBtn = findViewById(R.id.btn_menu_right);
         tvHintCount = findViewById(R.id.tv_hint_count);
 
+        if (!org.opencv.android.OpenCVLoader.initDebug()) {
+            android.util.Log.e(TAG, "OpenCV initialization failed!");
+        } else {
+            android.util.Log.d(TAG, "OpenCV initialized successfully");
+        }
+
         // Setup more button click listener
         moreBtn.setOnClickListener(v -> {
             playSound(soundPopup);
@@ -399,13 +405,16 @@ public class JpegChaosActivity extends AppCompatActivity implements Puzzleable {
     }
 
     private Bitmap loadScaledBitmap(String filename) throws IOException {
-        // First pass: get image dimensions only
         InputStream is = null;
-        BitmapFactory.Options options = new BitmapFactory.Options();
+        Bitmap bitmap = null;
+
+        // 1. Load Source Bitmap
         try {
             is = new java.io.BufferedInputStream(getAssets().open("images/" + filename));
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(is, null, options);
+            bitmap = BitmapFactory.decodeStream(is);
+        } catch (Exception e) {
+            android.util.Log.e(TAG, "Failed to load bitmap stream", e);
+            return null;
         } finally {
             if (is != null) {
                 try {
@@ -415,133 +424,60 @@ public class JpegChaosActivity extends AppCompatActivity implements Puzzleable {
             }
         }
 
-        int origWidth = options.outWidth;
-        int origHeight = options.outHeight;
-        android.util.Log.i(TAG, "Original image size: " + origWidth + "x" + origHeight);
-
-        // Validate that we got valid dimensions
-        if (origWidth <= 0 || origHeight <= 0) {
-            android.util.Log.e(TAG, "Failed to read image dimensions for: " + filename);
+        if (bitmap == null) {
+            android.util.Log.e(TAG, "BitmapFactory returned null for: " + filename);
             return null;
         }
 
-        // Target 2:3 ratio (portrait), aiming for reasonable size like 720x1080
+        // 2. Convert to OpenCV Mat
+        org.opencv.core.Mat srcMat = new org.opencv.core.Mat();
+        org.opencv.android.Utils.bitmapToMat(bitmap, srcMat);
+        bitmap.recycle(); // Release original bitmap immediately
+
+        // 3. Resize Logic (Strict 720x1080 target)
         int targetWidth = 720;
         int targetHeight = 1080;
 
-        // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, targetWidth, targetHeight);
-        options.inJustDecodeBounds = false;
-        // Force ARGB_8888 for best quality and to prevent gray/washed-out images
-        options.inPreferredConfig = android.graphics.Bitmap.Config.ARGB_8888;
-        // Prevent scaling based on density which can cause issues
-        options.inScaled = false;
+        int srcW = srcMat.cols();
+        int srcH = srcMat.rows();
 
-        // Second pass: decode the actual bitmap with a fresh stream
-        Bitmap bitmap = null;
-        is = null;
-        try {
-            is = new java.io.BufferedInputStream(getAssets().open("images/" + filename));
-            bitmap = BitmapFactory.decodeStream(is, null, options);
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException ignored) {
-                }
-            }
-        }
+        // Calculate scale to COVER the target area
+        double scaleW = (double) targetWidth / srcW;
+        double scaleH = (double) targetHeight / srcH;
+        double scale = Math.max(scaleW, scaleH);
 
-        // Validate the decoded bitmap
-        if (bitmap == null) {
-            android.util.Log.e(TAG, "BitmapFactory.decodeStream returned null for: " + filename);
-            return null;
-        }
+        int scaledW = (int) Math.ceil(srcW * scale);
+        int scaledH = (int) Math.ceil(srcH * scale);
 
-        // Check for potential gray/corrupted image (very small dimensions indicate a
-        // problem)
-        if (bitmap.getWidth() <= 1 || bitmap.getHeight() <= 1) {
-            android.util.Log.e(TAG, "Decoded bitmap has invalid dimensions: " +
-                    bitmap.getWidth() + "x" + bitmap.getHeight() + " for: " + filename);
-            bitmap.recycle();
-            return null;
-        }
+        org.opencv.core.Mat resizedMat = new org.opencv.core.Mat();
+        org.opencv.imgproc.Imgproc.resize(srcMat, resizedMat, new org.opencv.core.Size(scaledW, scaledH));
+        srcMat.release(); // Release source
 
-        // Handle EXIF orientation
-        bitmap = correctOrientation(bitmap, filename);
+        // 4. Center Crop Logic
+        int x = (scaledW - targetWidth) / 2;
+        int y = (scaledH - targetHeight) / 2;
 
-        // Ensure 2:3 ratio (crop/scale if needed)
-        bitmap = ensure2to3Ratio(bitmap);
+        // Safety clamp (though math should be safe)
+        x = Math.max(0, x);
+        y = Math.max(0, y);
+        if (x + targetWidth > scaledW)
+            x = 0;
+        if (y + targetHeight > scaledH)
+            y = 0;
 
-        return bitmap;
-    }
+        org.opencv.core.Rect roi = new org.opencv.core.Rect(x, y, targetWidth, targetHeight);
+        org.opencv.core.Mat croppedMat = new org.opencv.core.Mat(resizedMat, roi);
 
-    private Bitmap correctOrientation(Bitmap bitmap, String filename) {
-        try {
-            // For assets, we can't directly access EXIF, but we can check if the bitmap
-            // dimensions suggest it might be rotated
-            int width = bitmap.getWidth();
-            int height = bitmap.getHeight();
+        // 5. Output Final Bitmap
+        Bitmap resultBitmap = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888);
+        org.opencv.android.Utils.matToBitmap(croppedMat, resultBitmap);
 
-            // If width > height, the image is landscape, but all our images should be
-            // portrait
-            // So we might need to rotate
-            if (width > height) {
-                android.util.Log.i(TAG, "Image appears to be landscape, rotating to portrait");
-                android.graphics.Matrix matrix = new android.graphics.Matrix();
-                matrix.postRotate(90);
-                Bitmap rotated = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
-                if (rotated != bitmap) {
-                    bitmap.recycle();
-                }
-                return rotated;
-            }
+        // Cleanup
+        resizedMat.release();
+        croppedMat.release(); // Releases the ROI header
 
-            return bitmap;
-        } catch (Exception e) {
-            android.util.Log.e(TAG, "Error correcting orientation", e);
-            return bitmap;
-        }
-    }
-
-    private Bitmap ensure2to3Ratio(Bitmap bitmap) {
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
-
-        float currentRatio = (float) width / height;
-        float targetRatio = 2f / 3f; // 0.666...
-
-        // If already close to 2:3, return as is
-        if (Math.abs(currentRatio - targetRatio) < 0.05f) {
-            return bitmap;
-        }
-
-        // Scale to fit 2:3 ratio
-        int newWidth, newHeight;
-
-        if (currentRatio > targetRatio) {
-            // Image is too wide, crop width
-            newWidth = (int) (height * targetRatio);
-            newHeight = height;
-        } else {
-            // Image is too tall, crop height
-            newWidth = width;
-            newHeight = (int) (width / targetRatio);
-        }
-
-        // Center crop
-        int x = (width - newWidth) / 2;
-        int y = (height - newHeight) / 2;
-
-        android.util.Log.i(TAG, "Adjusting aspect ratio from " + width + "x" + height +
-                " to " + newWidth + "x" + newHeight);
-
-        Bitmap cropped = Bitmap.createBitmap(bitmap, x, y, newWidth, newHeight);
-        if (cropped != bitmap) {
-            bitmap.recycle();
-        }
-
-        return cropped;
+        android.util.Log.i(TAG, "Loaded strict bitmap: " + resultBitmap.getWidth() + "x" + resultBitmap.getHeight());
+        return resultBitmap;
     }
 
     public static int calculateInSampleSize(
@@ -559,8 +495,6 @@ public class JpegChaosActivity extends AppCompatActivity implements Puzzleable {
                 inSampleSize *= 2;
             }
         }
-
         return inSampleSize;
     }
-
 }

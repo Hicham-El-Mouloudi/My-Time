@@ -63,6 +63,9 @@ dependencies {
 
     // RecyclerView
     implementation("androidx.recyclerview:recyclerview:1.3.2")
+    
+    // OpenCV
+    implementation("com.quickbirdstudios:opencv:4.5.3.0")
 
     implementation(libs.mpandroidchart)
     testImplementation(libs.junit)

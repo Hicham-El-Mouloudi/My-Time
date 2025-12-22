@@ -193,6 +193,9 @@ public class PuzzleView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        // Draw solid background to prevent transparency
+        canvas.drawColor(0xFF2d2d2d); // Dark grey background
+
         if (grid == null || masterBitmap == null)
             return;
 
