@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class JpegChaosActivity extends AppCompatActivity implements Puzzleable {
-    public final String TAG = "MainActivity";
+    public final String TAG = "JpegChaos";
     private final int COLS = 3;
     private final int ROWS = 5;
     private PuzzleGrid grid;
@@ -311,10 +311,7 @@ public class JpegChaosActivity extends AppCompatActivity implements Puzzleable {
     }
 
     private void resetPuzzle() {
-        if (grid != null) {
-            grid.shuffle();
-            puzzleView.invalidate();
-        }
+        loadLevel();
     }
 
     private void showWinDialog() {
@@ -356,6 +353,9 @@ public class JpegChaosActivity extends AppCompatActivity implements Puzzleable {
     }
 
     private void loadLevel() {
+        // Remove manual recycling to let GC handle it safely
+        // preventing race conditions with GPU rendering
+
         try {
             String selectedImageFileName = null;
             String[] imageFiles = getAssets().list("images");
@@ -366,6 +366,10 @@ public class JpegChaosActivity extends AppCompatActivity implements Puzzleable {
             java.util.List<String> validImages = new java.util.ArrayList<>();
             for (String file : imageFiles) {
                 String lower = file.toLowerCase();
+                // Check if file starts with 'img_' as requested
+                if (!lower.startsWith("img_"))
+                    continue;
+
                 if (lower.endsWith(".jpg") || lower.endsWith(".jpeg") || lower.endsWith(".png")
                         || lower.endsWith(".webp")) {
                     validImages.add(file);
@@ -471,6 +475,10 @@ public class JpegChaosActivity extends AppCompatActivity implements Puzzleable {
         // 5. Output Final Bitmap
         Bitmap resultBitmap = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888);
         org.opencv.android.Utils.matToBitmap(croppedMat, resultBitmap);
+
+        // Ensure opaque (prevents alpha blending artifacts) and pre-upload to GPU
+        resultBitmap.setHasAlpha(false);
+        resultBitmap.prepareToDraw();
 
         // Cleanup
         resizedMat.release();

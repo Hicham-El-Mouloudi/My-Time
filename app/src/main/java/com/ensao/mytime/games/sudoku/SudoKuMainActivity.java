@@ -21,6 +21,7 @@ import com.ensao.mytime.alarm.Puzzleable;
 import com.ensao.mytime.statistics.StatisticsHelper;
 
 public class SudoKuMainActivity extends AppCompatActivity implements Puzzleable {
+    private static final String TAG = "Sudoku";
 
     private SudokuView sudokuView;
     private SudokuBoard board;

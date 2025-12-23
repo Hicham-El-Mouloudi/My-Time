@@ -146,7 +146,7 @@ public class PuzzleView extends View {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (masterBitmap == null || grid == null) {
+        if (masterBitmap == null || grid == null || masterBitmap.isRecycled()) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             return;
         }
@@ -196,7 +196,7 @@ public class PuzzleView extends View {
         // Draw solid background to prevent transparency
         canvas.drawColor(0xFF2d2d2d); // Dark grey background
 
-        if (grid == null || masterBitmap == null)
+        if (grid == null || masterBitmap == null || masterBitmap.isRecycled())
             return;
 
         int width = getWidth();
