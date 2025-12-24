@@ -18,6 +18,7 @@ import com.ensao.mytime.statistics.StatisticsHelper;
 
 public class MinesweeperGameActivity extends AppCompatActivity
         implements MinesweeperView.OnCellClickListener, Puzzleable {
+    private static final String TAG = "Minesweeper";
 
     private MinesweeperView minesweeperView;
     private TextView tvMineCount;
