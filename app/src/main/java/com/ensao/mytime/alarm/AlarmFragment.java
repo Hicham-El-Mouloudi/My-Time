@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -49,6 +50,12 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
     private FloatingActionButton fabAddAlarm;
     private FloatingActionButton fabDeleteSelected;
     private View emptyState;
+
+    // Selection action bar views
+    private View selectionActionBar;
+    private CheckBox selectAllCheckbox;
+    private TextView selectAllText;
+    private TextView deleteSelectedText;
 
     // Clock views
     private AnalogClockView analogClock;
@@ -109,6 +116,15 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
         fabDeleteSelected = view.findViewById(R.id.fab_delete_selected);
         emptyState = view.findViewById(R.id.empty_state);
 
+        // Initialize selection action bar views
+        selectionActionBar = view.findViewById(R.id.selection_action_bar);
+        selectAllCheckbox = view.findViewById(R.id.select_all_checkbox);
+        selectAllText = view.findViewById(R.id.select_all_text);
+        deleteSelectedText = view.findViewById(R.id.delete_selected_text);
+
+        // Setup selection action bar listeners
+        setupSelectionActionBar();
+
         // Initialize clock views
         analogClock = view.findViewById(R.id.analog_clock);
         digitalClock = view.findViewById(R.id.digital_clock);
@@ -149,6 +165,27 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
 
         fabAddAlarm.setOnClickListener(v -> showAddAlarmDialog(null));
         fabDeleteSelected.setOnClickListener(v -> deleteSelectedAlarms());
+    }
+
+    private void setupSelectionActionBar() {
+        // Select All checkbox listener
+        selectAllCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                adapter.selectAll();
+            } else {
+                if (adapter.isAllSelected()) {
+                    adapter.deselectAll();
+                }
+            }
+        });
+
+        // Select All text click listener
+        selectAllText.setOnClickListener(v -> {
+            selectAllCheckbox.setChecked(!selectAllCheckbox.isChecked());
+        });
+
+        // Delete button in selection bar
+        deleteSelectedText.setOnClickListener(v -> deleteSelectedAlarms());
 
         checkExactAlarmPermission();
         checkNotificationPermission();
@@ -496,11 +533,32 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
     @Override
     public void onSelectionChanged(int count) {
         if (count > 0) {
+            // Show selection action bar and FAB
+            selectionActionBar.setVisibility(View.VISIBLE);
             fabDeleteSelected.setVisibility(View.VISIBLE);
             fabAddAlarm.setVisibility(View.GONE);
+
+            // Update select all checkbox state
+            selectAllCheckbox.setOnCheckedChangeListener(null);
+            selectAllCheckbox.setChecked(adapter.isAllSelected());
+            selectAllCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked) {
+                    adapter.selectAll();
+                } else {
+                    if (adapter.isAllSelected()) {
+                        adapter.deselectAll();
+                    }
+                }
+            });
+
+            // Update text to show count
+            selectAllText.setText("Select All (" + count + "/" + adapter.getAlarmCount() + ")");
         } else {
+            // Hide selection action bar
+            selectionActionBar.setVisibility(View.GONE);
             fabDeleteSelected.setVisibility(View.GONE);
             fabAddAlarm.setVisibility(View.VISIBLE);
+            selectAllText.setText("Select All");
         }
     }
 }

@@ -5,6 +5,7 @@ import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -78,10 +79,41 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
             listener.onSelectionChanged(0);
     }
 
+    public boolean isSelectionMode() {
+        return isSelectionMode;
+    }
+
+    public void selectAll() {
+        selectedAlarms.clear();
+        selectedAlarms.addAll(alarms);
+        notifyDataSetChanged();
+        if (listener != null) {
+            listener.onSelectionChanged(selectedAlarms.size());
+        }
+    }
+
+    public void deselectAll() {
+        selectedAlarms.clear();
+        isSelectionMode = false;
+        notifyDataSetChanged();
+        if (listener != null) {
+            listener.onSelectionChanged(0);
+        }
+    }
+
+    public boolean isAllSelected() {
+        return !alarms.isEmpty() && selectedAlarms.size() == alarms.size();
+    }
+
+    public int getAlarmCount() {
+        return alarms.size();
+    }
+
     class AlarmViewHolder extends RecyclerView.ViewHolder {
         private TextView timeText;
         private TextView repetitionText;
         private SwitchCompat alarmSwitch;
+        private CheckBox alarmCheckbox;
         private View cardView;
 
         public AlarmViewHolder(@NonNull View itemView) {
@@ -91,6 +123,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
             timeText = itemView.findViewById(R.id.alarm_time);
             repetitionText = itemView.findViewById(R.id.alarm_repetition);
             alarmSwitch = itemView.findViewById(R.id.alarm_switch);
+            alarmCheckbox = itemView.findViewById(R.id.alarm_checkbox);
         }
 
         public void bind(Alarm alarm) {
@@ -111,9 +144,36 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
                 }
             });
 
-            // Selection Logic
+            // Show/hide checkbox based on selection mode
+            if (isSelectionMode) {
+                alarmCheckbox.setVisibility(View.VISIBLE);
+                alarmSwitch.setVisibility(View.GONE);
+            } else {
+                alarmCheckbox.setVisibility(View.GONE);
+                alarmSwitch.setVisibility(View.VISIBLE);
+            }
+
+            // Set checkbox state
+            alarmCheckbox.setOnCheckedChangeListener(null);
+            alarmCheckbox.setChecked(selectedAlarms.contains(alarm));
+            alarmCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked) {
+                    selectedAlarms.add(alarm);
+                } else {
+                    selectedAlarms.remove(alarm);
+                }
+                if (selectedAlarms.isEmpty()) {
+                    isSelectionMode = false;
+                    notifyDataSetChanged();
+                }
+                if (listener != null) {
+                    listener.onSelectionChanged(selectedAlarms.size());
+                }
+            });
+
+            // Selection visual indicator
             if (selectedAlarms.contains(alarm)) {
-                cardView.setAlpha(0.5f); // Simple visual indicator for selection
+                cardView.setAlpha(0.7f);
             } else {
                 cardView.setAlpha(1.0f);
             }
@@ -132,6 +192,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
                 if (!isSelectionMode) {
                     isSelectionMode = true;
                     toggleSelection(alarm);
+                    notifyDataSetChanged(); // Refresh all items to show checkboxes
                 }
                 return true;
             });
@@ -145,8 +206,10 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
             }
             if (selectedAlarms.isEmpty()) {
                 isSelectionMode = false;
+                notifyDataSetChanged(); // Refresh all items to hide checkboxes
+            } else {
+                notifyItemChanged(getAdapterPosition());
             }
-            notifyItemChanged(getAdapterPosition());
             if (listener != null) {
                 listener.onSelectionChanged(selectedAlarms.size());
             }
