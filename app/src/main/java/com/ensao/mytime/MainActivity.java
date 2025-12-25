@@ -5,12 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -20,6 +23,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
+
+import com.google.android.material.appbar.MaterialToolbar;
 
 import com.ensao.mytime.alarm.AlarmFragment;
 import com.ensao.mytime.calendar.CalendarFragment;
@@ -37,6 +42,7 @@ public class MainActivity extends AppCompatActivity
 
     private AlertDialog blockedDialog = null;
     private BottomNavigationView bottomNavigationView;
+    private MaterialToolbar toolbar;
 
     private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
@@ -65,6 +71,7 @@ public class MainActivity extends AppCompatActivity
         });
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        toolbar = findViewById(R.id.toolbar);
 
         ViewCompat.setOnApplyWindowInsetsListener(bottomNavigationView, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -72,6 +79,7 @@ public class MainActivity extends AppCompatActivity
             return insets;
         });
 
+        setupToolbar();
         setupNavigation();
         requestNotificationPermission();
 
@@ -215,20 +223,54 @@ public class MainActivity extends AppCompatActivity
 
     private Fragment navigateTo(int itemId) {
         Fragment fragment = null;
+        int titleRes = R.string.app_name;
         if (itemId == R.id.navigation_home) {
             fragment = new HomeFragment();
+            titleRes = R.string.title_home;
         } else if (itemId == R.id.navigation_study) {
             fragment = new StudySessionFragment();
+            titleRes = R.string.title_study;
         } else if (itemId == R.id.navigation_sleep) {
             fragment = new SleepFragment();
+            titleRes = R.string.title_sleep;
         } else if (itemId == R.id.navigation_calendar) {
             fragment = new CalendarFragment();
+            titleRes = R.string.title_calendar;
         } else if (itemId == R.id.navigation_alarm) {
             fragment = new AlarmFragment();
+            titleRes = R.string.title_alarm;
         } else if (itemId == R.id.nav_statistics) {
             fragment = new StatisticsFragment();
+            titleRes = R.string.title_statistics;
         }
+        toolbar.setTitle(titleRes);
         return fragment;
+    }
+
+    private void setupToolbar() {
+        toolbar.setTitle(R.string.title_home);
+        toolbar.setOnMenuItemClickListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.menu_preferences) {
+                startActivity(new Intent(this, com.ensao.mytime.settings.SettingsActivity.class));
+                return true;
+            } else if (itemId == R.id.menu_privacy) {
+                openUrl("https://google.com");
+                return true;
+            } else if (itemId == R.id.menu_help) {
+                openUrl("https://google.com");
+                return true;
+            } else if (itemId == R.id.menu_report) {
+                openUrl("https://google.com");
+                return true;
+            }
+            return false;
+        });
+    }
+
+    private void openUrl(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(intent);
     }
 
     private void loadFragment(Fragment fragment) {

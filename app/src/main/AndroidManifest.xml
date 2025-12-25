@@ -116,6 +116,10 @@
             </intent-filter>
         </receiver>
         <activity android:name=".calendar.DayDetailActivity" />
+        <activity
+            android:name=".settings.SettingsActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
 
         <receiver
             android:name=".home.NotificationReceiver"
