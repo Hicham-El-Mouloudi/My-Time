@@ -32,6 +32,8 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="16dp"
                 android:paddingBottom="16dp"
+                android:clickable="true"
+                android:focusable="true"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.7">
 
@@ -40,7 +42,9 @@
                     android:id="@+id/analog_clock"
                     android:layout_width="200dp"
                     android:layout_height="200dp"
-                    android:layout_gravity="center"/>
+                    android:layout_gravity="center"
+                    android:clickable="true"
+                    android:focusable="true"/>
 
 
 
@@ -51,15 +55,21 @@
 
     <!-- Main Content -->
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
+        android:clickable="true"
+        android:focusable="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
+            android:id="@+id/content_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:clickable="true"
+            android:focusable="true">
 
         <!-- Selection Action Bar (visible in selection mode) -->
             <LinearLayout
@@ -72,7 +82,9 @@
                 android:paddingVertical="0dp"
                 android:minHeight="0dp"
                 android:background="@color/surface_variant"
-                android:visibility="gone">
+                android:clickable="true"
+                android:focusable="true"
+                android:visibility="invisible">
 
                 <CheckBox
                     android:id="@+id/select_all_checkbox"
@@ -101,6 +113,16 @@
                     android:paddingHorizontal="8dp"
                     android:paddingVertical="2dp"
                     android:background="?attr/selectableItemBackground"/>
+
+                <ImageView
+                    android:id="@+id/close_selection_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@android:drawable/ic_menu_close_clear_cancel"
+                    android:contentDescription="Close selection"
+                    android:padding="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:tint="@color/text_secondary"/>
 
             </LinearLayout>
 

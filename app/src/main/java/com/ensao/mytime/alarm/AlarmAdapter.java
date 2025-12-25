@@ -94,7 +94,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
 
     public void deselectAll() {
         selectedAlarms.clear();
-        isSelectionMode = false;
+        // Keep selection mode active - only exit via clearSelection()
         notifyDataSetChanged();
         if (listener != null) {
             listener.onSelectionChanged(0);
@@ -162,10 +162,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
                 } else {
                     selectedAlarms.remove(alarm);
                 }
-                if (selectedAlarms.isEmpty()) {
-                    isSelectionMode = false;
-                    notifyDataSetChanged();
-                }
+                // Keep selection mode active - only exit via clearSelection()
                 if (listener != null) {
                     listener.onSelectionChanged(selectedAlarms.size());
                 }
@@ -204,12 +201,8 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
             } else {
                 selectedAlarms.add(alarm);
             }
-            if (selectedAlarms.isEmpty()) {
-                isSelectionMode = false;
-                notifyDataSetChanged(); // Refresh all items to hide checkboxes
-            } else {
-                notifyItemChanged(getAdapterPosition());
-            }
+            // Keep selection mode active - only exit via clearSelection()
+            notifyItemChanged(getAdapterPosition());
             if (listener != null) {
                 listener.onSelectionChanged(selectedAlarms.size());
             }
