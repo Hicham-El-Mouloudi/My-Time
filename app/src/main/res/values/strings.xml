@@ -103,4 +103,19 @@
         <item>Conseil Nuit : Écrivez vos préoccupations dans un journal pour vider votre esprit avant de vous coucher.</item>
     </string-array>
 
+    <!-- Toolbar Menu -->
+    <string name="menu_preferences">Preferences</string>
+    <string name="menu_privacy">Privacy and Policy</string>
+    <string name="menu_help">Help</string>
+    <string name="menu_report">Report</string>
+
+    <!-- Fragment Titles -->
+    <string name="title_home">Home</string>
+    <string name="title_study">Study</string>
+    <string name="title_sleep">Sleep</string>
+    <string name="title_calendar">Calendar</string>
+    <string name="title_alarm">Alarm</string>
+    <string name="title_statistics">Statistics</string>
+    <string name="title_settings">Settings</string>
+
 </resources>
