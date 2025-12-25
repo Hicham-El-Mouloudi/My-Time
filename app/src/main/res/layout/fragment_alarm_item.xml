@@ -17,15 +17,6 @@
         android:padding="16dp"
         android:gravity="center_vertical">
 
-        <!-- Selection Checkbox (visible in selection mode) -->
-        <CheckBox
-            android:id="@+id/alarm_checkbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="12dp"
-            android:visibility="gone"
-            android:buttonTint="@color/brand_primary"/>
-
         <!-- Time and Repetition -->
         <LinearLayout
             android:layout_width="0dp"
@@ -52,6 +43,14 @@
                 android:layout_marginTop="4dp"/>
 
         </LinearLayout>
+
+        <!-- Selection Checkbox (visible in selection mode) -->
+        <CheckBox
+            android:id="@+id/alarm_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:buttonTint="@color/brand_primary"/>
 
         <!-- Switch with grey color when inactive -->
         <androidx.appcompat.widget.SwitchCompat
