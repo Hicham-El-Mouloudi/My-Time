@@ -42,19 +42,7 @@
                     android:layout_height="200dp"
                     android:layout_gravity="center"/>
 
-                <!-- Digital Time (shown when collapsed) -->
-                <TextView
-                    android:id="@+id/digital_clock"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:textColor="@color/text_primary"
-                    android:textSize="32sp"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif-medium"
-                    android:alpha="0"
-                    android:visibility="visible"
-                    tools:text="23:24"/>
+
 
             </FrameLayout>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -81,7 +69,8 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:paddingHorizontal="16dp"
-                android:paddingVertical="12dp"
+                android:paddingVertical="0dp"
+                android:minHeight="0dp"
                 android:background="@color/surface_variant"
                 android:visibility="gone">
 
@@ -109,7 +98,8 @@
                     android:textSize="16sp"
                     android:textColor="@color/alarm_delete"
                     android:textStyle="bold"
-                    android:padding="8dp"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="2dp"
                     android:background="?attr/selectableItemBackground"/>
 
             </LinearLayout>

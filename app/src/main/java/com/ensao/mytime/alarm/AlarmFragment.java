@@ -8,8 +8,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,11 +34,8 @@ import com.ensao.mytime.R;
 import com.ensao.mytime.alarm.database.Alarm;
 import com.ensao.mytime.alarm.database.AlarmRepository;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActionListener {
 
@@ -59,13 +54,7 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
 
     // Clock views
     private AnalogClockView analogClock;
-    private TextView digitalClock;
     private AppBarLayout appBarLayout;
-
-    // Handler for digital clock updates
-    private Handler clockHandler;
-    private Runnable clockUpdateRunnable;
-    private SimpleDateFormat timeFormat;
 
     // Ringtone Selection
     private androidx.activity.result.ActivityResultLauncher<Intent> ringtonePickerLauncher;
@@ -127,19 +116,7 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
 
         // Initialize clock views
         analogClock = view.findViewById(R.id.analog_clock);
-        digitalClock = view.findViewById(R.id.digital_clock);
         appBarLayout = view.findViewById(R.id.app_bar_layout);
-
-        // Setup time format
-        timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        clockHandler = new Handler(Looper.getMainLooper());
-        clockUpdateRunnable = new Runnable() {
-            @Override
-            public void run() {
-                updateDigitalClock();
-                clockHandler.postDelayed(this, 1000);
-            }
-        };
 
         // Setup scroll-based clock animation
         setupClockAnimation();
@@ -210,34 +187,8 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
                 analogClock.setScaleY(analogScale);
                 analogClock.setAlpha(analogAlpha);
 
-                // Animate digital clock: fade in and translate upward as we scroll
-                digitalClock.setAlpha(scrollProgress);
-                // Move up by 20dp worth of pixels as we collapse
-                float maxTranslation = -27 * getResources().getDisplayMetrics().density;
-                digitalClock.setTranslationY(maxTranslation * scrollProgress);
             }
         });
-    }
-
-    private void updateDigitalClock() {
-        if (digitalClock != null) {
-            digitalClock.setText(timeFormat.format(new Date()));
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        // Start digital clock updates
-        updateDigitalClock();
-        clockHandler.postDelayed(clockUpdateRunnable, 1000);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        // Stop digital clock updates
-        clockHandler.removeCallbacks(clockUpdateRunnable);
     }
 
     private void deleteSelectedAlarms() {
