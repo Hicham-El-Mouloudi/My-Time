@@ -9,6 +9,8 @@ public interface Puzzleable {
     // Broadcast action constants
     String ACTION_PUZZLE_STARTED = "com.ensao.mytime.ACTION_PUZZLE_STARTED";
     String ACTION_PUZZLE_COMPLETED = "com.ensao.mytime.ACTION_PUZZLE_COMPLETED";
+    String ACTION_RESET_PUZZLE = "com.ensao.mytime.ACTION_RESET_PUZZLE";
+    String ACTION_FALLOUT_TRIGGERED = "com.ensao.mytime.ACTION_FALLOUT_TRIGGERED";
     String EXTRA_ALARM_ID = "ALARM_ID";
 
     /**

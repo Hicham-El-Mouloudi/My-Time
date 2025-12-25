@@ -109,6 +109,11 @@ public class AlarmFullScreenUI extends AppCompatActivity {
             @Override
             public void onFinish() {
                 counterText.setText("0");
+                // Auto-Snooze if no interaction
+                int alarmId = getIntent().getIntExtra("ALARM_ID", -1);
+                if (alarmId != -1) {
+                    performSnooze(alarmId);
+                }
             }
         }.start();
     }
@@ -144,16 +149,17 @@ public class AlarmFullScreenUI extends AppCompatActivity {
                 stopService(serviceIntent);
 
                 if (alarm != null && alarm.isSleepAlarm()) {
-                    // Broadcast that puzzle mode is starting
-                    // This tells the service to use puzzle-mode auto-snooze delays
-                    // and to ignore subsequent alarm triggers while puzzle is active
+                    // 1. Schedule Fallout Alarm (Auto-Snooze) for +3 mins
+                    long falloutTime = System.currentTimeMillis()
+                            + (AlarmConfig.PUZZLE_MODE_AUTO_SNOOZE_DELAY_SECONDS * 1000L);
+                    AlarmScheduler.scheduleFalloutAlarm(this, alarmId, falloutTime);
+
+                    // 2. Broadcast that puzzle mode is starting
                     Intent puzzleStartIntent = new Intent(Puzzleable.ACTION_PUZZLE_STARTED);
                     puzzleStartIntent.putExtra(Puzzleable.EXTRA_ALARM_ID, alarmId);
                     sendBroadcast(puzzleStartIntent);
 
-                    // Redirect to selected puzzle game
-                    // NOTE: Alarm deactivation happens ONLY when puzzle is solved (in game
-                    // activity)
+                    // 3. Redirect to selected puzzle game
                     String puzzleType = alarm.getPuzzleType();
                     Intent puzzleIntent;
                     switch (puzzleType != null ? puzzleType : "jpegchaos") {

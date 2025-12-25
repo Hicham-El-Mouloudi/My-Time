@@ -9,5 +9,5 @@ public class AlarmConfig {
     public static final int MAX_AUTO_SNOOZES = 1;
 
     // Puzzle mode settings
-    public static final int PUZZLE_MODE_AUTO_SNOOZE_DELAY_SECONDS = 300; // 5 minutes
+    public static final int PUZZLE_MODE_AUTO_SNOOZE_DELAY_SECONDS = 180; // 3 minutes
 }

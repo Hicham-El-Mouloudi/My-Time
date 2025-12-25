@@ -151,7 +151,24 @@ public class SudoKuMainActivity extends AppCompatActivity implements Puzzleable 
         Intent puzzleCompleteIntent = new Intent(Puzzleable.ACTION_PUZZLE_COMPLETED);
         puzzleCompleteIntent.putExtra(Puzzleable.EXTRA_ALARM_ID, alarmId);
         sendBroadcast(puzzleCompleteIntent);
+
+        // Cancel the scheduled fallout alarm
+        com.ensao.mytime.alarm.AlarmScheduler.cancelFalloutAlarm(this, alarmId);
     }
+
+    // Receiver for puzzle reset requests (from fallback alarm)
+    private final android.content.BroadcastReceiver puzzleResetReceiver = new android.content.BroadcastReceiver() {
+        @Override
+        public void onReceive(android.content.Context context, Intent intent) {
+            if (Puzzleable.ACTION_RESET_PUZZLE.equals(intent.getAction())) {
+                // Reset the puzzle
+                startNewGame(currentDifficulty);
+
+                // Signal that we handled it (so alarm doesn't ring)
+                setResultCode(android.app.Activity.RESULT_OK);
+            }
+        }
+    };
 
     private void setupNumberButtons() {
         int[] buttonIds = { R.id.btn1, R.id.btn2, R.id.btn3, R.id.btn4, R.id.btn5,
@@ -451,6 +468,14 @@ public class SudoKuMainActivity extends AppCompatActivity implements Puzzleable 
     protected void onPause() {
         super.onPause();
         isTimerRunning = false;
+        // Unregister receiver
+        if (alarmId != -1) {
+            try {
+                unregisterReceiver(puzzleResetReceiver);
+            } catch (IllegalArgumentException e) {
+                // Ignore if not registered
+            }
+        }
     }
 
     @Override
@@ -460,6 +485,15 @@ public class SudoKuMainActivity extends AppCompatActivity implements Puzzleable 
             startTime = System.currentTimeMillis() - elapsedTime;
             isTimerRunning = true;
             timerHandler.post(timerRunnable);
+        }
+        // Register receiver for reset requests
+        if (alarmId != -1) { // Only if in puzzle mode
+            android.content.IntentFilter filter = new android.content.IntentFilter(Puzzleable.ACTION_RESET_PUZZLE);
+            androidx.core.content.ContextCompat.registerReceiver(
+                    this,
+                    puzzleResetReceiver,
+                    filter,
+                    androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
         }
     }
 
