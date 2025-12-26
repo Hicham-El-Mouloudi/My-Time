@@ -132,6 +132,7 @@ public class RingtoneService extends Service {
         // alarmId
         int alarmId = intent.getIntExtra("ALARM_ID", -1);
         long alarmTime = intent.getLongExtra("ALARM_TIME", System.currentTimeMillis());
+        boolean isSleepAlarm = intent.getBooleanExtra("IS_SLEEP_ALARM", false);
 
         // Check if puzzle is active for this alarm - skip if user is solving puzzle
         if (isPuzzleActive && puzzleAlarmId == alarmId) {
@@ -175,7 +176,7 @@ public class RingtoneService extends Service {
         trackAlarmRingStatistics(alarmTime, autoSnoozeCount);
 
         // 5. Start Foreground with Notification (contains FullScreenIntent)
-        startForeground(1, buildNotification(alarmId, alarmTime));
+        startForeground(1, buildNotification(alarmId, alarmTime, autoSnoozeCount, isSleepAlarm));
 
         // 5. Explicit startActivity Removed
         // We rely on setFullScreenIntent in the Notification to show the UI
@@ -205,9 +206,11 @@ public class RingtoneService extends Service {
 
             // Check max auto snoozes
             if (autoSnoozeCount < AlarmConfig.MAX_AUTO_SNOOZES) {
-                // Schedule Auto Snooze with incremented count - use puzzle mode delay if
-                // applicable
-                int autoSnoozeDelay = isPuzzleActive ? AlarmConfig.PUZZLE_MODE_AUTO_SNOOZE_DELAY_SECONDS
+                // Schedule Auto Snooze with incremented count
+                // Use Puzzle Mode delay if it is a Sleep Alarm (requires Puzzle) OR if active
+                // puzzle session
+                int autoSnoozeDelay = (isSleepAlarm || isPuzzleActive)
+                        ? AlarmConfig.PUZZLE_MODE_AUTO_SNOOZE_DELAY_SECONDS
                         : AlarmConfig.AUTO_SNOOZE_DELAY_SECONDS;
                 long triggerTime = System.currentTimeMillis() + (autoSnoozeDelay * 1000L);
                 AlarmScheduler.scheduleSnooze(this, alarmId, triggerTime, autoSnoozeCount + 1);
@@ -328,7 +331,7 @@ public class RingtoneService extends Service {
         }
     }
 
-    private Notification buildNotification(int alarmId, long alarmTime) {
+    private Notification buildNotification(int alarmId, long alarmTime, int autoSnoozeCount, boolean isSleepAlarm) {
         createNotificationChannel();
 
         Intent fullScreenIntent = new Intent(this, AlarmFullScreenUI.class);
@@ -337,6 +340,8 @@ public class RingtoneService extends Service {
                 Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         fullScreenIntent.putExtra("ALARM_ID", alarmId);
         fullScreenIntent.putExtra("ALARM_TIME", alarmTime);
+        fullScreenIntent.putExtra("AUTO_SNOOZE_COUNT", autoSnoozeCount);
+        fullScreenIntent.putExtra("IS_SLEEP_ALARM", isSleepAlarm);
 
         PendingIntent fullScreenPendingIntent = PendingIntent.getActivity(
                 this,

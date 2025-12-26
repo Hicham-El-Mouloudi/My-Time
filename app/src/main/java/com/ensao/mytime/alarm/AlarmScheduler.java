@@ -19,6 +19,7 @@ public class AlarmScheduler {
         intent.putExtra("ALARM_ID", alarm.getId());
         intent.putExtra("ALARM_TIME", alarm.getTimeInMillis());
         intent.putExtra("ALARM_RINGTONE", alarm.getRingtoneUri());
+        intent.putExtra("IS_SLEEP_ALARM", alarm.isSleepAlarm());
         // Label removed
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(

@@ -59,7 +59,12 @@
         <receiver
             android:name=".alarm.AlarmReceiver"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.ensao.mytime.ACTION_PUZZLE_COMPLETED" />
+                <action android:name="com.ensao.mytime.ACTION_FALLOUT_TRIGGERED" />
+            </intent-filter>
+        </receiver>
 
         <service
             android:name=".alarm.RingtoneService"

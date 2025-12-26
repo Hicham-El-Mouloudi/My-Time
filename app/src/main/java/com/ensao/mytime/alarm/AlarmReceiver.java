@@ -37,6 +37,24 @@ public class AlarmReceiver extends BroadcastReceiver {
                     pendingResult.finish();
                 }
             }, null, android.app.Activity.RESULT_CANCELED, null, null);
+        } else if (Puzzleable.ACTION_PUZZLE_COMPLETED.equals(intent.getAction())) {
+            int alarmId = intent.getIntExtra(Puzzleable.EXTRA_ALARM_ID, -1);
+            if (alarmId != -1) {
+                AlarmScheduler.cancelFalloutAlarm(context, alarmId);
+
+                // Disable alarm if not repeating
+                final PendingResult pendingResult = goAsync();
+                new Thread(() -> {
+                    com.ensao.mytime.alarm.database.AlarmRepository repository = new com.ensao.mytime.alarm.database.AlarmRepository(
+                            (android.app.Application) context.getApplicationContext());
+                    com.ensao.mytime.alarm.database.Alarm alarm = repository.getAlarmByIdSync(alarmId);
+                    if (alarm != null && alarm.getDaysOfWeek() == 0) {
+                        alarm.setEnabled(false);
+                        repository.update(alarm);
+                    }
+                    pendingResult.finish();
+                }).start();
+            }
         } else {
             // Normal alarm
             startRingingService(context, intent);

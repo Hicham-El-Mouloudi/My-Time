@@ -4,10 +4,10 @@ public class AlarmConfig {
     // All durations in minutes for test purposes
     // All durations in seconds for test purposes
     public static final int SNOOZE_DELAY_SECONDS = 20;
-    public static final int RING_DURATION_SECONDS = 60;
-    public static final int AUTO_SNOOZE_DELAY_SECONDS = 20;
+    public static final int RING_DURATION_SECONDS = 10;
+    public static final int AUTO_SNOOZE_DELAY_SECONDS = 10;
     public static final int MAX_AUTO_SNOOZES = 1;
 
     // Puzzle mode settings
-    public static final int PUZZLE_MODE_AUTO_SNOOZE_DELAY_SECONDS = 180; // 3 minutes
+    public static final int PUZZLE_MODE_AUTO_SNOOZE_DELAY_SECONDS = 20; // 3 minutes
 }

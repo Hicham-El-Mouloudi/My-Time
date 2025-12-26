@@ -112,7 +112,7 @@ public class AlarmFullScreenUI extends AppCompatActivity {
                 // Auto-Snooze if no interaction
                 int alarmId = getIntent().getIntExtra("ALARM_ID", -1);
                 if (alarmId != -1) {
-                    performSnooze(alarmId);
+                    handleAutoSnooze(alarmId);
                 }
             }
         }.start();
@@ -192,6 +192,43 @@ public class AlarmFullScreenUI extends AppCompatActivity {
             Intent serviceIntent = new Intent(this, RingtoneService.class);
             stopService(serviceIntent);
             finish();
+        }
+    }
+
+    private void handleAutoSnooze(int alarmId) {
+        int autoSnoozeCount = getIntent().getIntExtra("AUTO_SNOOZE_COUNT", 0);
+        boolean isSleepAlarm = getIntent().getBooleanExtra("IS_SLEEP_ALARM", false);
+
+        if (autoSnoozeCount < AlarmConfig.MAX_AUTO_SNOOZES) {
+            if (countDownTimer != null)
+                countDownTimer.cancel();
+
+            Intent serviceIntent = new Intent(this, RingtoneService.class);
+            stopService(serviceIntent);
+
+            int delay = isSleepAlarm ? AlarmConfig.PUZZLE_MODE_AUTO_SNOOZE_DELAY_SECONDS
+                    : AlarmConfig.AUTO_SNOOZE_DELAY_SECONDS;
+            long triggerTime = System.currentTimeMillis() + (delay * 1000L);
+            AlarmScheduler.scheduleSnooze(this, alarmId, triggerTime, autoSnoozeCount + 1);
+
+            finish();
+        } else {
+            // Max reached, dismiss silently (turn off)
+            if (countDownTimer != null)
+                countDownTimer.cancel();
+            Intent serviceIntent = new Intent(this, RingtoneService.class);
+            stopService(serviceIntent);
+
+            new Thread(() -> {
+                com.ensao.mytime.alarm.database.AlarmRepository repository = new com.ensao.mytime.alarm.database.AlarmRepository(
+                        getApplication());
+                com.ensao.mytime.alarm.database.Alarm alarm = repository.getAlarmByIdSync(alarmId);
+                if (alarm != null && alarm.getDaysOfWeek() == 0) {
+                    alarm.setEnabled(false);
+                    repository.update(alarm);
+                }
+                finish();
+            }).start();
         }
     }
 
