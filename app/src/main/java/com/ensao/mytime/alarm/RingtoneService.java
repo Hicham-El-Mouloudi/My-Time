@@ -175,13 +175,20 @@ public class RingtoneService extends Service {
         // 4. Track statistics for wake session
         trackAlarmRingStatistics(alarmTime, autoSnoozeCount);
 
-        // 5. Start Foreground with Notification (contains FullScreenIntent)
-        startForeground(1, buildNotification(alarmId, alarmTime, autoSnoozeCount, isSleepAlarm));
+        // 5. Start Priority Activity (for unlocked state) + Foreground Notification
+        // (for locked state/fallback)
+        Intent activityIntent = new Intent(this, AlarmFullScreenUI.class);
+        activityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        activityIntent.putExtra("ALARM_ID", alarmId);
+        activityIntent.putExtra("ALARM_TIME", alarmTime);
+        activityIntent.putExtra("AUTO_SNOOZE_COUNT", autoSnoozeCount);
+        activityIntent.putExtra("IS_SLEEP_ALARM", isSleepAlarm);
+        startActivity(activityIntent);
 
-        // 5. Explicit startActivity Removed
-        // We rely on setFullScreenIntent in the Notification to show the UI
-        // if the screen is locked/off. If unlocked, it shows as a notification.
-        // This prevents double UI (Notification + Activity) when using the app.
+        // 6. Start Foreground with Notification
+        startForeground(1, buildNotification(alarmId, alarmTime, autoSnoozeCount, isSleepAlarm));
 
         // 6. Schedule Auto-Snooze / Stop Service after duration
         if (handler == null) {
@@ -371,15 +378,14 @@ public class RingtoneService extends Service {
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("Alarm")
-                .setContentText("Tap to dismiss")
+                .setContentText("Tap to control alarm")
                 .setContentIntent(fullScreenPendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setFullScreenIntent(fullScreenPendingIntent, true)
-                .setDeleteIntent(dismissPendingIntent)
-                .addAction(R.drawable.ic_launcher_foreground, "Snooze", snoozePendingIntent)
-                .addAction(R.drawable.ic_launcher_foreground, "Dismiss", dismissPendingIntent)
+                .setDeleteIntent(dismissPendingIntent) // Keeps swipe to dismiss behavior if possible, though 'ongoing'
+                                                       // prevents it usually
                 .setOngoing(true)
                 .setAutoCancel(false)
                 .build();

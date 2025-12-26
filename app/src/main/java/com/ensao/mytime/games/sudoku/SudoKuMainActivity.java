@@ -20,7 +20,9 @@ import com.ensao.mytime.R;
 import com.ensao.mytime.alarm.Puzzleable;
 import com.ensao.mytime.statistics.StatisticsHelper;
 
-public class SudoKuMainActivity extends AppCompatActivity implements Puzzleable {
+import com.ensao.mytime.alarm.BasePuzzleActivity;
+
+public class SudoKuMainActivity extends BasePuzzleActivity {
     private static final String TAG = "Sudoku";
 
     private SudokuView sudokuView;
@@ -61,8 +63,7 @@ public class SudoKuMainActivity extends AppCompatActivity implements Puzzleable 
     }
 
     // Alarm integration
-    private int alarmId = -1;
-    private boolean puzzleActive = false;
+    // Fields handled by BasePuzzleActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,55 +121,13 @@ public class SudoKuMainActivity extends AppCompatActivity implements Puzzleable 
         // Start new game
         startNewGame(currentDifficulty);
 
-        // Get alarm ID if launched from alarm
-        alarmId = getIntent().getIntExtra("ALARM_ID", -1);
-        if (alarmId != -1) {
-            onPuzzleModeActivated(alarmId);
-        }
-    }
-
-    // Puzzleable interface implementation
-    @Override
-    public void onPuzzleModeActivated(int alarmId) {
-        this.alarmId = alarmId;
-        this.puzzleActive = true;
+        // Alarm ID handled by BasePuzzleActivity
     }
 
     @Override
-    public boolean isPuzzleActive() {
-        return puzzleActive;
+    protected void onPuzzleReset() {
+        startNewGame(currentDifficulty);
     }
-
-    @Override
-    public int getAssociatedAlarmId() {
-        return alarmId;
-    }
-
-    @Override
-    public void onPuzzleSolved() {
-        puzzleActive = false;
-        // Broadcast puzzle completed to stop alarm and let service know
-        Intent puzzleCompleteIntent = new Intent(Puzzleable.ACTION_PUZZLE_COMPLETED);
-        puzzleCompleteIntent.putExtra(Puzzleable.EXTRA_ALARM_ID, alarmId);
-        sendBroadcast(puzzleCompleteIntent);
-
-        // Cancel the scheduled fallout alarm
-        com.ensao.mytime.alarm.AlarmScheduler.cancelFalloutAlarm(this, alarmId);
-    }
-
-    // Receiver for puzzle reset requests (from fallback alarm)
-    private final android.content.BroadcastReceiver puzzleResetReceiver = new android.content.BroadcastReceiver() {
-        @Override
-        public void onReceive(android.content.Context context, Intent intent) {
-            if (Puzzleable.ACTION_RESET_PUZZLE.equals(intent.getAction())) {
-                // Reset the puzzle
-                startNewGame(currentDifficulty);
-
-                // Signal that we handled it (so alarm doesn't ring)
-                setResultCode(android.app.Activity.RESULT_OK);
-            }
-        }
-    };
 
     private void setupNumberButtons() {
         int[] buttonIds = { R.id.btn1, R.id.btn2, R.id.btn3, R.id.btn4, R.id.btn5,
@@ -428,7 +387,7 @@ public class SudoKuMainActivity extends AppCompatActivity implements Puzzleable 
         String timeStr = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
 
         // Disable alarm if non-repeating
-        disableAlarmIfNeeded();
+        completePuzzleSession();
 
         new AlertDialog.Builder(this)
                 .setTitle(R.string.victory_title)
@@ -444,38 +403,12 @@ public class SudoKuMainActivity extends AppCompatActivity implements Puzzleable 
                 .show();
     }
 
-    private void disableAlarmIfNeeded() {
-        if (alarmId != -1) {
-            // Broadcast puzzle completed first (use Puzzleable implementation)
-            onPuzzleSolved();
-
-            // Save wake statistics when puzzle is solved
-            StatisticsHelper.saveWakeStatistics(this);
-
-            new Thread(() -> {
-                com.ensao.mytime.alarm.database.AlarmRepository repository = new com.ensao.mytime.alarm.database.AlarmRepository(
-                        getApplication());
-                com.ensao.mytime.alarm.database.Alarm alarm = repository.getAlarmByIdSync(alarmId);
-                if (alarm != null && alarm.getDaysOfWeek() == 0) {
-                    alarm.setEnabled(false);
-                    repository.update(alarm);
-                }
-            }).start();
-        }
-    }
+    // disableAlarmIfNeeded replaced by completePuzzleSession
 
     @Override
     protected void onPause() {
         super.onPause();
-        isTimerRunning = false;
-        // Unregister receiver
-        if (alarmId != -1) {
-            try {
-                unregisterReceiver(puzzleResetReceiver);
-            } catch (IllegalArgumentException e) {
-                // Ignore if not registered
-            }
-        }
+        // Unregister receiver - Handled by BasePuzzleActivity
     }
 
     @Override
@@ -486,15 +419,7 @@ public class SudoKuMainActivity extends AppCompatActivity implements Puzzleable 
             isTimerRunning = true;
             timerHandler.post(timerRunnable);
         }
-        // Register receiver for reset requests
-        if (alarmId != -1) { // Only if in puzzle mode
-            android.content.IntentFilter filter = new android.content.IntentFilter(Puzzleable.ACTION_RESET_PUZZLE);
-            androidx.core.content.ContextCompat.registerReceiver(
-                    this,
-                    puzzleResetReceiver,
-                    filter,
-                    androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
-        }
+        // Register receiver - Handled by BasePuzzleActivity
     }
 
     @Override

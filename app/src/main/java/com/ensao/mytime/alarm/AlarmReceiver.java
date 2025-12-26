@@ -19,24 +19,8 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (Puzzleable.ACTION_FALLOUT_TRIGGERED.equals(intent.getAction())) {
-            // Check if puzzle is active by sending ordered broadcast
-            Intent resetIntent = new Intent(Puzzleable.ACTION_RESET_PUZZLE);
-            resetIntent.setPackage(context.getPackageName());
-
-            // We use goAsync to ensure the process stays alive while waiting for the result
-            final PendingResult pendingResult = goAsync();
-
-            context.sendOrderedBroadcast(resetIntent, null, new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context c, Intent i) {
-                    int resultCode = getResultCode();
-                    if (resultCode != android.app.Activity.RESULT_OK) {
-                        // Puzzle not active, start ringing
-                        startRingingService(context, intent);
-                    }
-                    pendingResult.finish();
-                }
-            }, null, android.app.Activity.RESULT_CANCELED, null, null);
+            // Fallout triggered - time limit reached while solving puzzle. Force ring.
+            startRingingService(context, intent);
         } else if (Puzzleable.ACTION_PUZZLE_COMPLETED.equals(intent.getAction())) {
             int alarmId = intent.getIntExtra(Puzzleable.EXTRA_ALARM_ID, -1);
             if (alarmId != -1) {

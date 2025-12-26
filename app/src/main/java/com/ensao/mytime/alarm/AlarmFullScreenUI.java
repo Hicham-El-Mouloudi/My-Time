@@ -125,6 +125,12 @@ public class AlarmFullScreenUI extends AppCompatActivity {
         Intent serviceIntent = new Intent(this, RingtoneService.class);
         stopService(serviceIntent); // Stop ringing
 
+        // Close any active puzzle
+        android.util.Log.d("AlarmFullScreenUI", "Sending ACTION_FINISH_PUZZLE broadcast");
+        Intent finishIntent = new Intent(Puzzleable.ACTION_FINISH_PUZZLE);
+        finishIntent.setPackage(getPackageName());
+        sendBroadcast(finishIntent);
+
         // Schedule Snooze
         long triggerTime = System.currentTimeMillis() + (AlarmConfig.SNOOZE_DELAY_SECONDS * 1000L);
         AlarmScheduler.scheduleSnooze(this, alarmId, triggerTime, 0);
@@ -176,7 +182,7 @@ public class AlarmFullScreenUI extends AppCompatActivity {
                             break;
                     }
                     puzzleIntent.putExtra("ALARM_ID", alarmId);
-                    puzzleIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    puzzleIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivity(puzzleIntent);
                 } else {
                     // Normal Dismiss - Turn off if not repeating
@@ -211,6 +217,12 @@ public class AlarmFullScreenUI extends AppCompatActivity {
             long triggerTime = System.currentTimeMillis() + (delay * 1000L);
             AlarmScheduler.scheduleSnooze(this, alarmId, triggerTime, autoSnoozeCount + 1);
 
+            // Close any active puzzle
+            android.util.Log.d("AlarmFullScreenUI", "Sending ACTION_FINISH_PUZZLE broadcast (AutoSnooze)");
+            Intent finishIntent = new Intent(Puzzleable.ACTION_FINISH_PUZZLE);
+            finishIntent.setPackage(getPackageName());
+            sendBroadcast(finishIntent);
+
             finish();
         } else {
             // Max reached, dismiss silently (turn off)
@@ -218,6 +230,12 @@ public class AlarmFullScreenUI extends AppCompatActivity {
                 countDownTimer.cancel();
             Intent serviceIntent = new Intent(this, RingtoneService.class);
             stopService(serviceIntent);
+
+            // Close any active puzzle
+            android.util.Log.d("AlarmFullScreenUI", "Sending ACTION_FINISH_PUZZLE broadcast (MaxSnooze)");
+            Intent finishIntent = new Intent(Puzzleable.ACTION_FINISH_PUZZLE);
+            finishIntent.setPackage(getPackageName());
+            sendBroadcast(finishIntent);
 
             new Thread(() -> {
                 com.ensao.mytime.alarm.database.AlarmRepository repository = new com.ensao.mytime.alarm.database.AlarmRepository(
