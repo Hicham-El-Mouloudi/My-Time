@@ -8,14 +8,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -35,11 +34,8 @@ import com.ensao.mytime.R;
 import com.ensao.mytime.alarm.database.Alarm;
 import com.ensao.mytime.alarm.database.AlarmRepository;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActionListener {
 
@@ -50,15 +46,16 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
     private FloatingActionButton fabDeleteSelected;
     private View emptyState;
 
+    // Selection action bar views
+    private View selectionActionBar;
+    private CheckBox selectAllCheckbox;
+    private TextView selectAllText;
+    private TextView deleteSelectedText;
+    private View closeSelectionButton;
+
     // Clock views
     private AnalogClockView analogClock;
-    private TextView digitalClock;
     private AppBarLayout appBarLayout;
-
-    // Handler for digital clock updates
-    private Handler clockHandler;
-    private Runnable clockUpdateRunnable;
-    private SimpleDateFormat timeFormat;
 
     // Ringtone Selection
     private androidx.activity.result.ActivityResultLauncher<Intent> ringtonePickerLauncher;
@@ -109,21 +106,19 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
         fabDeleteSelected = view.findViewById(R.id.fab_delete_selected);
         emptyState = view.findViewById(R.id.empty_state);
 
+        // Initialize selection action bar views
+        selectionActionBar = view.findViewById(R.id.selection_action_bar);
+        selectAllCheckbox = view.findViewById(R.id.select_all_checkbox);
+        selectAllText = view.findViewById(R.id.select_all_text);
+        deleteSelectedText = view.findViewById(R.id.delete_selected_text);
+        closeSelectionButton = view.findViewById(R.id.close_selection_button);
+
+        // Setup selection action bar listeners
+        setupSelectionActionBar();
+
         // Initialize clock views
         analogClock = view.findViewById(R.id.analog_clock);
-        digitalClock = view.findViewById(R.id.digital_clock);
         appBarLayout = view.findViewById(R.id.app_bar_layout);
-
-        // Setup time format
-        timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        clockHandler = new Handler(Looper.getMainLooper());
-        clockUpdateRunnable = new Runnable() {
-            @Override
-            public void run() {
-                updateDigitalClock();
-                clockHandler.postDelayed(this, 1000);
-            }
-        };
 
         // Setup scroll-based clock animation
         setupClockAnimation();
@@ -150,6 +145,58 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
         fabAddAlarm.setOnClickListener(v -> showAddAlarmDialog(null));
         fabDeleteSelected.setOnClickListener(v -> deleteSelectedAlarms());
 
+        // Exit selection mode when clicking on specific areas outside alarms
+        // 1. Clock container
+        View clockContainer = view.findViewById(R.id.clock_container);
+        clockContainer.setOnClickListener(v -> exitSelectionModeIfActive());
+
+        // 2. Analog clock
+        analogClock.setOnClickListener(v -> exitSelectionModeIfActive());
+
+        // 3. Empty state
+        emptyState.setOnClickListener(v -> exitSelectionModeIfActive());
+
+        // 4. Selection bar background (but not on controls)
+        selectionActionBar.setOnClickListener(v -> exitSelectionModeIfActive());
+
+        // 5. Scroll view (empty space in list area)
+        View scrollView = view.findViewById(R.id.scroll_view);
+        scrollView.setOnClickListener(v -> exitSelectionModeIfActive());
+
+        // 6. Content container (empty space between alarms)
+        View contentContainer = view.findViewById(R.id.content_container);
+        contentContainer.setOnClickListener(v -> exitSelectionModeIfActive());
+    }
+
+    private void exitSelectionModeIfActive() {
+        if (adapter != null && adapter.isSelectionMode()) {
+            adapter.clearSelection();
+        }
+    }
+
+    private void setupSelectionActionBar() {
+        // Select All checkbox listener
+        selectAllCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                adapter.selectAll();
+            } else {
+                if (adapter.isAllSelected()) {
+                    adapter.deselectAll();
+                }
+            }
+        });
+
+        // Select All text click listener
+        selectAllText.setOnClickListener(v -> {
+            selectAllCheckbox.setChecked(!selectAllCheckbox.isChecked());
+        });
+
+        // Delete button in selection bar
+        deleteSelectedText.setOnClickListener(v -> deleteSelectedAlarms());
+
+        // Close selection button (X) - exits selection mode
+        closeSelectionButton.setOnClickListener(v -> adapter.clearSelection());
+
         checkExactAlarmPermission();
         checkNotificationPermission();
         checkFullScreenIntentPermission();
@@ -173,34 +220,8 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
                 analogClock.setScaleY(analogScale);
                 analogClock.setAlpha(analogAlpha);
 
-                // Animate digital clock: fade in and translate upward as we scroll
-                digitalClock.setAlpha(scrollProgress);
-                // Move up by 20dp worth of pixels as we collapse
-                float maxTranslation = -27 * getResources().getDisplayMetrics().density;
-                digitalClock.setTranslationY(maxTranslation * scrollProgress);
             }
         });
-    }
-
-    private void updateDigitalClock() {
-        if (digitalClock != null) {
-            digitalClock.setText(timeFormat.format(new Date()));
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        // Start digital clock updates
-        updateDigitalClock();
-        clockHandler.postDelayed(clockUpdateRunnable, 1000);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        // Stop digital clock updates
-        clockHandler.removeCallbacks(clockUpdateRunnable);
     }
 
     private void deleteSelectedAlarms() {
@@ -495,12 +516,37 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
 
     @Override
     public void onSelectionChanged(int count) {
-        if (count > 0) {
+        if (adapter.isSelectionMode()) {
+            // Show selection action bar and FAB when in selection mode
+            selectionActionBar.setVisibility(View.VISIBLE);
             fabDeleteSelected.setVisibility(View.VISIBLE);
             fabAddAlarm.setVisibility(View.GONE);
+
+            // Update select all checkbox state
+            selectAllCheckbox.setOnCheckedChangeListener(null);
+            selectAllCheckbox.setChecked(adapter.isAllSelected());
+            selectAllCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked) {
+                    adapter.selectAll();
+                } else {
+                    if (adapter.isAllSelected()) {
+                        adapter.deselectAll();
+                    }
+                }
+            });
+
+            // Update text to show count
+            if (count > 0) {
+                selectAllText.setText("Select All (" + count + "/" + adapter.getAlarmCount() + ")");
+            } else {
+                selectAllText.setText("Select All (0/" + adapter.getAlarmCount() + ")");
+            }
         } else {
+            // Hide selection action bar when not in selection mode
+            selectionActionBar.setVisibility(View.INVISIBLE);
             fabDeleteSelected.setVisibility(View.GONE);
             fabAddAlarm.setVisibility(View.VISIBLE);
+            selectAllText.setText("Select All");
         }
     }
 }

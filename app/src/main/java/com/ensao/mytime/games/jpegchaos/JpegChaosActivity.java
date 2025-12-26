@@ -23,7 +23,9 @@ import com.ensao.mytime.statistics.StatisticsHelper;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class JpegChaosActivity extends AppCompatActivity implements Puzzleable {
+import com.ensao.mytime.alarm.BasePuzzleActivity;
+
+public class JpegChaosActivity extends BasePuzzleActivity {
     public final String TAG = "JpegChaos";
     private final int COLS = 3;
     private final int ROWS = 5;
@@ -47,8 +49,8 @@ public class JpegChaosActivity extends AppCompatActivity implements Puzzleable {
     private boolean soundsLoaded = false;
 
     // Alarm integration
-    private int alarmId = -1;
-    private boolean puzzleActive = false;
+    // Alarm integration
+    // Fields handled by BasePuzzleActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,37 +118,14 @@ public class JpegChaosActivity extends AppCompatActivity implements Puzzleable {
         initAudio();
         loadLevel();
 
-        // Get alarm ID if launched from alarm
-        alarmId = getIntent().getIntExtra("ALARM_ID", -1);
         if (alarmId != -1) {
             onPuzzleModeActivated(alarmId);
         }
     }
 
-    // Puzzleable interface implementation
     @Override
-    public void onPuzzleModeActivated(int alarmId) {
-        this.alarmId = alarmId;
-        this.puzzleActive = true;
-    }
-
-    @Override
-    public boolean isPuzzleActive() {
-        return puzzleActive;
-    }
-
-    @Override
-    public int getAssociatedAlarmId() {
-        return alarmId;
-    }
-
-    @Override
-    public void onPuzzleSolved() {
-        puzzleActive = false;
-        // Broadcast puzzle completed to stop alarm and let service know
-        Intent puzzleCompleteIntent = new Intent(Puzzleable.ACTION_PUZZLE_COMPLETED);
-        puzzleCompleteIntent.putExtra(Puzzleable.EXTRA_ALARM_ID, alarmId);
-        sendBroadcast(puzzleCompleteIntent);
+    protected void onPuzzleReset() {
+        resetPuzzle();
     }
 
     private void initAudio() {
@@ -211,12 +190,14 @@ public class JpegChaosActivity extends AppCompatActivity implements Puzzleable {
         if (isMusicEnabled) {
             startMusic();
         }
+        // Register receiver for reset requests - Handled by BasePuzzleActivity
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         stopMusic();
+        // Unregister receiver - Handled by BasePuzzleActivity
     }
 
     @Override
@@ -233,6 +214,8 @@ public class JpegChaosActivity extends AppCompatActivity implements Puzzleable {
         if (masterBitmap != null && !masterBitmap.isRecycled()) {
             masterBitmap.recycle();
         }
+
+        // Unregister receiver - Handled by BasePuzzleActivity
     }
 
     private void updateHintCount() {
@@ -325,32 +308,13 @@ public class JpegChaosActivity extends AppCompatActivity implements Puzzleable {
         android.widget.Button btnOk = dialog.findViewById(R.id.btn_ok);
         btnOk.setOnClickListener(v -> {
             dialog.dismiss();
-            disableAlarmIfNeeded();
-            finish();
+            completePuzzleSession();
         });
 
         dialog.show();
     }
 
-    private void disableAlarmIfNeeded() {
-        if (alarmId != -1) {
-            // Broadcast puzzle completed first
-            onPuzzleSolved();
-
-            // Save wake statistics when puzzle is solved
-            StatisticsHelper.saveWakeStatistics(this);
-
-            new Thread(() -> {
-                com.ensao.mytime.alarm.database.AlarmRepository repository = new com.ensao.mytime.alarm.database.AlarmRepository(
-                        getApplication());
-                com.ensao.mytime.alarm.database.Alarm alarm = repository.getAlarmByIdSync(alarmId);
-                if (alarm != null && alarm.getDaysOfWeek() == 0) {
-                    alarm.setEnabled(false);
-                    repository.update(alarm);
-                }
-            }).start();
-        }
-    }
+    // disableAlarmIfNeeded replaced by completePuzzleSession in BasePuzzleActivity
 
     private void loadLevel() {
         // Remove manual recycling to let GC handle it safely
