@@ -42,16 +42,31 @@ public class AppSelectionFragment extends Fragment implements AppSelectionAdapte
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         recyclerView = view.findViewById(R.id.app_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         loadBlockedAppsState();
-        List<AppInfo> installedApps = loadInstalledApps();
 
-        adapter = new AppSelectionAdapter(getContext(), installedApps, blockedPackages, this);
-        recyclerView.setAdapter(adapter);
+        if (AppCache.cachedApps != null && !AppCache.cachedApps.isEmpty()) {
+            adapter = new AppSelectionAdapter(getContext(), AppCache.cachedApps, blockedPackages, this);
+            recyclerView.setAdapter(adapter);
+        } else {
+            new Thread(() -> {
+                List<AppInfo> installedApps = loadInstalledApps();
+
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        AppCache.cachedApps = installedApps;
+
+                        adapter = new AppSelectionAdapter(getContext(), installedApps, blockedPackages, this);
+                        recyclerView.setAdapter(adapter);
+                    });
+                }
+            }).start();
+        }
     }
+
+
 
     private void loadBlockedAppsState() {
         SharedPreferences prefs = requireContext().getSharedPreferences(AlarmScheduler.PREFS_NAME, Context.MODE_PRIVATE);
@@ -78,24 +93,28 @@ public class AppSelectionFragment extends Fragment implements AppSelectionAdapte
     }
 
     private List<AppInfo> loadInstalledApps() {
-        if (getContext() == null) return new ArrayList<>();
+        List<AppInfo> appList = new ArrayList<>();
+        if (getContext() == null) return appList;
 
         final PackageManager pm = getContext().getPackageManager();
-        List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+        final String myPackageName = getContext().getPackageName();
 
-        List<AppInfo> appList = new ArrayList<>();
-        String myPackageName = getContext().getPackageName();
+        Intent intent = new Intent(Intent.ACTION_MAIN, null);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
 
-        for (ApplicationInfo packageInfo : packages) {
-            Intent launchIntent = pm.getLaunchIntentForPackage(packageInfo.packageName);
+        List<android.content.pm.ResolveInfo> resolveInfos = pm.queryIntentActivities(intent, 0);
 
-            if (launchIntent != null && !packageInfo.packageName.equals(myPackageName)) {
+        for (android.content.pm.ResolveInfo info : resolveInfos) {
+            String packageName = info.activityInfo.packageName;
+
+            if (!packageName.equals(myPackageName)) {
                 try {
-                    String appName = (String) pm.getApplicationLabel(packageInfo);
-                    AppInfo app = new AppInfo(appName, packageInfo.packageName, pm.getApplicationIcon(packageInfo));
-                    appList.add(app);
+                    String appName = info.loadLabel(pm).toString();
+                    android.graphics.drawable.Drawable icon = info.loadIcon(pm);
+
+                    appList.add(new AppInfo(appName, packageName, icon));
                 } catch (Exception e) {
-                    Log.e("AppSelection", "Erreur chargement app: " + packageInfo.packageName);
+                    Log.e("AppSelection", "Erreur chargement app: " + packageName);
                 }
             }
         }
@@ -103,6 +122,7 @@ public class AppSelectionFragment extends Fragment implements AppSelectionAdapte
         Collections.sort(appList, (a, b) -> a.name.compareToIgnoreCase(b.name));
         return appList;
     }
+
 
     @Override
     public void onAppSelected(String packageName, boolean isSelected) {
