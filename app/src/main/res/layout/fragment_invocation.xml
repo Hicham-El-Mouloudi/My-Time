@@ -55,6 +55,7 @@
     <!-- Completion Message with Glass Styling -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/completion_card"
+        style="@style/GlassCardStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
