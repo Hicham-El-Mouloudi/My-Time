@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/color_background">
+    android:background="@drawable/gradient_glass_primary">
 
     <TextView
         android:id="@+id/header_title"
@@ -14,7 +14,7 @@
         android:text="Sélectionnez les applications à bloquer :"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:textColor="@color/black"/>
+        android:textColor="@color/white"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/app_recycler_view"
@@ -32,6 +32,15 @@
         android:layout_alignParentBottom="true"
         android:layout_margin="16dp"
         android:text="Enregistrer la sélection"
+        android:textSize="16sp"
+        android:letterSpacing="0.05"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/glass_text_primary"
+        app:cornerRadius="16dp"
+        app:backgroundTint="@color/glass_button_secondary"
+        app:strokeColor="@color/glass_card_stroke"
+        app:strokeWidth="1dp"
+        app:elevation="0dp"
         android:padding="12dp"
         style="@style/Widget.Material3.Button" />
 

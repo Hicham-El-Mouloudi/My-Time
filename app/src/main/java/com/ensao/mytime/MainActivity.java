@@ -26,6 +26,7 @@ import androidx.preference.PreferenceManager;
 
 import com.google.android.material.appbar.MaterialToolbar;
 
+import com.ensao.mytime.sleep.view.AppCache;
 import com.ensao.mytime.alarm.AlarmFragment;
 import com.ensao.mytime.calendar.CalendarFragment;
 import com.ensao.mytime.home.AlarmScheduler;
@@ -51,18 +52,17 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Apply theme before view creation (from alarm-feature)
-
+        // 1. Appliquer le thème avant tout
         applyTheme();
 
         super.onCreate(savedInstanceState);
-
-        // Register preference listener (from alarm-feature)
-        PreferenceManager.getDefaultSharedPreferences(this)
-                .registerOnSharedPreferenceChangeListener(this);
-
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
+        AppCache.preloadApps(getApplicationContext());
+
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .registerOnSharedPreferenceChangeListener(this);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -87,7 +87,6 @@ public class MainActivity extends AppCompatActivity
             bottomNavigationView.setSelectedItemId(R.id.navigation_home);
         }
 
-        // Check for blocking on launch (from main)
         checkIntentForBlocking(getIntent());
     }
 

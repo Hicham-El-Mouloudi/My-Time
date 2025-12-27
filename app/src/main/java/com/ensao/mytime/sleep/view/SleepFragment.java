@@ -36,7 +36,6 @@ public class SleepFragment extends Fragment {
     private TextView tvSelectedSleepTime;
     private TextView tvSuggestedSleepTimes;
     private Button btnToggleSleepSession;
-    // private Button btnSelectSleepTime; // Removed
     private Button btnManageApps;
 
     private Calendar selectedWakeUpCalendar;
@@ -82,10 +81,12 @@ public class SleepFragment extends Fragment {
         if (btnManageApps != null) {
             btnManageApps.setOnClickListener(v -> {
                 getParentFragmentManager().beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out) // Animation fluide
                         .replace(R.id.mainContent, new AppSelectionFragment())
                         .addToBackStack(null)
                         .commit();
             });
+
         }
         checkCurrentSessionStatus();
     }
