@@ -4,11 +4,15 @@ import android.app.Activity;
 import android.app.Application;
 
 import com.ensao.mytime.Activityfeature.Busniss.StatisticsSleepSession;
+import com.ensao.mytime.Activityfeature.Busniss.StatisticsStudySession;
 import com.ensao.mytime.Activityfeature.Busniss.StatisticsWakeSession;
 import com.ensao.mytime.Activityfeature.Repos.StatisticsSleepSessionRepo;
+import com.ensao.mytime.Activityfeature.Repos.StatisticsStudySessionRepo;
 import com.ensao.mytime.Activityfeature.Repos.StatisticsWakeSessionRepo;
 import com.ensao.mytime.statistics.model.DayData;
 import com.ensao.mytime.statistics.model.WeekData;
+
+import org.json.JSONObject;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -16,7 +20,10 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -29,6 +36,7 @@ public class StatisticsDAOProxyDB implements StatisticsDAO {
 
     private final StatisticsSleepSessionRepo sleepSessionRepo;
     private final StatisticsWakeSessionRepo wakeSessionRepo;
+    private final StatisticsStudySessionRepo studySessionRepo;
     private final Activity activity;
 
     /**
@@ -39,6 +47,7 @@ public class StatisticsDAOProxyDB implements StatisticsDAO {
     public StatisticsDAOProxyDB(Application application, Activity activity) {
         this.sleepSessionRepo = new StatisticsSleepSessionRepo(application);
         this.wakeSessionRepo = new StatisticsWakeSessionRepo(application);
+        this.studySessionRepo = new StatisticsStudySessionRepo(application);
         this.activity = activity;
     }
 
@@ -245,6 +254,11 @@ public class StatisticsDAOProxyDB implements StatisticsDAO {
             data.setLastOff(wakeSession.getLastOff());
             data.setWakeDuration(wakeSession.getWakeDuration());
         }
+
+        // Note: Study data from DB would need additional async call chain
+        // For now, study data is populated by the mock proxy (StatisticsDAOProxy)
+        // Real DB integration for study would require refactoring the callback chain
+        data.setHasStudy(false);
 
         return data;
     }
