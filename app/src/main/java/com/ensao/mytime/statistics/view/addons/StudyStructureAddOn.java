@@ -82,13 +82,13 @@ public class StudyStructureAddOn extends StatsViewGenerator {
             int focusTime = focusTimeObj instanceof Number ? ((Number) focusTimeObj).intValue() : 0;
             String summary;
             if (focusTime >= 180) {
-                summary = "Excellent! 🔥";
+                summary = "Excellent!";
             } else if (focusTime >= 90) {
-                summary = "Bon travail! 👍";
+                summary = "Bon travail!";
             } else if (focusTime > 0) {
-                summary = "Continuez! 💪";
+                summary = "Continuez!";
             } else {
-                summary = "Démarrez! 🚀";
+                summary = "Démarrez!";
             }
             tvProductivitySummary.setText(summary);
         }
@@ -139,7 +139,9 @@ public class StudyStructureAddOn extends StatsViewGenerator {
         chart.getLegend().setEnabled(true);
         chart.setEntryLabelColor(Color.BLACK);
         chart.setTouchEnabled(false);
-        chart.animateY(1000);
+        // Make the chart bigger within its container by using negative offsets
+        chart.setExtraOffsets(-10f, -10f, -10f, -10f);
+        chart.animateY(1100);
         chart.invalidate();
     }
 
@@ -182,7 +184,9 @@ public class StudyStructureAddOn extends StatsViewGenerator {
         chart.setTouchEnabled(false);
         chart.setCenterText(String.format(Locale.getDefault(), "%d%%", total > 0 ? (completed * 100 / total) : 0));
         chart.setCenterTextSize(16f);
-        chart.animateY(1000);
+        // making the chart a little bigger
+        chart.setExtraOffsets(-10f, -10f, -10f, -10f);
+        chart.animateY(1100);
         chart.invalidate();
     }
 

@@ -180,7 +180,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Répartition par Matière"
+                android:text="Répartition des Minutes d’Étude par Matière"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"
@@ -211,7 +211,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tâches Complétées"
+                android:text="Répartition desTâches Complétées"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"
@@ -242,7 +242,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Matières Étudiées (7 derniers jours)"
+                android:text="Variation des Matières Étudiées (7 derniers jours)"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"
@@ -273,7 +273,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Productivité Aujourd'hui"
+                android:text="Productivité de la Journée"
                 android:textSize="14sp"
                 android:textColor="@color/white"
                 android:alpha="0.8" />
