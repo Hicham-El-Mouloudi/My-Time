@@ -3,124 +3,131 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/color_background">
+    android:background="@drawable/bg_main_background">
 
-    <!-- Main Content Container -->
-    <LinearLayout
+    <!-- Main Content Container wrapped in Glass Card -->
+    <com.google.android.material.card.MaterialCardView
+        style="@style/GlassCardStyle.Large"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_margin="16dp">
 
-        <!-- Header -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:padding="16dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tvCurrentMonth"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Décembre 2025"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:textColor="@color/aurora_primary" />
-
-            <ImageButton
-                android:id="@+id/btnToday"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@android:drawable/ic_menu_today"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Aller à aujourd'hui"
-                app:tint="@color/aurora_primary" />
-
-        </LinearLayout>
-
-        <!-- Horizontal Date Bar -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/dateBarRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="8dp"
-            android:clipToPadding="false"
-            android:layout_marginBottom="8dp" />
-
-        <!-- Divider -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/light_gray"
-            android:layout_marginHorizontal="16dp" />
-
-        <!-- Selected Date Header -->
-        <TextView
-            android:id="@+id/tvSelectedDateHeader"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Activités du jour"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_dark"
-            android:padding="16dp" />
-
-        <!-- Activities List Container to handle weight -->
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-
-            <!-- Activities List -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/activitiesRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingHorizontal="16dp"
-                android:paddingBottom="88dp"
-                android:clipToPadding="false" />
-
-            <!-- Empty State -->
+            <!-- Header -->
             <LinearLayout
-                android:id="@+id/emptyStateLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:visibility="gone"
-                android:padding="32dp">
-
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:src="@android:drawable/ic_menu_agenda"
-                    app:tint="@color/medium_gray"
-                    android:alpha="0.5" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tvCurrentMonth"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Aucune activité pour ce jour"
-                    android:textSize="16sp"
-                    android:textColor="@color/medium_gray"
-                    android:layout_marginTop="16dp"
-                    android:gravity="center" />
+                    android:layout_weight="1"
+                    android:text="Décembre 2025"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/glass_text_primary" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Appuyez sur + pour en ajouter une"
-                    android:textSize="14sp"
-                    android:textColor="@color/medium_gray"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center" />
+                <ImageButton
+                    android:id="@+id/btnToday"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@android:drawable/ic_menu_today"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Aller à aujourd'hui"
+                    app:tint="@color/glass_text_primary" />
 
             </LinearLayout>
-        </FrameLayout>
 
-    </LinearLayout>
+            <!-- Horizontal Date Bar -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/dateBarRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="8dp"
+                android:clipToPadding="false"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/glass_divider"
+                android:layout_marginHorizontal="16dp" />
+
+            <!-- Selected Date Header -->
+            <TextView
+                android:id="@+id/tvSelectedDateHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Activités du jour"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/glass_text_primary"
+                android:padding="16dp" />
+
+            <!-- Activities List Container to handle weight -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <!-- Activities List -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/activitiesRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingHorizontal="16dp"
+                    android:paddingBottom="88dp"
+                    android:clipToPadding="false" />
+
+                <!-- Empty State -->
+                <LinearLayout
+                    android:id="@+id/emptyStateLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:padding="32dp">
+
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:src="@android:drawable/ic_menu_agenda"
+                        app:tint="@color/glass_text_secondary"
+                        android:alpha="0.5" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Aucune activité pour ce jour"
+                        android:textSize="16sp"
+                        android:textColor="@color/glass_text_secondary"
+                        android:layout_marginTop="16dp"
+                        android:gravity="center" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Appuyez sur + pour en ajouter une"
+                        android:textSize="14sp"
+                        android:textColor="@color/glass_text_secondary"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center" />
+
+                </LinearLayout>
+            </FrameLayout>
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <!-- Floating Action Button -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -128,10 +135,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
+        android:layout_margin="24dp"
         android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="@color/aurora_primary"
-        app:tint="@color/white"
+        app:backgroundTint="@color/glass_accent_blue"
+        app:tint="@color/glass_text_primary"
         android:contentDescription="Ajouter une activité" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
