@@ -120,12 +120,14 @@ public class CalendarDaysAdapter extends RecyclerView.Adapter<CalendarDaysAdapte
         TextView tvDayNumber;
         ImageView ivSleepIndicator;
         ImageView ivWakeIndicator;
+        ImageView ivStudyIndicator;
 
         public DayViewHolder(@NonNull View itemView) {
             super(itemView);
             tvDayNumber = itemView.findViewById(R.id.tv_day_number);
             ivSleepIndicator = itemView.findViewById(R.id.iv_indicator_sleep);
             ivWakeIndicator = itemView.findViewById(R.id.iv_indicator_wake);
+            ivStudyIndicator = itemView.findViewById(R.id.iv_indicator_study);
         }
 
         public void bind(final DayData day, final OnDayClickListener listener) {
@@ -135,6 +137,7 @@ public class CalendarDaysAdapter extends RecyclerView.Adapter<CalendarDaysAdapte
 
             ivSleepIndicator.setVisibility(day.hasSleep() ? View.VISIBLE : View.GONE);
             ivWakeIndicator.setVisibility(day.hasWake() ? View.VISIBLE : View.GONE);
+            ivStudyIndicator.setVisibility(day.hasStudy() ? View.VISIBLE : View.GONE);
 
             // Check if this day is in the future
             boolean isFutureDay = day.getDate().isAfter(java.time.LocalDate.now());

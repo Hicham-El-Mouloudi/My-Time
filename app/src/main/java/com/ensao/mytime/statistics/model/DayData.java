@@ -2,6 +2,7 @@ package com.ensao.mytime.statistics.model;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public class DayData {
     private LocalDate date;
@@ -24,6 +25,16 @@ public class DayData {
     private float wakeDuration; // minutes
     private List<Float> wakeVariance; // last 7 days
     private String averageWakeTime; // HH:mm
+
+    // Study Data
+    private boolean hasStudy;
+    private int totalFocusTime; // minutes
+    private int streakCount;
+    private float pauseCount;
+    private Map<String, Integer> subjectDistribution; // subject -> minutes
+    private int completedTasksCount;
+    private int totalTasksCount;
+    private List<Integer> weeklySubjectsStudied; // 7 days
 
     public DayData(LocalDate date, boolean hasSleep, boolean hasWake) {
         this.date = date;
@@ -162,5 +173,70 @@ public class DayData {
 
     public void setAverageWakeTime(String averageWakeTime) {
         this.averageWakeTime = averageWakeTime;
+    }
+
+    // Study Getters and Setters
+    public boolean hasStudy() {
+        return hasStudy;
+    }
+
+    public void setHasStudy(boolean hasStudy) {
+        this.hasStudy = hasStudy;
+    }
+
+    public int getTotalFocusTime() {
+        return totalFocusTime;
+    }
+
+    public void setTotalFocusTime(int totalFocusTime) {
+        this.totalFocusTime = totalFocusTime;
+    }
+
+    public int getStreakCount() {
+        return streakCount;
+    }
+
+    public void setStreakCount(int streakCount) {
+        this.streakCount = streakCount;
+    }
+
+    public float getPauseCount() {
+        return pauseCount;
+    }
+
+    public void setPauseCount(float pauseCount) {
+        this.pauseCount = pauseCount;
+    }
+
+    public Map<String, Integer> getSubjectDistribution() {
+        return subjectDistribution;
+    }
+
+    public void setSubjectDistribution(Map<String, Integer> subjectDistribution) {
+        this.subjectDistribution = subjectDistribution;
+    }
+
+    public int getCompletedTasksCount() {
+        return completedTasksCount;
+    }
+
+    public void setCompletedTasksCount(int completedTasksCount) {
+        this.completedTasksCount = completedTasksCount;
+    }
+
+    public int getTotalTasksCount() {
+        return totalTasksCount;
+    }
+
+    public void setTotalTasksCount(int totalTasksCount) {
+        this.totalTasksCount = totalTasksCount;
+    }
+
+    public List<Integer> getWeeklySubjectsStudied() {
+        return weeklySubjectsStudied;
+    }
+
+    public void setWeeklySubjectsStudied(List<Integer> weeklySubjectsStudied) {
+        this.weeklySubjectsStudied = weeklySubjectsStudied;
     }
 }

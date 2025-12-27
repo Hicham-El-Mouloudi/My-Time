@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:background="@android:color/transparent">
+    android:fillViewport="true">
 
 
     <LinearLayout
@@ -13,18 +12,15 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Header Container with Glass Styling -->
-        <com.google.android.material.card.MaterialCardView
+        <!-- Header Container with illustration background -->
+        <androidx.cardview.widget.CardView
             android:id="@+id/stats_header_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:cardElevation="0dp"
             app:cardCornerRadius="16dp"
-            app:strokeWidth="1dp"
-            app:strokeColor="@color/glass_card_stroke"
-            app:cardBackgroundColor="@color/glass_card_bg"
-            android:layout_margin="16dp">
+            app:cardBackgroundColor="@android:color/transparent">
 
             <!-- Fixed Height Background Image -->
             <com.google.android.material.imageview.ShapeableImageView
@@ -44,42 +40,59 @@
                android:padding="16dp"
                android:id="@+id/card_inner_layout"
                android:background="@android:color/transparent"> 
+               <!-- Removed background from here, moved to ImageView above -->
 
-                <!-- Toggle Buttons (Reveil / Sommeil) with Glass Styling -->
+                <!-- Toggle Buttons (Reveil / Sommeil / Études) -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:background="@drawable/bg_glass_card"
+                    android:background="@drawable/bg_toggle_container"
                     android:padding="4dp"
                     android:layout_marginBottom="24dp">
                     
-                    <com.google.android.material.button.MaterialButton
+                    <Button
                         android:id="@+id/btn_toggle_reveil"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Reveil"
-                        app:backgroundTint="@color/glass_accent_blue"
-                        android:textColor="@color/glass_text_primary"
-                        app:cornerRadius="12dp" />
+                        android:backgroundTint="@android:color/transparent"
+                        android:textColor="@color/text_secondary"
+                        style="?attr/materialButtonStyle"
+                        app:elevation="0dp"
+                        app:cornerRadius="24dp" />
 
-                    <com.google.android.material.button.MaterialButton
+                    <Button
                         android:id="@+id/btn_toggle_sommeil"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Sommeil"
-                        app:backgroundTint="@android:color/transparent"
-                        android:textColor="@color/glass_text_secondary"
+                        android:backgroundTint="@android:color/transparent"
+                        android:textColor="@color/text_secondary"
+                        style="?attr/materialButtonStyle"
                         app:elevation="0dp"
-                        app:cornerRadius="12dp" />
+                        app:cornerRadius="24dp" />
+
+                    <Button
+                        android:id="@+id/btn_toggle_etudes"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Études"
+                        android:backgroundTint="@android:color/transparent"
+                        android:textColor="@color/text_secondary"
+                        style="?attr/materialButtonStyle"
+                        app:elevation="0dp"
+                        app:cornerRadius="24dp" />
                 </LinearLayout>
 
 
             </LinearLayout>
-     </com.google.android.material.card.MaterialCardView>
+     </androidx.cardview.widget.CardView>
 
+        <!-- Quality Percentage Arc -->
         <!-- Quality Percentage Arc Container -->
         <FrameLayout
             android:layout_width="match_parent"
@@ -106,8 +119,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" 
-            android:layout_marginTop="16dp"
-            android:paddingHorizontal="16dp"/>
+            android:layout_marginTop="16dp"/>
 
     </LinearLayout>
 
