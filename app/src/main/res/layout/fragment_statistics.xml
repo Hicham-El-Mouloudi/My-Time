@@ -15,7 +15,7 @@
         app:cardCornerRadius="0dp"
         app:cardElevation="0dp"
         app:strokeWidth="0dp"
-        app:cardBackgroundColor="@color/glass_card_bg"
+        app:cardBackgroundColor="@color/glass_dialog_bg"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">

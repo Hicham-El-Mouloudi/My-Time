@@ -14,14 +14,16 @@
         android:layout_marginBottom="12dp">
 
         <!-- Latence -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="6dp"
             app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="@color/surface_color">
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/glass_card_stroke"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/glass_dialog_bg">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -35,7 +37,7 @@
                     android:layout_height="wrap_content"
                     android:text="Latence"
                     android:textSize="12sp"
-                    android:textColor="@color/text_secondary" />
+                    android:textColor="@color/glass_text_secondary" />
 
                 <TextView
                     android:id="@+id/tv_wake_latency_value"
@@ -44,19 +46,21 @@
                     android:layout_marginTop="4dp"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:textColor="@color/text_primary" />
+                    android:textColor="@color/glass_text_primary" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Nombre de Sonneries -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="6dp"
             app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="@color/surface_color">
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/glass_card_stroke"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/glass_dialog_bg">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -70,7 +74,7 @@
                     android:layout_height="wrap_content"
                     android:text="Sonneries"
                     android:textSize="12sp"
-                    android:textColor="@color/text_secondary" />
+                    android:textColor="@color/glass_text_secondary" />
 
                 <TextView
                     android:id="@+id/tv_ring_count_value"
@@ -79,9 +83,9 @@
                     android:layout_marginTop="4dp"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:textColor="@color/text_primary" />
+                    android:textColor="@color/glass_text_primary" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
     <!-- Row 2: Premier Alarme + Derniere Extinction -->
@@ -92,14 +96,16 @@
         android:layout_marginBottom="12dp">
 
         <!-- Premier Alarme -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="6dp"
             app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="@color/surface_color">
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/glass_card_stroke"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/glass_dialog_bg">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -113,7 +119,7 @@
                     android:layout_height="wrap_content"
                     android:text="Premier Alarme"
                     android:textSize="12sp"
-                    android:textColor="@color/text_secondary" />
+                    android:textColor="@color/glass_text_secondary" />
 
                 <TextView
                     android:id="@+id/tv_first_alarm_value"
@@ -122,19 +128,21 @@
                     android:layout_marginTop="4dp"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:textColor="@color/primary_color" />
+                    android:textColor="@color/glass_accent_blue" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Derniere Extinction -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="6dp"
             app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="@color/surface_color">
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/glass_card_stroke"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/glass_dialog_bg">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -148,7 +156,7 @@
                     android:layout_height="wrap_content"
                     android:text="Derniere Extinction"
                     android:textSize="12sp"
-                    android:textColor="@color/text_secondary" />
+                    android:textColor="@color/glass_text_secondary" />
 
                 <TextView
                     android:id="@+id/tv_last_off_value"
@@ -157,9 +165,9 @@
                     android:layout_marginTop="4dp"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:textColor="@color/primary_color" />
+                    android:textColor="@color/glass_accent_blue" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
     <!-- Row 3: Variabilité du temps + Durée du réveil -->
@@ -170,14 +178,16 @@
         android:layout_marginBottom="16dp">
 
         <!-- Variabilité du temps -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="6dp"
             app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="@color/surface_color">
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/glass_card_stroke"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/glass_dialog_bg">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -191,7 +201,7 @@
                     android:layout_height="wrap_content"
                     android:text="Variabilité"
                     android:textSize="12sp"
-                    android:textColor="@color/text_secondary" />
+                    android:textColor="@color/glass_text_secondary" />
 
                 <TextView
                     android:id="@+id/tv_time_variability_value"
@@ -200,19 +210,21 @@
                     android:layout_marginTop="4dp"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:textColor="@color/text_primary" />
+                    android:textColor="@color/glass_text_primary" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Durée du réveil -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="6dp"
             app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="@color/surface_color">
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/glass_card_stroke"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/glass_dialog_bg">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -226,7 +238,7 @@
                     android:layout_height="wrap_content"
                     android:text="Durée réveil"
                     android:textSize="12sp"
-                    android:textColor="@color/text_secondary" />
+                    android:textColor="@color/glass_text_secondary" />
 
                 <TextView
                     android:id="@+id/tv_wake_duration_value"
@@ -235,19 +247,21 @@
                     android:layout_marginTop="4dp"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:textColor="@color/text_primary" />
+                    android:textColor="@color/glass_text_primary" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
     <!-- Chart Section -->
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
         app:cardCornerRadius="16dp"
-        app:cardElevation="2dp"
-        app:cardBackgroundColor="@color/surface_color">
+        app:strokeWidth="1dp"
+        app:strokeColor="@color/glass_card_stroke"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/glass_dialog_bg">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -261,7 +275,7 @@
                 android:text="Variance (7 derniers jours)"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                android:textColor="@color/text_primary"
+                android:textColor="@color/glass_text_primary"
                 android:layout_marginBottom="8dp" />
 
             <com.github.mikephil.charting.charts.LineChart
@@ -269,15 +283,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp" />
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
     <!-- Heure moyenne au réveil -->
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="16dp"
-        app:cardElevation="2dp"
-        app:cardBackgroundColor="@color/primary_color">
+        app:strokeWidth="0dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="@color/glass_accent_blue">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -303,6 +318,6 @@
                 android:textStyle="bold"
                 android:textColor="@color/white" />
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
 </LinearLayout>
