@@ -47,15 +47,13 @@
                     android:focusable="true">
 
                     <!-- Analog Clock View -->
-                    <!-- Applying dark theme to ensure white hands/ticks -->
                     <com.ensao.mytime.alarm.AnalogClockView
                         android:id="@+id/analog_clock"
                         android:layout_width="200dp"
                         android:layout_height="200dp"
                         android:layout_gravity="center"
                         android:clickable="true"
-                        android:focusable="true"
-                        android:theme="@style/ThemeOverlay.MaterialComponents.Dark"/>
+                        android:focusable="true" />
 
                 </FrameLayout>
             </com.google.android.material.card.MaterialCardView>

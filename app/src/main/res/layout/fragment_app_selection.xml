@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_glass_primary">
+    android:background="@drawable/bg_main_background">
 
     <TextView
         android:id="@+id/header_title"
@@ -14,7 +14,7 @@
         android:text="Sélectionnez les applications à bloquer :"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:textColor="@color/white"/>
+        android:textColor="@color/glass_text_primary"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/app_recycler_view"
