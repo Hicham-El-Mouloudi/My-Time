@@ -57,9 +57,10 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Reveil"
-                        android:backgroundTint="@color/primary_color"
-                        android:textColor="@color/white"
+                        android:backgroundTint="@android:color/transparent"
+                        android:textColor="@color/text_secondary"
                         style="?attr/materialButtonStyle"
+                        app:elevation="0dp"
                         app:cornerRadius="24dp" />
 
                     <Button

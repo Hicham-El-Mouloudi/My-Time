@@ -172,18 +172,19 @@ public class DayStatisticsViewBuilder {
         container.removeAllViews();
 
         int primaryColor = context.getResources().getColor(R.color.primary_color);
+        int secondaryColor = context.getResources().getColor(R.color.text_secondary);
         int whiteColor = context.getResources().getColor(R.color.white);
         int transparentColor = android.graphics.Color.TRANSPARENT;
 
         // Reset all buttons to inactive
         btnSleep.setBackgroundTintList(android.content.res.ColorStateList.valueOf(transparentColor));
-        btnSleep.setTextColor(context.getResources().getColor(R.color.text_secondary));
+        btnSleep.setTextColor(secondaryColor);
         btnSleep.refreshDrawableState();
         btnWake.setBackgroundTintList(android.content.res.ColorStateList.valueOf(transparentColor));
-        btnWake.setTextColor(context.getResources().getColor(R.color.text_secondary));
+        btnWake.setTextColor(secondaryColor);
         btnWake.refreshDrawableState();
         btnStudy.setBackgroundTintList(android.content.res.ColorStateList.valueOf(transparentColor));
-        btnStudy.setTextColor(context.getResources().getColor(R.color.text_secondary));
+        btnStudy.setTextColor(secondaryColor);
         btnStudy.refreshDrawableState();
 
         // Set active button
