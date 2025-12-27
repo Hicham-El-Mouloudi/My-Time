@@ -111,16 +111,16 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String theme = prefs.getString("theme", "light");
 
-        // Check the actual current night mode from configuration
-        int currentNightMode = getResources().getConfiguration().uiMode
-                & android.content.res.Configuration.UI_MODE_NIGHT_MASK;
-        boolean isDarkModeActive = (currentNightMode == android.content.res.Configuration.UI_MODE_NIGHT_YES);
         boolean shouldBeDark = "dark".equals(theme);
+        int desiredMode = shouldBeDark ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO;
 
-        // Only change the mode if it's actually different from what's currently applied
-        if (isDarkModeActive != shouldBeDark) {
-            int desiredMode = shouldBeDark ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO;
+        // Get the current mode that AppCompatDelegate is set to
+        int currentMode = AppCompatDelegate.getDefaultNightMode();
+
+        // Only change if the mode is different
+        if (currentMode != desiredMode) {
             AppCompatDelegate.setDefaultNightMode(desiredMode);
+            // The activity will be automatically recreated by AppCompatDelegate
         }
     }
 
