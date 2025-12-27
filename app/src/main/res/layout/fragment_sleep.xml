@@ -13,28 +13,29 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <!-- Sleep Title with Glass Styling -->
+        <!-- Header -->
         <TextView
             android:id="@+id/sleep_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="🌙 Optimisation du Sommeil"
-            android:textSize="24sp"
+            android:text="Sleep Optimization"
+            android:textSize="28sp"
             android:textStyle="bold"
+            android:fontFamily="sans-serif-condensed"
             android:textColor="@color/glass_text_primary"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="24dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Wake Up Goal Card - Glass Style -->
+        <!-- Merged Sleep Schedule Container -->
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_sleep_calculator"
+            android:id="@+id/card_sleep_schedule"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             app:cardElevation="0dp"
-            app:cardCornerRadius="16dp"
+            app:cardCornerRadius="24dp"
             app:strokeWidth="1dp"
             app:strokeColor="@color/glass_card_stroke"
             app:cardBackgroundColor="@color/glass_card_bg"
@@ -44,159 +45,184 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="24dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1. Mon Objectif de Réveil"
-                    android:textSize="18sp"
+                    android:text="Sleep Schedule"
+                    android:textSize="20sp"
                     android:textStyle="bold"
-                    android:textColor="@color/glass_accent_blue" />
+                    android:textColor="@color/glass_text_primary"
+                    android:layout_marginBottom="24dp" />
 
-                <TextView
-                    android:id="@+id/tv_wake_up_time"
+                <!-- 1. Wake Up Section -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:padding="10dp"
-                    android:background="@drawable/bg_glass_card"
-                    android:gravity="center"
-                    android:textSize="32sp"
-                    android:textColor="@color/glass_text_primary"
-                    android:textStyle="bold"
-                    tools:text="07:00" />
+                    android:orientation="vertical"
+                    android:layout_marginBottom="24dp">
+                    
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="I want to wake up at"
+                        android:textSize="14sp"
+                        android:textColor="@color/glass_text_secondary"
+                        android:layout_marginBottom="8dp"/>
 
+                    <TextView
+                        android:id="@+id/tv_wake_up_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:background="@drawable/bg_glass_input"
+                        android:gravity="center"
+                        android:textSize="36sp"
+                        android:textColor="@color/glass_accent_blue"
+                        android:textStyle="bold"
+                        android:clickable="true"
+                        android:focusable="true"
+                        tools:text="07:00" />
+                </LinearLayout>
+
+                <!-- 2. Suggestions -->
                 <TextView
                     android:id="@+id/tv_suggested_sleep_times"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:padding="12dp"
-                    android:background="@drawable/bg_glass_card"
+                    android:layout_marginBottom="24dp"
+                    android:padding="16dp"
+                    android:background="@drawable/bg_glass_card_subtle"
                     android:textSize="14sp"
                     android:lineSpacingExtra="6dp"
                     android:textColor="@color/glass_text_secondary"
-                    tools:text="Suggestions de cycles..." />
+                    tools:text="Suggested cycles..." />
+
+                <!-- 3. Sleep Target Section -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Target Bedtime"
+                        android:textSize="14sp"
+                        android:textColor="@color/glass_text_secondary"
+                        android:layout_marginBottom="8dp"/>
+
+                    <TextView
+                        android:id="@+id/tv_selected_sleep_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:background="@drawable/bg_glass_input"
+                        android:gravity="center"
+                        android:textSize="36sp"
+                        android:textColor="@color/glass_accent_purple"
+                        android:textStyle="bold"
+                        android:clickable="true"
+                        android:focusable="true"
+                        tools:text="22:30" />
+                </LinearLayout>
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Sleep Time Selection Card - Glass Style -->
+        <!-- Sleep Focus Container -->
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_sleep_target"
+            android:id="@+id/card_sleep_focus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             app:cardElevation="0dp"
-            app:cardCornerRadius="16dp"
+            app:cardCornerRadius="24dp"
             app:strokeWidth="1dp"
             app:strokeColor="@color/glass_card_stroke"
             app:cardBackgroundColor="@color/glass_card_bg"
-            app:layout_constraintTop_toBottomOf="@id/card_sleep_calculator">
+            app:layout_constraintTop_toBottomOf="@id/card_sleep_schedule">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="24dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2. Heure de Coucher Souhaitée"
-                    android:textSize="18sp"
+                    android:text="Sleep Focus"
+                    android:textSize="20sp"
                     android:textStyle="bold"
-                    android:textColor="@color/glass_accent_purple" />
+                    android:textColor="@color/glass_text_primary"
+                    android:layout_marginBottom="16dp" />
 
-                <TextView
-                    android:id="@+id/tv_selected_sleep_time"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/glass_text_primary"
-                    android:text="Heure choisie : 22:30" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_select_sleep_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
-                    android:text="Modifier l'heure"
-                    android:textColor="@color/glass_text_primary"
-                    app:backgroundTint="@color/glass_card_bg_medium"
-                    app:strokeColor="@color/glass_card_stroke"
-                    app:strokeWidth="1dp"
-                    style="@style/Widget.Material3.Button.OutlinedButton" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Blocked Apps"
+                        android:textSize="16sp"
+                        android:textColor="@color/glass_text_primary"/>
 
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_manage_blocked_apps"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Manage"
+                        android:textColor="@color/glass_accent_teal"
+                        app:backgroundTint="@color/glass_card_bg_medium"
+                        app:cornerRadius="12dp"
+                        style="@style/Widget.Material3.Button.TextButton" />
+                </LinearLayout>
+
+                <LinearLayout
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:orientation="horizontal"
+                     android:gravity="center_vertical">
+
+                     <TextView
+                         android:layout_width="0dp"
+                         android:layout_height="wrap_content"
+                         android:layout_weight="1"
+                         android:text="Auto Dark Mode"
+                         android:textSize="16sp"
+                         android:textColor="@color/glass_text_primary"/>
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switch_dark_mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:thumbTint="@color/glass_accent_blue"
+                        app:trackTint="@color/glass_card_bg_medium" />
+                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Preparation Card - Glass Style -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_preparation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:cardElevation="0dp"
-            app:cardCornerRadius="16dp"
-            app:strokeWidth="1dp"
-            app:strokeColor="@color/glass_card_stroke"
-            app:cardBackgroundColor="@color/glass_card_bg"
-            app:layout_constraintTop_toBottomOf="@id/card_sleep_target">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="3. Préparation (2h avant)"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/glass_accent_teal" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_manage_blocked_apps"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Gérer les apps bloquées"
-                    android:textColor="@color/glass_text_secondary"
-                    android:layout_marginTop="4dp"
-                    style="@style/Widget.Material3.Button.TextButton" />
-
-                <com.google.android.material.materialswitch.MaterialSwitch
-                    android:id="@+id/switch_dark_mode"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Mode Sombre auto"
-                    android:textColor="@color/glass_text_primary"
-                    app:thumbTint="@color/glass_accent_blue"
-                    app:trackTint="@color/glass_card_bg_medium" />
-
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Toggle Session Button - Glass Accent -->
+        <!-- Action Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_toggle_sleep_session"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Activer la Session Nuit"
-            android:padding="12dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Activate Night Session"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="32dp"
             android:textColor="@color/glass_text_primary"
             app:backgroundTint="@color/glass_accent_green"
-            app:cornerRadius="12dp"
-            app:layout_constraintTop_toBottomOf="@id/card_preparation"
+            app:cornerRadius="20dp"
+            app:layout_constraintTop_toBottomOf="@id/card_sleep_focus"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
