@@ -1,162 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:background="@drawable/bg_main_background">
+    android:background="@drawable/color_background">
 
-    <!-- Calendar Header with Glass Styling -->
-    <TextView
+    <!-- Main Content Container -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Calendrier des Sessions"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="@color/glass_text_primary"
-        android:gravity="center"
-        android:layout_marginBottom="16dp" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <!-- Month Navigation Controls with Glass Styling -->
-    <com.google.android.material.card.MaterialCardView
-        style="@style/GlassCardStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp">
-
+        <!-- Header -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center"
-            android:padding="12dp">
-
-            <ImageButton
-                android:id="@+id/btnPreviousMonth"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/ic_arrow_back"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Mois précédent"
-                app:tint="@color/glass_icon_primary"
-                android:layout_marginEnd="16dp" />
+            android:gravity="center_vertical"
+            android:padding="16dp">
 
             <TextView
-                android:id="@+id/monthYearText"
-                android:layout_width="wrap_content"
+                android:id="@+id/tvCurrentMonth"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Mois Année"
-                android:textSize="18sp"
+                android:layout_weight="1"
+                android:text="Décembre 2025"
+                android:textSize="24sp"
                 android:textStyle="bold"
-                android:textColor="@color/glass_text_primary" />
+                android:textColor="@color/aurora_primary" />
 
             <ImageButton
-                android:id="@+id/btnNextMonth"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/ic_arrow_forward"
+                android:id="@+id/btnToday"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@android:drawable/ic_menu_today"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Mois suivant"
-                app:tint="@color/glass_icon_primary"
-                android:layout_marginStart="16dp" />
+                android:contentDescription="Aller à aujourd'hui"
+                app:tint="@color/aurora_primary" />
 
         </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
 
-    <!-- Weekday Headers with Glass Text -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="8dp">
-
-        <TextView
-            android:layout_width="0dp"
+        <!-- Horizontal Date Bar -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/dateBarRecyclerView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Lun"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:textColor="@color/glass_text_primary" />
+            android:paddingHorizontal="8dp"
+            android:clipToPadding="false"
+            android:layout_marginBottom="8dp" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Mar"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:textColor="@color/glass_text_primary" />
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/light_gray"
+            android:layout_marginHorizontal="16dp" />
 
+        <!-- Selected Date Header -->
         <TextView
-            android:layout_width="0dp"
+            android:id="@+id/tvSelectedDateHeader"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Mer"
-            android:textSize="14sp"
+            android:text="Activités du jour"
+            android:textSize="16sp"
             android:textStyle="bold"
-            android:gravity="center"
-            android:textColor="@color/glass_text_primary" />
+            android:textColor="@color/text_dark"
+            android:padding="16dp" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Jeu"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:textColor="@color/glass_text_primary" />
+        <!-- Activities List Container to handle weight -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Ven"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:textColor="@color/glass_text_primary" />
+            <!-- Activities List -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/activitiesRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="16dp"
+                android:paddingBottom="88dp"
+                android:clipToPadding="false" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Sam"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:textColor="@color/glass_accent_amber" />
+            <!-- Empty State -->
+            <LinearLayout
+                android:id="@+id/emptyStateLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:visibility="gone"
+                android:padding="32dp">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Dim"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:textColor="@color/glass_accent_rose" />
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@android:drawable/ic_menu_agenda"
+                    app:tint="@color/medium_gray"
+                    android:alpha="0.5" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Aucune activité pour ce jour"
+                    android:textSize="16sp"
+                    android:textColor="@color/medium_gray"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Appuyez sur + pour en ajouter une"
+                    android:textSize="14sp"
+                    android:textColor="@color/medium_gray"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center" />
+
+            </LinearLayout>
+        </FrameLayout>
 
     </LinearLayout>
 
-    <!-- Calendar Grid in Glass Card -->
-    <com.google.android.material.card.MaterialCardView
-        style="@style/GlassCardStyle"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+    <!-- Floating Action Button -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@android:drawable/ic_input_add"
+        app:backgroundTint="@color/aurora_primary"
+        app:tint="@color/white"
+        android:contentDescription="Ajouter une activité" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/calendarRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="8dp"
-            android:clipToPadding="false" />
-
-    </com.google.android.material.card.MaterialCardView>
-
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
