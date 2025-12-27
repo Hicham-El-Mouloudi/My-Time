@@ -4,19 +4,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/background_color">
+    android:background="@drawable/bg_main_background">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/settingsToolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/surface_color"
-        app:titleTextColor="@color/text_primary"
-        app:navigationIconTint="@color/aurora_primary" />
+        android:background="@android:color/transparent"
+        app:titleTextColor="@color/glass_text_primary"
+        app:navigationIconTint="@color/glass_text_primary" />
 
-    <FrameLayout
-        android:id="@+id/settingsContainer"
+    <com.google.android.material.card.MaterialCardView
+        style="@style/GlassCardStyle.Large"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_margin="16dp">
+
+        <FrameLayout
+            android:id="@+id/settingsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </com.google.android.material.card.MaterialCardView>
 
 </LinearLayout>

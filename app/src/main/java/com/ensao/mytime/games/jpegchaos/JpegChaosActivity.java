@@ -232,7 +232,8 @@ public class JpegChaosActivity extends BasePuzzleActivity {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.games_jpegchaos_more_options_dialog);
         if (dialog.getWindow() != null)
-            dialog.getWindow().setBackgroundDrawableResource(android.R.drawable.dialog_holo_light_frame);
+            dialog.getWindow().setBackgroundDrawable(
+                    new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
 
         LinearLayout btnReset = dialog.findViewById(R.id.btn_reset);
         LinearLayout btnToggleSound = dialog.findViewById(R.id.btn_toggle_sound);
@@ -303,7 +304,8 @@ public class JpegChaosActivity extends BasePuzzleActivity {
         dialog.setContentView(R.layout.games_jpegchaos_win_dialog);
         dialog.setCancelable(false);
         if (dialog.getWindow() != null)
-            dialog.getWindow().setBackgroundDrawableResource(android.R.drawable.dialog_holo_light_frame);
+            dialog.getWindow().setBackgroundDrawable(
+                    new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
 
         android.widget.Button btnOk = dialog.findViewById(R.id.btn_ok);
         btnOk.setOnClickListener(v -> {

@@ -113,6 +113,9 @@ public class AddActivityDialog extends DialogFragment implements CreateCategoryD
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
             );
+            dialog.getWindow()
+                .setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+          
         }
 
         return dialog;
@@ -124,6 +127,29 @@ public class AddActivityDialog extends DialogFragment implements CreateCategoryD
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         categorySpinner.setAdapter(categoryAdapter);
     }
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
+        // Utiliser cette méthode si vous préférez un DialogFragment standard
+        View view = inflater.inflate(R.layout.dialog_add_activity, container, false);
+      
+        timePicker = view.findViewById(R.id.timePicker);
+        descriptionEditText = view.findViewById(R.id.descriptionEditText);
+        Button btnSave = view.findViewById(R.id.btnSave);
+        Button btnCancel = view.findViewById(R.id.btnCancel);
+
+        timePicker.setIs24HourView(true);
+
+        btnSave.setOnClickListener(v -> saveActivity());
+        btnCancel.setOnClickListener(v -> dismiss());
+
+        return view;
+    }
+      
+      
+      
+      
 
     private void loadCategories() {
         categoryRepo.GetCategories(requireActivity(), loadedCategories -> {
