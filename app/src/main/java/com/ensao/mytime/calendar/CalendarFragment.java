@@ -1,6 +1,7 @@
 package com.ensao.mytime.calendar;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ensao.mytime.R;
 import com.ensao.mytime.Activityfeature.Busniss.userActivity;
+import com.ensao.mytime.Activityfeature.DTOs.CategoryDetailedDTO;
 import com.ensao.mytime.Activityfeature.Repos.ActivityRepo;
 import com.ensao.mytime.Activityfeature.Repos.CategoryRepo;
 import com.ensao.mytime.study.model.DailyActivity;
@@ -32,6 +34,8 @@ public class CalendarFragment extends Fragment
         implements AddActivityDialog.OnActivityAddedListener,
         DayActivitiesAdapter.OnActivityClickListener,
         EditActivityDialog.OnActivityEditedListener {
+
+    private static final String TAG = "CalendarFragment";
 
     private RecyclerView dateBarRecyclerView;
     private RecyclerView activitiesRecyclerView;
@@ -52,8 +56,10 @@ public class CalendarFragment extends Fragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
+
+        Log.d(TAG, "=== CalendarFragment onCreateView ===");
 
         // Initialize repositories
         activityRepo = new ActivityRepo(requireActivity().getApplication());
@@ -80,6 +86,7 @@ public class CalendarFragment extends Fragment
     private void setupDateBar() {
         dateBarAdapter = new DateBarAdapter((date, formattedDate) -> {
             selectedDate = formattedDate;
+            Log.d(TAG, "Date selected: " + formattedDate);
             updateMonthHeader(date);
             updateSelectedDateHeader(date);
             loadActivitiesForDate(formattedDate);
@@ -90,18 +97,15 @@ public class CalendarFragment extends Fragment
         dateBarRecyclerView.setLayoutManager(layoutManager);
         dateBarRecyclerView.setAdapter(dateBarAdapter);
 
-        // Scroll to today's position and center it
         int todayPosition = dateBarAdapter.getTodayPosition();
         if (todayPosition >= 0) {
             dateBarRecyclerView.scrollToPosition(todayPosition);
-            // Post to ensure layout is complete before centering
             dateBarRecyclerView.post(() -> {
-                int offset = dateBarRecyclerView.getWidth() / 2 - 36; // 36 is half of item width (72dp)
+                int offset = dateBarRecyclerView.getWidth() / 2 - 36;
                 layoutManager.scrollToPositionWithOffset(todayPosition, offset);
             });
         }
 
-        // Set initial selected date
         selectedDate = dateBarAdapter.getFormattedSelectedDate();
         updateMonthHeader(dateBarAdapter.getSelectedDate());
         updateSelectedDateHeader(dateBarAdapter.getSelectedDate());
@@ -141,11 +145,25 @@ public class CalendarFragment extends Fragment
     }
 
     private void loadDefaultCategory() {
+        Log.d(TAG, "Loading default category...");
         categoryRepo.GetOrCreateDefaultCategory(requireActivity(), category -> {
             if (category != null) {
                 defaultCategoryId = category.getId();
+                Log.d(TAG, "Default category loaded: ID=" + defaultCategoryId);
+
+                // Debug: Check what repetition kind the default category has
+                categoryRepo.GetCategories(requireActivity(), categories -> {
+                    if (categories != null) {
+                        for (CategoryDetailedDTO cat : categories) {
+                            if (cat.category.getId() == defaultCategoryId) {
+                                Log.d(TAG, "Default category repetition: " + cat.RepetitionTitle);
+                            }
+                        }
+                    }
+                });
+            } else {
+                Log.e(TAG, "Failed to load default category!");
             }
-            // Load activities after category is ready
             if (selectedDate != null) {
                 loadActivitiesForDate(selectedDate);
             }
@@ -160,7 +178,6 @@ public class CalendarFragment extends Fragment
     private void updateSelectedDateHeader(Date date) {
         SimpleDateFormat fullFormat = new SimpleDateFormat("EEEE d MMMM", Locale.getDefault());
         String formattedDate = fullFormat.format(date);
-        // Capitalize first letter
         formattedDate = formattedDate.substring(0, 1).toUpperCase() + formattedDate.substring(1);
         tvSelectedDateHeader.setText("Activités - " + formattedDate);
     }
@@ -168,46 +185,61 @@ public class CalendarFragment extends Fragment
     private void loadActivitiesForDate(String date) {
         if (date == null) return;
 
+        Log.d(TAG, "========================================");
+        Log.d(TAG, "Loading activities for date: " + date);
+
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             Date queryDate = sdf.parse(date);
+            Log.d(TAG, "Query date timestamp: " + queryDate.getTime());
 
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(queryDate);
-            calendar.set(Calendar.HOUR_OF_DAY, 0);
-            calendar.set(Calendar.MINUTE, 0);
-            calendar.set(Calendar.SECOND, 0);
-            calendar.set(Calendar.MILLISECOND, 0);
-            long startOfDay = calendar.getTimeInMillis();
+            // Use GetActivities which uses the smart recurring query
+            activityRepo.GetActivities(queryDate, requireActivity(), dbActivities -> {
+                Log.d(TAG, "Received " + (dbActivities != null ? dbActivities.size() : 0) + " activities from DB");
 
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
-            long endOfDay = calendar.getTimeInMillis();
+                if (dbActivities != null && !dbActivities.isEmpty()) {
+                    for (userActivity ua : dbActivities) {
+                        Log.d(TAG, "  - Activity: '" + ua.getTitle() + "'" +
+                                ", ID=" + ua.getId() +
+                                ", CategoryID=" + ua.getCategoryID() +
+                                ", StartDate=" + ua.getStartDate() +
+                                ", IsActive=" + ua.getIsActive());
+                    }
+                } else {
+                    Log.d(TAG, "  No activities returned by query!");
+                }
 
-            activityRepo.GetActivitiesInRange(startOfDay, endOfDay, requireActivity(), dbActivities -> {
                 List<DailyActivity> loadedActivities = new ArrayList<>();
                 SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
-                for (userActivity ua : dbActivities) {
-                    String startTime = ua.getStartDate() != null ? timeFormat.format(ua.getStartDate()) : "00:00";
-                    String endTime = ua.getEndDate() != null ? timeFormat.format(ua.getEndDate()) : startTime;
-                    loadedActivities.add(new DailyActivity(
-                            ua.getId(),
-                            date,
-                            startTime,
-                            endTime,
-                            ua.getTitle(),
-                            ua.getDescription()
-                    ));
+                if (dbActivities != null) {
+                    for (userActivity ua : dbActivities) {
+                        String startTime = ua.getStartDate() != null ? timeFormat.format(ua.getStartDate()) : "00:00";
+                        String endTime = ua.getEndDate() != null ? timeFormat.format(ua.getEndDate()) : startTime;
+                        loadedActivities.add(new DailyActivity(
+                                ua.getId(),
+                                date,
+                                startTime,
+                                endTime,
+                                ua.getTitle(),
+                                ua.getDescription(),
+                                ua.getCategoryID()
+                        ));
+                    }
                 }
 
                 activities.clear();
                 activities.addAll(loadedActivities);
                 activitiesAdapter.notifyDataSetChanged();
                 updateEmptyState();
+
+                Log.d(TAG, "Activities list updated. Size: " + activities.size());
+                Log.d(TAG, "========================================");
             });
 
         } catch (ParseException e) {
             e.printStackTrace();
+            Log.e(TAG, "Error parsing date: " + date, e);
         }
     }
 
@@ -223,12 +255,33 @@ public class CalendarFragment extends Fragment
 
     @Override
     public void onActivityAdded(DailyActivity activity) {
+        Log.d(TAG, "========================================");
+        Log.d(TAG, "onActivityAdded called");
+        Log.d(TAG, "Activity title: " + activity.getTitle());
+        Log.d(TAG, "Activity categoryId from dialog: " + activity.getCategoryId());
+
         // Use provided categoryId, or fall back to default
         long finalCategoryId = activity.getCategoryId() > 0 ? activity.getCategoryId() : defaultCategoryId;
+        Log.d(TAG, "Final categoryId to use: " + finalCategoryId);
+        Log.d(TAG, "Default categoryId: " + defaultCategoryId);
+
         if (finalCategoryId == -1) {
+            Log.e(TAG, "CategoryID is -1! Cannot add activity.");
             Toast.makeText(getContext(), "Chargement en cours, veuillez réessayer", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        // Debug: Check what category this is
+        categoryRepo.GetCategories(requireActivity(), categories -> {
+            if (categories != null) {
+                for (CategoryDetailedDTO cat : categories) {
+                    if (cat.category.getId() == finalCategoryId) {
+                        Log.d(TAG, "Using category: " + cat.category.getTitle() +
+                                ", Repetition: " + cat.RepetitionTitle);
+                    }
+                }
+            }
+        });
 
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -256,6 +309,12 @@ public class CalendarFragment extends Fragment
             calendar.set(Calendar.MINUTE, endMinute);
             Date endDateTime = calendar.getTime();
 
+            Log.d(TAG, "Creating userActivity object...");
+            Log.d(TAG, "  StartDate: " + startDateTime + " (" + startDateTime.getTime() + ")");
+            Log.d(TAG, "  EndDate: " + endDateTime + " (" + endDateTime.getTime() + ")");
+            Log.d(TAG, "  CategoryID: " + finalCategoryId);
+
+            // Create a single activity - the query will handle showing it on recurring dates
             userActivity newActivity = new userActivity();
             newActivity.setTitle(activity.getTitle());
             newActivity.setDescription(activity.getDescription());
@@ -267,26 +326,30 @@ public class CalendarFragment extends Fragment
             newActivity.setCourseID(null);
 
             activityRepo.Insert(newActivity, requireActivity(), insertedId -> {
+                Log.d(TAG, "Activity inserted! ID: " + insertedId);
+
                 if (insertedId > 0) {
-                    activity.setId(insertedId);
-                    activities.add(activity);
-                    activitiesAdapter.notifyDataSetChanged();
-                    updateEmptyState();
+                    // Reload activities to show the new one
+                    Log.d(TAG, "Reloading activities for current date: " + selectedDate);
+                    loadActivitiesForDate(selectedDate);
                     Toast.makeText(getContext(), "Activité ajoutée", Toast.LENGTH_SHORT).show();
                 } else {
+                    Log.e(TAG, "Failed to insert activity!");
                     Toast.makeText(getContext(), "Erreur lors de l'ajout", Toast.LENGTH_SHORT).show();
                 }
+                Log.d(TAG, "========================================");
             });
 
         } catch (ParseException e) {
             e.printStackTrace();
+            Log.e(TAG, "Error adding activity", e);
             Toast.makeText(getContext(), "Erreur lors de l'ajout de l'activité", Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void onActivityEdit(int position, DailyActivity activity) {
-        EditActivityDialog dialog = EditActivityDialog.newInstance(position, activity, this);
+        EditActivityDialog dialog = EditActivityDialog.newInstance(position, activity, activity.getCategoryId(), this);
         dialog.show(getChildFragmentManager(), "EditActivityDialog");
     }
 
@@ -296,6 +359,8 @@ public class CalendarFragment extends Fragment
             Toast.makeText(getContext(), "Erreur: ID d'activité invalide", Toast.LENGTH_SHORT).show();
             return;
         }
+
+
 
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -327,11 +392,12 @@ public class CalendarFragment extends Fragment
                     updatedActivity.getDescription(),
                     startTimestamp,
                     endTimestamp,
+                    updatedActivity.getCategoryId(),
                     requireActivity(),
                     success -> {
                         if (success) {
-                            activities.set(position, updatedActivity);
-                            activitiesAdapter.notifyItemChanged(position);
+                            // Reload activities to reflect the update
+                            loadActivitiesForDate(selectedDate);
                             Toast.makeText(getContext(), "Activité modifiée", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(getContext(), "Erreur lors de la modification", Toast.LENGTH_SHORT).show();
@@ -350,9 +416,8 @@ public class CalendarFragment extends Fragment
         if (activity.getId() > 0) {
             activityRepo.Delete(activity.getId(), requireActivity(), success -> {
                 if (success) {
-                    activities.remove(position);
-                    activitiesAdapter.notifyItemRemoved(position);
-                    updateEmptyState();
+                    // Reload activities to reflect the deletion
+                    loadActivitiesForDate(selectedDate);
                     Toast.makeText(getContext(), "Activité supprimée", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getContext(), "Erreur lors de la suppression", Toast.LENGTH_SHORT).show();

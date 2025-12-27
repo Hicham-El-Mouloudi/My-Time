@@ -179,6 +179,7 @@ public class DayDetailActivity extends AppCompatActivity
                     updatedActivity.getDescription(),
                     timestamp,
                     timestamp,
+                    updatedActivity.getCategoryId(),
                     this,
                     success -> {
                         if (success) {

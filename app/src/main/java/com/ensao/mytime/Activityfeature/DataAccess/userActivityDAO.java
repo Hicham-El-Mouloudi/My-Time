@@ -21,8 +21,8 @@ public interface userActivityDAO {
     int Delete(long id);
 
     // Update activity
-    @Query("UPDATE activities SET Title = :title, Description = :description, StartDate = :startDate, EndDate = :endDate WHERE id = :id")
-    void Update(long id, String title, String description, long startDate, long endDate);
+    @Query("UPDATE activities SET Title = :title, Description = :description, StartDate = :startDate, EndDate = :endDate, CategoryID = :categoryId WHERE id = :id")
+    void Update(long id, String title, String description, long startDate, long endDate, long categoryId);
 
 
     @Query("update activities  set IsActive = 0 where id = :id")
