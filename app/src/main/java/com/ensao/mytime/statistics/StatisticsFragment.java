@@ -23,6 +23,7 @@ import com.ensao.mytime.statistics.adapter.calendar.CalendarDaysAdapter;
 import com.ensao.mytime.statistics.adapter.week.WeeksAdaptee;
 import com.ensao.mytime.statistics.adapter.week.WeeksAdapter;
 import com.ensao.mytime.statistics.calculation.MockSleepStatsCalculator;
+import com.ensao.mytime.statistics.calculation.MockStudyStatsCalculator;
 import com.ensao.mytime.statistics.calculation.MockWakeStatsCalculator;
 import com.ensao.mytime.statistics.data.StatisticsDAO;
 import com.ensao.mytime.statistics.data.StatisticsDAOProxy;
@@ -63,6 +64,7 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
 
     private MockSleepStatsCalculator sleepCalculator;
     private MockWakeStatsCalculator wakeCalculator;
+    private MockStudyStatsCalculator studyCalculator;
     private StatsViewGenerator viewGenerator;
 
     private DayData currentDay;
@@ -75,8 +77,8 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
         View view = inflater.inflate(R.layout.fragment_statistics, container, false);
 
         // Initialize Components
-        daoProxy = new StatisticsDAOProxyDB(this.getActivity().getApplication(), this.getActivity());
-        // daoProxy = new StatisticsDAOProxy();
+        //daoProxy = new StatisticsDAOProxyDB(this.getActivity().getApplication(), this.getActivity());
+        daoProxy = new StatisticsDAOProxy();
         calendarDialog = new Dialog(getContext());
         calendarAdaptee = new CalendarDaysAdaptee(daoProxy);
         calendarAdapter = new CalendarDaysAdapter(calendarAdaptee, day -> {
@@ -87,6 +89,7 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
         weeksAdapter = new WeeksAdapter(weeksAdaptee, this);
         sleepCalculator = new MockSleepStatsCalculator();
         wakeCalculator = new MockWakeStatsCalculator();
+        studyCalculator = new MockStudyStatsCalculator();
         // viewGenerator = new StatsViewGenerator();
 
         // Bind Views
@@ -158,26 +161,21 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
         Map<String, Object> sleepStats = (day != null && day.hasSleep()) ? sleepCalculator.calculateSleepStats(day)
                 : null;
         Map<String, Object> wakeStats = (day != null && day.hasWake()) ? wakeCalculator.calculateWakeStats(day) : null;
+        Map<String, Object> studyStats = (day != null && day.hasStudy()) ? studyCalculator.calculateStudyStats(day)
+                : null;
 
         View contentView = builder
                 .forDay(day)
                 .setAvailableSleepDataLayout(R.layout.layout_sleep_stats)
-                .setUnavailableSleepDataLayout(R.layout.layout_statistics_empty) // Or specific empty layout
+                .setUnavailableSleepDataLayout(R.layout.layout_statistics_empty)
                 .setAvailableWakeDataLayout(R.layout.layout_wake_stats)
                 .setUnavailableWakeDataLayout(R.layout.layout_statistics_empty)
+                .setAvailableStudyDataLayout(R.layout.layout_studying_stats)
+                .setUnavailableStudyDataLayout(R.layout.layout_statistics_empty)
                 .setUnavailableDataLayout(R.layout.layout_statistics_empty)
                 .useSleepStats(sleepStats)
                 .useWakeStats(wakeStats)
-                .prioritizeDataAvailability(isSleepTabSelected) // Maintains state? Or builder determines priority?
-                // The user said: "prioritizeDataAvailability ... returns view will have by
-                // default an activated tab ... if hasSleep=true ... activated on tab Sleep"
-                // This implies the builder decides the INITIAL tab.
-                // But I have state 'isSleepTabSelected' in Fragment.
-                // If I want to persist user selection when they change days, I should pass my
-                // current selection.
-                // But if the user wants the logic "Prioritize available data", maybe I should
-                // let builder decide and update my state?
-                // For now, I'll pass 'isSleepTabSelected' as the preference.
+                .useStudyStats(studyStats)
                 .prioritizeDataAvailability(isSleepTabSelected)
                 .build();
 
