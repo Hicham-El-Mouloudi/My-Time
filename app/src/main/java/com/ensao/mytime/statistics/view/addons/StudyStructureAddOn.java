@@ -138,7 +138,9 @@ public class StudyStructureAddOn extends StatsViewGenerator {
         chart.setTransparentCircleRadius(45f);
         chart.setHoleColor(Color.TRANSPARENT);
         chart.getLegend().setEnabled(true);
-        chart.setEntryLabelColor(Color.BLACK);
+        int chartTextColor = chart.getContext().getResources().getColor(R.color.chart_text_color);
+        chart.getLegend().setTextColor(chartTextColor);
+        chart.setEntryLabelColor(chartTextColor);
         chart.setTouchEnabled(false);
         // Make the chart bigger within its container by using negative offsets
         chart.setExtraOffsets(-10f, -10f, -10f, -10f);
@@ -181,7 +183,10 @@ public class StudyStructureAddOn extends StatsViewGenerator {
         chart.setTransparentCircleRadius(45f);
         chart.setHoleColor(Color.TRANSPARENT);
         chart.getLegend().setEnabled(true);
-        chart.setEntryLabelColor(Color.BLACK);
+        int chartTextColor = chart.getContext().getResources().getColor(R.color.chart_text_color);
+        chart.getLegend().setTextColor(chartTextColor);
+        chart.setEntryLabelColor(chartTextColor);
+        chart.setCenterTextColor(chartTextColor);
         chart.setTouchEnabled(false);
         chart.setCenterText(String.format(Locale.getDefault(), "%d%%", total > 0 ? (completed * 100 / total) : 0));
         chart.setCenterTextSize(16f);
@@ -211,6 +216,8 @@ public class StudyStructureAddOn extends StatsViewGenerator {
         BarDataSet dataSet = new BarDataSet(entries, "Matières étudiées");
         dataSet.setColor(COLOR_STUDY_PRIMARY);
         dataSet.setValueTextSize(10f);
+        int chartTextColor = chart.getContext().getResources().getColor(R.color.chart_text_color);
+        dataSet.setValueTextColor(chartTextColor);
 
         BarData barData = new BarData(dataSet);
         barData.setBarWidth(0.6f);
@@ -220,6 +227,7 @@ public class StudyStructureAddOn extends StatsViewGenerator {
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
         xAxis.setGranularity(1f);
+        xAxis.setTextColor(chartTextColor);
         final String[] days = { "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim" };
         xAxis.setValueFormatter(new ValueFormatter() {
             @Override
@@ -235,6 +243,7 @@ public class StudyStructureAddOn extends StatsViewGenerator {
         YAxis leftAxis = chart.getAxisLeft();
         leftAxis.setGranularity(1f);
         leftAxis.setAxisMinimum(0f);
+        leftAxis.setTextColor(chartTextColor);
 
         chart.getAxisRight().setEnabled(false);
         chart.getDescription().setEnabled(false);

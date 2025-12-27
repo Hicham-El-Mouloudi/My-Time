@@ -107,6 +107,8 @@ public class WakeStructureAddOn extends StatsViewGenerator {
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
         xAxis.setGranularity(1f);
+        int chartTextColor = chart.getContext().getResources().getColor(R.color.chart_text_color);
+        xAxis.setTextColor(chartTextColor);
         final String[] days = { "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim" };
         xAxis.setValueFormatter(new ValueFormatter() {
             @Override
@@ -121,6 +123,7 @@ public class WakeStructureAddOn extends StatsViewGenerator {
 
         YAxis leftAxis = chart.getAxisLeft();
         leftAxis.setGranularity(0.5f);
+        leftAxis.setTextColor(chartTextColor);
         leftAxis.setValueFormatter(new ValueFormatter() {
             @Override
             public String getAxisLabel(float value, com.github.mikephil.charting.components.AxisBase axis) {
@@ -138,6 +141,7 @@ public class WakeStructureAddOn extends StatsViewGenerator {
             avgLine.enableDashedLine(10f, 10f, 0f);
             avgLine.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
             avgLine.setTextSize(10f);
+            avgLine.setTextColor(chartTextColor);
             leftAxis.removeAllLimitLines(); // Clear previous
             leftAxis.addLimitLine(avgLine);
         }

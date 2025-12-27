@@ -69,7 +69,9 @@ public abstract class StatsViewGenerator {
             // 4. Center Text (The "97%")
             qualityPieArcChart.setCenterText("Qualité\n" + pourcentage + "%");
             qualityPieArcChart.setCenterTextSize(24f);
-            qualityPieArcChart.setCenterTextColor(Color.BLACK);
+            int chartTextColor = qualityPieArcChart.getContext().getResources()
+                    .getColor(com.ensao.mytime.R.color.chart_text_color);
+            qualityPieArcChart.setCenterTextColor(chartTextColor);
 
             // 5. Animation (The "Filling" effect)
             qualityPieArcChart.animateY(1400, Easing.EaseInOutQuad);
