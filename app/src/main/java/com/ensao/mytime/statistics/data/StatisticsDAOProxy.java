@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -34,14 +36,11 @@ public class StatisticsDAOProxy implements StatisticsDAO {
             calendar.set(Calendar.YEAR, year);
             int maxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 
-            Random random = new Random();
-
             for (int i = 1; i <= maxDays; i++) {
                 calendar.set(Calendar.DAY_OF_MONTH, i);
-                boolean hasSleep = random.nextBoolean();
-                boolean hasWake = random.nextBoolean();
-                days.add(new DayData(calendar.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
-                        hasSleep, hasWake));
+                LocalDate date = calendar.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                // Use generateDayData to populate all statistics fields
+                days.add(generateDayData(date));
             }
 
             if (callback != null) {
@@ -151,6 +150,46 @@ public class StatisticsDAOProxy implements StatisticsDAO {
             variance.add(random.nextFloat() * 15.0f); // 0 to 15 min variance
         }
         data.setWakeVariance(variance);
+
+        // Study Data
+        boolean hasStudy = random.nextFloat() > 0.2; // 80% chance of study data
+        data.setHasStudy(hasStudy);
+
+        if (hasStudy) {
+            data.setTotalFocusTime(30 + random.nextInt(150)); // 30 to 180 min
+            data.setStreakCount(1 + random.nextInt(14)); // 1 to 14 days
+            data.setPauseCount(random.nextFloat() * 5.0f); // 0 to 5 avg pauses
+
+            // Subject distribution mock
+            String[] subjects = { "Maths", "Physique", "Informatique", "Langues", "Histoire" };
+            Map<String, Integer> distribution = new HashMap<>();
+            int numSubjects = 1 + random.nextInt(4); // 1 to 4 subjects
+            for (int i = 0; i < numSubjects; i++) {
+                distribution.put(subjects[random.nextInt(subjects.length)], 15 + random.nextInt(60));
+            }
+            data.setSubjectDistribution(distribution);
+
+            // Task completion
+            int total = 3 + random.nextInt(8); // 3 to 10 tasks
+            int completed = random.nextInt(total + 1);
+            data.setTotalTasksCount(total);
+            data.setCompletedTasksCount(completed);
+
+            // Weekly subjects studied
+            List<Integer> weeklySubjects = new ArrayList<>();
+            for (int i = 0; i < 7; i++) {
+                weeklySubjects.add(random.nextInt(5)); // 0 to 4 subjects per day
+            }
+            data.setWeeklySubjectsStudied(weeklySubjects);
+        } else {
+            data.setTotalFocusTime(0);
+            data.setStreakCount(0);
+            data.setPauseCount(0);
+            data.setSubjectDistribution(new HashMap<>());
+            data.setTotalTasksCount(0);
+            data.setCompletedTasksCount(0);
+            data.setWeeklySubjectsStudied(new ArrayList<>());
+        }
 
         return data;
     }
