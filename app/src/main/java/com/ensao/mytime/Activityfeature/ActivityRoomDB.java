@@ -14,7 +14,8 @@ import com.ensao.mytime.Activityfeature.Busniss.*;
 import com.ensao.mytime.Activityfeature.DataAccess.*;
 
 @Database(entities = { userActivity.class, RepetitionKind.class, CourseContent.class, Course.class, Category.class,
-        ActivityHistory.class, StatisticsSleepSession.class, StatisticsWakeSession.class }, version = 3)
+        ActivityHistory.class, StatisticsSleepSession.class, StatisticsWakeSession.class,
+        StatisticsStudySession.class }, version = 4)
 @TypeConverters({ Converters.class })
 public abstract class ActivityRoomDB extends RoomDatabase {
 
@@ -38,6 +39,8 @@ public abstract class ActivityRoomDB extends RoomDatabase {
     public abstract StatisticsSleepSessionDAO statisticsSleepSessionDAO();
 
     public abstract StatisticsWakeSessionDAO statisticsWakeSessionDAO();
+
+    public abstract StatisticsStudySessionDAO statisticsStudySessionDAO();
 
     // ====================================================================================
 
