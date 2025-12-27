@@ -40,7 +40,7 @@
                 android:id="@+id/iv_monday_indicator_sleep"
                 android:layout_width="8dp"
                 android:layout_height="8dp"
-                android:src="@drawable/ic_sleep_session"
+                android:src="@drawable/ic_available_sleep_statistics_data"
                 app:tint="@color/secondary_color"
                 android:visibility="gone"
                 tools:visibility="visible"
@@ -51,11 +51,22 @@
                 android:id="@+id/iv_monday_indicator_wake"
                 android:layout_width="8dp"
                 android:layout_height="8dp"
-                android:src="@drawable/ic_alarm"
+                android:src="@drawable/ic_available_wake_statistics_data"
                 app:tint="@color/primary_color"
                 android:visibility="gone"
                 tools:visibility="visible"
+                android:layout_marginEnd="2dp"
                 android:contentDescription="Wake Data Available" />
+
+            <ImageView
+                android:id="@+id/iv_monday_indicator_study"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:src="@drawable/ic_available_study_statistics_data"
+                app:tint="#4CAF50"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:contentDescription="Study Data Available" />
         </LinearLayout>
 
     </LinearLayout>
@@ -94,7 +105,7 @@
                 android:id="@+id/iv_tuesday_indicator_sleep"
                 android:layout_width="8dp"
                 android:layout_height="8dp"
-                android:src="@drawable/ic_sleep_session"
+                android:src="@drawable/ic_available_sleep_statistics_data"
                 app:tint="@color/secondary_color"
                 android:visibility="gone"
                 tools:visibility="visible"
@@ -105,11 +116,22 @@
                 android:id="@+id/iv_tuesday_indicator_wake"
                 android:layout_width="8dp"
                 android:layout_height="8dp"
-                android:src="@drawable/ic_alarm"
+                android:src="@drawable/ic_available_wake_statistics_data"
                 app:tint="@color/primary_color"
                 android:visibility="gone"
                 tools:visibility="visible"
+                android:layout_marginEnd="2dp"
                 android:contentDescription="Wake Data Available" />
+
+            <ImageView
+                android:id="@+id/iv_tuesday_indicator_study"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:src="@drawable/ic_available_study_statistics_data"
+                app:tint="#4CAF50"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:contentDescription="Study Data Available" />
         </LinearLayout>
 
     </LinearLayout>
@@ -148,7 +170,7 @@
                 android:id="@+id/iv_wednesday_indicator_sleep"
                 android:layout_width="8dp"
                 android:layout_height="8dp"
-                android:src="@drawable/ic_sleep_session"
+                android:src="@drawable/ic_available_sleep_statistics_data"
                 app:tint="@color/secondary_color"
                 android:visibility="gone"
                 tools:visibility="visible"
@@ -159,11 +181,22 @@
                 android:id="@+id/iv_wednesday_indicator_wake"
                 android:layout_width="8dp"
                 android:layout_height="8dp"
-                android:src="@drawable/ic_alarm"
+                android:src="@drawable/ic_available_wake_statistics_data"
                 app:tint="@color/primary_color"
                 android:visibility="gone"
                 tools:visibility="visible"
+                android:layout_marginEnd="2dp"
                 android:contentDescription="Wake Data Available" />
+
+            <ImageView
+                android:id="@+id/iv_wednesday_indicator_study"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:src="@drawable/ic_available_study_statistics_data"
+                app:tint="#4CAF50"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:contentDescription="Study Data Available" />
         </LinearLayout>
 
     </LinearLayout>
@@ -202,7 +235,7 @@
                 android:id="@+id/iv_thursday_indicator_sleep"
                 android:layout_width="8dp"
                 android:layout_height="8dp"
-                android:src="@drawable/ic_sleep_session"
+                android:src="@drawable/ic_available_sleep_statistics_data"
                 app:tint="@color/secondary_color"
                 android:visibility="gone"
                 tools:visibility="visible"
@@ -213,11 +246,22 @@
                 android:id="@+id/iv_thursday_indicator_wake"
                 android:layout_width="8dp"
                 android:layout_height="8dp"
-                android:src="@drawable/ic_alarm"
+                android:src="@drawable/ic_available_wake_statistics_data"
                 app:tint="@color/primary_color"
                 android:visibility="gone"
                 tools:visibility="visible"
+                android:layout_marginEnd="2dp"
                 android:contentDescription="Wake Data Available" />
+
+            <ImageView
+                android:id="@+id/iv_thursday_indicator_study"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:src="@drawable/ic_available_study_statistics_data"
+                app:tint="#4CAF50"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:contentDescription="Study Data Available" />
         </LinearLayout>
 
     </LinearLayout>
@@ -256,7 +300,7 @@
                 android:id="@+id/iv_friday_indicator_sleep"
                 android:layout_width="8dp"
                 android:layout_height="8dp"
-                android:src="@drawable/ic_sleep_session"
+                android:src="@drawable/ic_available_sleep_statistics_data"
                 app:tint="@color/secondary_color"
                 android:visibility="gone"
                 tools:visibility="visible"
@@ -267,11 +311,22 @@
                 android:id="@+id/iv_friday_indicator_wake"
                 android:layout_width="8dp"
                 android:layout_height="8dp"
-                android:src="@drawable/ic_alarm"
+                android:src="@drawable/ic_available_wake_statistics_data"
                 app:tint="@color/primary_color"
                 android:visibility="gone"
                 tools:visibility="visible"
+                android:layout_marginEnd="2dp"
                 android:contentDescription="Wake Data Available" />
+
+            <ImageView
+                android:id="@+id/iv_friday_indicator_study"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:src="@drawable/ic_available_study_statistics_data"
+                app:tint="#4CAF50"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:contentDescription="Study Data Available" />
         </LinearLayout>
 
     </LinearLayout>
@@ -310,7 +365,7 @@
                 android:id="@+id/iv_saturday_indicator_sleep"
                 android:layout_width="8dp"
                 android:layout_height="8dp"
-                android:src="@drawable/ic_sleep_session"
+                android:src="@drawable/ic_available_sleep_statistics_data"
                 app:tint="@color/secondary_color"
                 android:visibility="gone"
                 tools:visibility="visible"
@@ -321,11 +376,22 @@
                 android:id="@+id/iv_saturday_indicator_wake"
                 android:layout_width="8dp"
                 android:layout_height="8dp"
-                android:src="@drawable/ic_alarm"
+                android:src="@drawable/ic_available_wake_statistics_data"
                 app:tint="@color/primary_color"
                 android:visibility="gone"
                 tools:visibility="visible"
+                android:layout_marginEnd="2dp"
                 android:contentDescription="Wake Data Available" />
+
+            <ImageView
+                android:id="@+id/iv_saturday_indicator_study"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:src="@drawable/ic_available_study_statistics_data"
+                app:tint="#4CAF50"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:contentDescription="Study Data Available" />
         </LinearLayout>
 
     </LinearLayout>
@@ -364,7 +430,7 @@
                 android:id="@+id/iv_sunday_indicator_sleep"
                 android:layout_width="8dp"
                 android:layout_height="8dp"
-                android:src="@drawable/ic_sleep_session"
+                android:src="@drawable/ic_available_sleep_statistics_data"
                 app:tint="@color/secondary_color"
                 android:visibility="gone"
                 tools:visibility="visible"
@@ -375,11 +441,22 @@
                 android:id="@+id/iv_sunday_indicator_wake"
                 android:layout_width="8dp"
                 android:layout_height="8dp"
-                android:src="@drawable/ic_alarm"
+                android:src="@drawable/ic_available_wake_statistics_data"
                 app:tint="@color/primary_color"
                 android:visibility="gone"
                 tools:visibility="visible"
+                android:layout_marginEnd="2dp"
                 android:contentDescription="Wake Data Available" />
+
+            <ImageView
+                android:id="@+id/iv_sunday_indicator_study"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:src="@drawable/ic_available_study_statistics_data"
+                app:tint="#4CAF50"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:contentDescription="Study Data Available" />
         </LinearLayout>
 
     </LinearLayout>

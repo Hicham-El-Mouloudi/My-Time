@@ -46,9 +46,11 @@ public class DayStatisticsViewBuilder {
     private boolean preferSleep = true;
 
     // Chart colors
-    private static final int COLOR_WAKE = Color.parseColor("#90e0ef");
-    private static final int COLOR_SLEEP = Color.parseColor("#540b0e");
-    private static final int COLOR_STUDY = Color.parseColor("#4CAF50");
+    private static final int COLOR_WAKE = Color.parseColor("#319AFF");
+    // private static final int COLOR_WAKE = Color.parseColor("#90e0ef");
+    private static final int COLOR_SLEEP = Color.parseColor("#e56b6f");
+    // private static final int COLOR_STUDY = Color.parseColor("#4CAF50");
+    private static final int COLOR_STUDY = Color.parseColor("#808BC1");
 
     public DayStatisticsViewBuilder(Context context, ViewGroup parent) {
         this.context = context;

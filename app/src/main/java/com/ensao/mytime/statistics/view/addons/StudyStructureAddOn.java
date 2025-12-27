@@ -27,7 +27,8 @@ import java.util.Map;
 public class StudyStructureAddOn extends StatsViewGenerator {
 
     // Study-themed colors
-    private static final int COLOR_STUDY_PRIMARY = Color.parseColor("#4CAF50");
+    // private static final int COLOR_STUDY_PRIMARY = Color.parseColor("#4CAF50");
+    private static final int COLOR_STUDY_PRIMARY = Color.parseColor("#808BC1");
     private static final int COLOR_COMPLETED = Color.parseColor("#4CAF50");
     private static final int COLOR_NOT_COMPLETED = Color.parseColor("#FF5722");
 
