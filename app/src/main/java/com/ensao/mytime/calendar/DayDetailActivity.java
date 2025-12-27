@@ -84,8 +84,9 @@ public class DayDetailActivity extends AppCompatActivity
 
     @Override
     public void onActivityAdded(DailyActivity activity) {
-        // Check if default category is loaded
-        if (defaultCategoryId == -1) {
+        // Use provided categoryId or fall back to default
+        long finalCategoryId = activity.getCategoryId() > 0 ? activity.getCategoryId() : defaultCategoryId;
+        if (finalCategoryId == -1) {
             Toast.makeText(this, "Chargement en cours, veuillez réessayer", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -113,7 +114,7 @@ public class DayDetailActivity extends AppCompatActivity
             userActivity newActivity = new userActivity();
             newActivity.setTitle(activity.getDescription());
             newActivity.setDescription(activity.getDescription());
-            newActivity.setCategoryID(defaultCategoryId);
+            newActivity.setCategoryID(finalCategoryId);
             newActivity.setIsActive(true);
             newActivity.setStartDate(combinedDateTime);
             newActivity.setEndDate(combinedDateTime);
