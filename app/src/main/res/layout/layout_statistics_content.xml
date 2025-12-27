@@ -42,7 +42,7 @@
                android:background="@android:color/transparent"> 
                <!-- Removed background from here, moved to ImageView above -->
 
-                <!-- Toggle Buttons (Reveil / Sommeil) -->
+                <!-- Toggle Buttons (Reveil / Sommeil / Études) -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -68,6 +68,18 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Sommeil"
+                        android:backgroundTint="@android:color/transparent"
+                        android:textColor="@color/text_secondary"
+                        style="?attr/materialButtonStyle"
+                        app:elevation="0dp"
+                        app:cornerRadius="24dp" />
+
+                    <Button
+                        android:id="@+id/btn_toggle_etudes"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Études"
                         android:backgroundTint="@android:color/transparent"
                         android:textColor="@color/text_secondary"
                         style="?attr/materialButtonStyle"
