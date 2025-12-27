@@ -3,7 +3,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:background="@drawable/gradient_glass_primary">
 
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -11,69 +12,87 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/color_background"
     android:padding="16dp">
 
-    <!-- Header avec titre POMODORO -->
-    <LinearLayout
+    <!-- Header with Glass Gradient -->
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/aurora_primary"
-        android:padding="20dp"
-        android:elevation="4dp"
-        android:layout_marginBottom="24dp">
+        android:layout_marginBottom="24dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        app:strokeWidth="0dp"
+        app:cardBackgroundColor="@android:color/transparent">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="POMODORO"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:fontFamily="sans-serif-condensed" />
+            android:orientation="vertical"
+            android:background="@drawable/gradient_glass_header"
+            android:padding="20dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Technique de productivité"
-            android:textSize="14sp"
-            android:gravity="center"
-            android:textColor="@color/light_gray"
-            android:layout_marginTop="4dp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="POMODORO"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="@color/glass_text_primary"
+                android:fontFamily="sans-serif-condensed" />
 
-    </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Technique de productivité"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:textColor="@color/glass_text_secondary"
+                android:layout_marginTop="4dp" />
 
-    <!-- Cercle du Timer -->
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Timer Circle with Glass Effect -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="280dp"
         android:gravity="center"
         android:layout_marginBottom="32dp">
 
-        <!-- Cercle de fond -->
-        <ImageView
-            android:layout_width="240dp"
-            android:layout_height="240dp"
-            android:src="@drawable/circle_timer_background"
-            android:layout_centerInParent="true" />
-
-        <!-- Timer au centre -->
-        <TextView
-            android:id="@+id/tv_timer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="25:00"
-            android:textSize="48sp"
-            android:textStyle="bold"
-            android:textColor="@color/aurora_primary"
+        <!-- Glass Circle Background -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="260dp"
+            android:layout_height="260dp"
             android:layout_centerInParent="true"
-            android:fontFamily="monospace" />
+            app:cardCornerRadius="130dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="@color/glass_card_stroke"
+            app:cardBackgroundColor="@color/glass_card_bg">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <!-- Timer Display -->
+                <TextView
+                    android:id="@+id/tv_timer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="25:00"
+                    android:textSize="56sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/glass_accent_blue"
+                    android:layout_centerInParent="true"
+                    android:fontFamily="monospace" />
+
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
 
     </RelativeLayout>
 
-    <!-- Contrôles de durée -->
+    <!-- Duration Controls with Glass Styling -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -81,49 +100,46 @@
         android:gravity="center"
         android:layout_marginBottom="24dp">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_25_min"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="1"
             android:text="25 min"
             android:textSize="14sp"
-            android:backgroundTint="@color/selector_pomodoro_blue"
-            android:textColor="@color/white"
-            android:layout_marginEnd="8dp"
-            android:elevation="2dp"
-            style="@style/Widget.Material3.Button.OutlinedButton" />
+            android:textColor="@color/glass_text_primary"
+            app:backgroundTint="@color/glass_pomodoro_blue"
+            app:cornerRadius="12dp"
+            android:layout_marginEnd="8dp" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_45_min"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="1"
             android:text="45 min"
             android:textSize="14sp"
-            android:backgroundTint="@color/selector_pomodoro_dark_teal"
-            android:textColor="@color/white"
+            android:textColor="@color/glass_text_primary"
+            app:backgroundTint="@color/glass_pomodoro_teal"
+            app:cornerRadius="12dp"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:elevation="2dp"
-            style="@style/Widget.Material3.Button.OutlinedButton" />
+            android:layout_marginEnd="8dp" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_custom"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="1"
             android:text="Personnalisé"
             android:textSize="12sp"
-            android:backgroundTint="@color/selector_pomodoro_gold"
-            android:textColor="@color/pomodoro_dark_teal"
-            android:layout_marginStart="8dp"
-            android:elevation="2dp"
-            style="@style/Widget.Material3.Button.OutlinedButton" />
+            android:textColor="@color/glass_bg_dark"
+            app:backgroundTint="@color/glass_pomodoro_gold"
+            app:cornerRadius="12dp"
+            android:layout_marginStart="8dp" />
 
     </LinearLayout>
 
-    <!-- Contrôles du Timer -->
+    <!-- Timer Controls with Glass Styling -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -131,56 +147,53 @@
         android:gravity="center"
         android:layout_marginBottom="40dp">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_start"
             android:layout_width="0dp"
             android:layout_height="55dp"
             android:layout_weight="1"
             android:text="Start"
             android:textSize="16sp"
-            android:backgroundTint="@color/selector_pomodoro_mint"
-            android:textColor="@color/white"
-            android:layout_marginEnd="8dp"
-            android:elevation="4dp"
-            style="@style/Widget.Material3.Button" />
+            android:textColor="@color/glass_text_primary"
+            app:backgroundTint="@color/glass_pomodoro_mint"
+            app:cornerRadius="12dp"
+            android:layout_marginEnd="8dp" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_pause"
             android:layout_width="0dp"
             android:layout_height="55dp"
             android:layout_weight="1"
             android:text="Pause"
             android:textSize="16sp"
-            android:backgroundTint="@color/selector_pomodoro_gold"
-            android:textColor="@color/pomodoro_dark_teal"
-            android:layout_marginEnd="8dp"
+            android:textColor="@color/glass_bg_dark"
+            app:backgroundTint="@color/glass_pomodoro_gold"
+            app:cornerRadius="12dp"
             android:layout_marginStart="8dp"
-            android:elevation="4dp"
-            style="@style/Widget.Material3.Button.OutlinedButton" />
+            android:layout_marginEnd="8dp" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_stop"
             android:layout_width="0dp"
             android:layout_height="55dp"
             android:layout_weight="1"
             android:text="Stop"
             android:textSize="16sp"
-            android:backgroundTint="@color/selector_pomodoro_coral"
-            android:textColor="@color/white"
-            android:layout_marginStart="8dp"
-            android:elevation="4dp"
-            style="@style/Widget.Material3.Button.OutlinedButton" />
+            android:textColor="@color/glass_text_primary"
+            app:backgroundTint="@color/glass_pomodoro_coral"
+            app:cornerRadius="12dp"
+            android:layout_marginStart="8dp" />
 
     </LinearLayout>
 
-    <!-- Section Ajout de Matière -->
+    <!-- Add Subject Section with Glass Styling -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Ajouter une Matière"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:textColor="@color/aurora_primary"
+        android:textColor="@color/glass_text_primary"
         android:layout_marginBottom="12dp" />
 
     <LinearLayout
@@ -196,33 +209,33 @@
             android:layout_weight="1"
             android:hint="Nom de la matière"
             android:textSize="16sp"
-            android:background="@drawable/edittext_design"
-            android:textColorHint="@color/dark_gray"
+            android:textColor="@color/glass_text_primary"
+            android:textColorHint="@color/glass_text_hint"
+            android:background="@drawable/bg_glass_input"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
             android:layout_marginEnd="12dp" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_add_subject"
             android:layout_width="120dp"
             android:layout_height="55dp"
             android:text="Ajouter"
             android:textSize="16sp"
-            android:backgroundTint="@color/aurora_primary"
-            android:textColor="@color/white"
-            android:elevation="4dp"
-            style="@style/Widget.Material3.Button" />
+            android:textColor="@color/glass_text_primary"
+            app:backgroundTint="@color/glass_accent_blue"
+            app:cornerRadius="12dp" />
 
     </LinearLayout>
 
-    <!-- Liste des Matières -->
+    <!-- Subject List with Glass Styling -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Matières à Étudier"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:textColor="@color/aurora_primary"
+        android:textColor="@color/glass_text_primary"
         android:layout_marginBottom="12dp" />
 
     <androidx.recyclerview.widget.RecyclerView
