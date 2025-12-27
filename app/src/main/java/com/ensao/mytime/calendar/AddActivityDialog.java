@@ -1,6 +1,5 @@
 package com.ensao.mytime.calendar;
 
-
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -64,8 +63,9 @@ public class AddActivityDialog extends DialogFragment {
         // Définir la taille du dialog
         dialog.getWindow().setLayout(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        );
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow()
+                .setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
 
         return dialog;
     }
@@ -73,7 +73,7 @@ public class AddActivityDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+            @Nullable Bundle savedInstanceState) {
         // Utiliser cette méthode si vous préférez un DialogFragment standard
         View view = inflater.inflate(R.layout.dialog_add_activity, container, false);
 

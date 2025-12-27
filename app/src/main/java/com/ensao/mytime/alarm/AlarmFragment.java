@@ -493,6 +493,10 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
 
         cancelButton.setOnClickListener(v -> dialog.dismiss());
         dialog.show();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(
+                    new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+        }
     }
 
     @Override

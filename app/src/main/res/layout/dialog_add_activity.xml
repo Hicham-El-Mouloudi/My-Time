@@ -1,90 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="24dp"
-    android:background="@drawable/dialog_background">
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/glass_card_stroke"
+    app:cardBackgroundColor="@color/glass_dialog_bg">
 
-    <!-- Titre -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ajouter une activité"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="16dp"/>
-
-    <!-- Sélecteur d'heure -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="16dp"
-        android:gravity="center_vertical">
+        android:orientation="vertical"
+        android:padding="24dp">
 
+        <!-- Title -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Heure:"
+            android:text="Ajouter une activité"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/glass_text_primary"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Time Picker Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Heure:"
+                android:textSize="16sp"
+                android:textColor="@color/glass_text_secondary"
+                android:layout_marginEnd="8dp"/>
+
+            <TimePicker
+                android:id="@+id/timePicker"
+                android:layout_width="wrap_content"
+                android:layout_height="250dp"
+                android:timePickerMode="spinner"
+                android:theme="@style/ThemeOverlay.MaterialComponents.Dark"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+
+        <!-- Description -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Description:"
             android:textSize="16sp"
-            android:layout_marginEnd="8dp"/>
+            android:textColor="@color/glass_text_secondary"
+            android:layout_marginBottom="8dp"/>
 
-        <TimePicker
-            android:id="@+id/timePicker"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/descriptionEditText"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
+            android:hint="Ex: Révision mathématiques"
+            android:inputType="textCapSentences|textMultiLine"
+            android:minHeight="100dp"
+            android:gravity="top"
+            android:padding="12dp"
+            android:textColor="@color/glass_text_primary"
+            android:textColorHint="@color/glass_text_hint"
+            android:background="@drawable/bg_glass_input"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Annuler"
+                android:textColor="@color/glass_text_secondary"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_marginEnd="16dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSave"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ajouter"
+                android:textColor="@color/glass_text_primary"
+                app:backgroundTint="@color/glass_accent_blue"
+                app:cornerRadius="12dp"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"/>
+
+        </LinearLayout>
 
     </LinearLayout>
-
-    <!-- Description -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Description:"
-        android:textSize="16sp"
-        android:layout_marginBottom="8dp"/>
-
-    <EditText
-        android:id="@+id/descriptionEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Ex: Révision mathématiques"
-        android:inputType="textCapSentences|textMultiLine"
-        android:minHeight="100dp"
-        android:gravity="top"
-        android:padding="12dp"
-        android:background="@drawable/edit_text_background"
-        android:layout_marginBottom="24dp"/>
-
-    <!-- Boutons -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="end">
-
-        <Button
-            android:id="@+id/btnCancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Annuler"
-            android:textColor="@color/text_dark"
-            android:background="?attr/selectableItemBackground"
-            android:layout_marginEnd="16dp"/>
-
-        <Button
-            android:id="@+id/btnSave"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ajouter"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/navy_blue"
-            android:paddingStart="24dp"
-            android:paddingEnd="24dp"/>
-
-    </LinearLayout>
-
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>

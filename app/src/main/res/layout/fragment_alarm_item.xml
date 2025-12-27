@@ -6,8 +6,10 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     app:cardCornerRadius="16dp"
-    app:cardElevation="2dp"
-    app:cardBackgroundColor="@color/ui_card_background">
+    app:cardElevation="0dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/glass_card_stroke"
+    app:cardBackgroundColor="@color/glass_card_bg">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:text="08:30"
                 android:textSize="32sp"
-                android:textColor="@color/text_primary"
+                android:textColor="@color/glass_text_primary"
                 android:fontFamily="sans-serif-light"/>
 
             <TextView
@@ -39,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:text="Once"
                 android:textSize="14sp"
-                android:textColor="@color/text_secondary"
+                android:textColor="@color/glass_text_secondary"
                 android:layout_marginTop="4dp"/>
 
         </LinearLayout>
@@ -50,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            android:buttonTint="@color/brand_primary"/>
+            android:buttonTint="@color/glass_text_primary"/>
 
         <!-- Switch with grey color when inactive -->
         <androidx.appcompat.widget.SwitchCompat

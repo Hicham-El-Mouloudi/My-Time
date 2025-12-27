@@ -24,10 +24,9 @@
             android:gravity="center"
             android:text="1"
             android:textSize="14sp"
-            android:textColor="@color/text_primary"
-            android:background="@drawable/ic_launcher_background"
+            android:textColor="@color/glass_text_primary"
+            android:background="@drawable/bg_glass_circle"
             android:backgroundTint="@android:color/transparent" />
-        <!-- Note: backgroundTint transparent by default, change to primary_color for selected day -->
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -41,7 +40,7 @@
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:src="@drawable/ic_sleep_session"
-                app:tint="@color/secondary_color"
+                app:tint="@color/glass_accent_purple"
                 android:visibility="gone"
                 tools:visibility="visible"
                 android:layout_marginEnd="2dp"
@@ -52,7 +51,7 @@
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:src="@drawable/ic_alarm"
-                app:tint="@color/primary_color"
+                app:tint="@color/glass_accent_blue"
                 android:visibility="gone"
                 tools:visibility="visible"
                 android:contentDescription="Wake Data Available" />
@@ -78,10 +77,9 @@
             android:gravity="center"
             android:text="2"
             android:textSize="14sp"
-            android:textColor="@color/text_primary"
-            android:background="@drawable/ic_launcher_background"
+            android:textColor="@color/glass_text_primary"
+            android:background="@drawable/bg_glass_circle"
             android:backgroundTint="@android:color/transparent" />
-        <!-- Note: backgroundTint transparent by default, change to primary_color for selected day -->
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -95,7 +93,7 @@
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:src="@drawable/ic_sleep_session"
-                app:tint="@color/secondary_color"
+                app:tint="@color/glass_accent_purple"
                 android:visibility="gone"
                 tools:visibility="visible"
                 android:layout_marginEnd="2dp"
@@ -106,7 +104,7 @@
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:src="@drawable/ic_alarm"
-                app:tint="@color/primary_color"
+                app:tint="@color/glass_accent_blue"
                 android:visibility="gone"
                 tools:visibility="visible"
                 android:contentDescription="Wake Data Available" />
@@ -132,10 +130,9 @@
             android:gravity="center"
             android:text="3"
             android:textSize="14sp"
-            android:textColor="@color/text_primary"
-            android:background="@drawable/ic_launcher_background"
+            android:textColor="@color/glass_text_primary"
+            android:background="@drawable/bg_glass_circle"
             android:backgroundTint="@android:color/transparent" />
-        <!-- Note: backgroundTint transparent by default, change to primary_color for selected day -->
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -149,7 +146,7 @@
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:src="@drawable/ic_sleep_session"
-                app:tint="@color/secondary_color"
+                app:tint="@color/glass_accent_purple"
                 android:visibility="gone"
                 tools:visibility="visible"
                 android:layout_marginEnd="2dp"
@@ -160,7 +157,7 @@
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:src="@drawable/ic_alarm"
-                app:tint="@color/primary_color"
+                app:tint="@color/glass_accent_blue"
                 android:visibility="gone"
                 tools:visibility="visible"
                 android:contentDescription="Wake Data Available" />
@@ -186,10 +183,9 @@
             android:gravity="center"
             android:text="4"
             android:textSize="14sp"
-            android:textColor="@color/text_primary"
-            android:background="@drawable/ic_launcher_background"
+            android:textColor="@color/glass_text_primary"
+            android:background="@drawable/bg_glass_circle"
             android:backgroundTint="@android:color/transparent" />
-        <!-- Note: backgroundTint transparent by default, change to primary_color for selected day -->
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -203,7 +199,7 @@
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:src="@drawable/ic_sleep_session"
-                app:tint="@color/secondary_color"
+                app:tint="@color/glass_accent_purple"
                 android:visibility="gone"
                 tools:visibility="visible"
                 android:layout_marginEnd="2dp"
@@ -214,7 +210,7 @@
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:src="@drawable/ic_alarm"
-                app:tint="@color/primary_color"
+                app:tint="@color/glass_accent_blue"
                 android:visibility="gone"
                 tools:visibility="visible"
                 android:contentDescription="Wake Data Available" />
@@ -240,10 +236,9 @@
             android:gravity="center"
             android:text="5"
             android:textSize="14sp"
-            android:textColor="@color/text_primary"
-            android:background="@drawable/ic_launcher_background"
+            android:textColor="@color/glass_text_primary"
+            android:background="@drawable/bg_glass_circle"
             android:backgroundTint="@android:color/transparent" />
-        <!-- Note: backgroundTint transparent by default, change to primary_color for selected day -->
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -257,7 +252,7 @@
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:src="@drawable/ic_sleep_session"
-                app:tint="@color/secondary_color"
+                app:tint="@color/glass_accent_purple"
                 android:visibility="gone"
                 tools:visibility="visible"
                 android:layout_marginEnd="2dp"
@@ -268,7 +263,7 @@
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:src="@drawable/ic_alarm"
-                app:tint="@color/primary_color"
+                app:tint="@color/glass_accent_blue"
                 android:visibility="gone"
                 tools:visibility="visible"
                 android:contentDescription="Wake Data Available" />
@@ -294,10 +289,9 @@
             android:gravity="center"
             android:text="6"
             android:textSize="14sp"
-            android:textColor="@color/text_primary"
-            android:background="@drawable/ic_launcher_background"
+            android:textColor="@color/glass_accent_amber"
+            android:background="@drawable/bg_glass_circle"
             android:backgroundTint="@android:color/transparent" />
-        <!-- Note: backgroundTint transparent by default, change to primary_color for selected day -->
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -311,7 +305,7 @@
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:src="@drawable/ic_sleep_session"
-                app:tint="@color/secondary_color"
+                app:tint="@color/glass_accent_purple"
                 android:visibility="gone"
                 tools:visibility="visible"
                 android:layout_marginEnd="2dp"
@@ -322,7 +316,7 @@
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:src="@drawable/ic_alarm"
-                app:tint="@color/primary_color"
+                app:tint="@color/glass_accent_blue"
                 android:visibility="gone"
                 tools:visibility="visible"
                 android:contentDescription="Wake Data Available" />
@@ -348,10 +342,9 @@
             android:gravity="center"
             android:text="7"
             android:textSize="14sp"
-            android:textColor="@color/text_primary"
-            android:background="@drawable/ic_launcher_background"
+            android:textColor="@color/glass_accent_rose"
+            android:background="@drawable/bg_glass_circle"
             android:backgroundTint="@android:color/transparent" />
-        <!-- Note: backgroundTint transparent by default, change to primary_color for selected day -->
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -365,7 +358,7 @@
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:src="@drawable/ic_sleep_session"
-                app:tint="@color/secondary_color"
+                app:tint="@color/glass_accent_purple"
                 android:visibility="gone"
                 tools:visibility="visible"
                 android:layout_marginEnd="2dp"
@@ -376,7 +369,7 @@
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:src="@drawable/ic_alarm"
-                app:tint="@color/primary_color"
+                app:tint="@color/glass_accent_blue"
                 android:visibility="gone"
                 tools:visibility="visible"
                 android:contentDescription="Wake Data Available" />

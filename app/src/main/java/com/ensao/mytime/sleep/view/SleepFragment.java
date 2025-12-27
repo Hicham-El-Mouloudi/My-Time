@@ -36,7 +36,6 @@ public class SleepFragment extends Fragment {
     private TextView tvSelectedSleepTime;
     private TextView tvSuggestedSleepTimes;
     private Button btnToggleSleepSession;
-    private Button btnSelectSleepTime;
     private Button btnManageApps;
 
     private Calendar selectedWakeUpCalendar;
@@ -45,7 +44,8 @@ public class SleepFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_sleep, container, false);
     }
 
@@ -53,13 +53,12 @@ public class SleepFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Initialisation des vues (Nettoyé du Spinner)
+        // UI Initialization
         btnToggleSleepSession = view.findViewById(R.id.btn_toggle_sleep_session);
         tvWakeUpTime = view.findViewById(R.id.tv_wake_up_time);
         tvSuggestedSleepTimes = view.findViewById(R.id.tv_suggested_sleep_times);
         btnManageApps = view.findViewById(R.id.btn_manage_blocked_apps);
         tvSelectedSleepTime = view.findViewById(R.id.tv_selected_sleep_time);
-        btnSelectSleepTime = view.findViewById(R.id.btn_select_sleep_time);
 
         selectedWakeUpCalendar = Calendar.getInstance();
         selectedWakeUpCalendar.set(Calendar.HOUR_OF_DAY, 7);
@@ -73,20 +72,21 @@ public class SleepFragment extends Fragment {
         loadSleepSettings();
         updateUI();
 
+        // Click Listeners
         tvWakeUpTime.setOnClickListener(v -> showWakeUpTimePicker());
-        if (btnSelectSleepTime != null) {
-            btnSelectSleepTime.setOnClickListener(v -> showSleepTimePicker());
-        }
+        tvSelectedSleepTime.setOnClickListener(v -> showSleepTimePicker()); // Now clickable directly
 
         btnToggleSleepSession.setOnClickListener(v -> toggleSleepSession());
 
         if (btnManageApps != null) {
             btnManageApps.setOnClickListener(v -> {
                 getParentFragmentManager().beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out) // Animation fluide
                         .replace(R.id.mainContent, new AppSelectionFragment())
                         .addToBackStack(null)
                         .commit();
             });
+
         }
         checkCurrentSessionStatus();
     }
@@ -100,7 +100,8 @@ public class SleepFragment extends Fragment {
     }
 
     private void toggleSleepSession() {
-        SharedPreferences prefs = requireContext().getSharedPreferences(AlarmScheduler.PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences prefs = requireContext().getSharedPreferences(AlarmScheduler.PREFS_NAME,
+                Context.MODE_PRIVATE);
         boolean isActive = prefs.getBoolean(AlarmScheduler.KEY_IS_SESSION_ACTIVE, false);
 
         if (!isActive) {
@@ -129,7 +130,7 @@ public class SleepFragment extends Fragment {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (!alarmManager.canScheduleExactAlarms()) {
                 startActivity(new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM));
-                Toast.makeText(requireContext(), "Autorisation d'alarme requise.", Toast.LENGTH_LONG).show();
+                Toast.makeText(requireContext(), "Alarm permission required.", Toast.LENGTH_LONG).show();
                 return;
             }
         }
@@ -138,29 +139,31 @@ public class SleepFragment extends Fragment {
 
     private boolean isAccessibilityServiceEnabled(Context context) {
         String expectedService = context.getPackageName() + "/" + MyAccessibilityService.class.getCanonicalName();
-        String enabledServices = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+        String enabledServices = Settings.Secure.getString(context.getContentResolver(),
+                Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
         return enabledServices != null && enabledServices.contains(expectedService);
     }
 
     private void showAccessibilityInstructions() {
         new AlertDialog.Builder(requireContext())
-                .setTitle("Permission de blocage")
-                .setMessage("Pour bloquer les applications, MyTime a besoin de la permission d'Accessibilité.")
-                .setPositiveButton("Réglages", (dialog, which) -> startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)))
-                .setNegativeButton("Annuler", null)
+                .setTitle("Blocking Permission")
+                .setMessage("To block apps, MyTime needs Accessibility permission.")
+                .setPositiveButton("Settings",
+                        (dialog, which) -> startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)))
+                .setNegativeButton("Cancel", null)
                 .show();
     }
 
     private void showOverlayPermissionDialog() {
         new AlertDialog.Builder(requireContext())
-                .setTitle("Affichage par-dessus")
-                .setMessage("MyTime a besoin de cette autorisation pour afficher l'alerte de blocage.")
-                .setPositiveButton("Autoriser", (dialog, which) -> {
+                .setTitle("Display Over Apps")
+                .setMessage("MyTime needs this permission to show the blocking alert.")
+                .setPositiveButton("Allow", (dialog, which) -> {
                     Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                             android.net.Uri.parse("package:" + requireContext().getPackageName()));
                     startActivity(intent);
                 })
-                .setNegativeButton("Annuler", null)
+                .setNegativeButton("Cancel", null)
                 .show();
     }
 
@@ -182,7 +185,7 @@ public class SleepFragment extends Fragment {
 
         saveSleepSettings(true);
         updateToggleButtonState(true);
-        Toast.makeText(requireContext(), "Session programmée ! 🌙", Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), "Session Scheduled! 🌙", Toast.LENGTH_SHORT).show();
     }
 
     private void cancelAllAlarmsAndServices() {
@@ -191,12 +194,13 @@ public class SleepFragment extends Fragment {
         AlarmScheduler.cancelWakeUpAlarm(requireContext());
 
         updateToggleButtonState(false);
-        Toast.makeText(requireContext(), "Session désactivée.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), "Session Disabled.", Toast.LENGTH_SHORT).show();
     }
 
     private void saveSleepSettings(boolean isActive) {
         refreshSleepTimeDate();
-        SharedPreferences prefs = requireContext().getSharedPreferences(AlarmScheduler.PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences prefs = requireContext().getSharedPreferences(AlarmScheduler.PREFS_NAME,
+                Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putLong(AlarmScheduler.KEY_WAKE_UP_TIME, selectedWakeUpCalendar.getTimeInMillis());
         editor.putLong(AlarmScheduler.KEY_SLEEP_TIME, selectedSleepTime.getTimeInMillis());
@@ -205,19 +209,24 @@ public class SleepFragment extends Fragment {
     }
 
     private void loadSleepSettings() {
-        SharedPreferences prefs = requireContext().getSharedPreferences(AlarmScheduler.PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences prefs = requireContext().getSharedPreferences(AlarmScheduler.PREFS_NAME,
+                Context.MODE_PRIVATE);
         if (prefs.contains(AlarmScheduler.KEY_WAKE_UP_TIME)) {
-            selectedWakeUpCalendar.setTimeInMillis(prefs.getLong(AlarmScheduler.KEY_WAKE_UP_TIME, selectedWakeUpCalendar.getTimeInMillis()));
-            selectedSleepTime.setTimeInMillis(prefs.getLong(AlarmScheduler.KEY_SLEEP_TIME, selectedSleepTime.getTimeInMillis()));
+            selectedWakeUpCalendar.setTimeInMillis(
+                    prefs.getLong(AlarmScheduler.KEY_WAKE_UP_TIME, selectedWakeUpCalendar.getTimeInMillis()));
+            selectedSleepTime
+                    .setTimeInMillis(prefs.getLong(AlarmScheduler.KEY_SLEEP_TIME, selectedSleepTime.getTimeInMillis()));
         }
     }
 
     private void updateUI() {
         tvWakeUpTime.setText(timeFormatter.format(selectedWakeUpCalendar.getTime()));
         if (tvSelectedSleepTime != null) {
-            tvSelectedSleepTime.setText("Heure de coucher : " + timeFormatter.format(selectedSleepTime.getTime()));
+            // Just display the time, label is in layout
+            tvSelectedSleepTime.setText(timeFormatter.format(selectedSleepTime.getTime()));
         }
-        tvSuggestedSleepTimes.setText("Heures de coucher recommandées :\n\n" + calculateSuggestedSleepTimes(selectedWakeUpCalendar));
+        tvSuggestedSleepTimes
+                .setText("Recommended Bedtimes:\n\n" + calculateSuggestedSleepTimes(selectedWakeUpCalendar));
     }
 
     private String calculateSuggestedSleepTimes(Calendar wakeUpCalendar) {
@@ -230,8 +239,9 @@ public class SleepFragment extends Fragment {
             String time = timeFormatter.format(suggestedCalendar.getTime());
             double hoursOfSleep = i * 1.5;
             sb.append("• ").append(time).append(" (").append(i).append(i > 1 ? " cycles, " : " cycle, ")
-                    .append(hoursOfSleep).append("h de sommeil)");
-            if (i >= 4) sb.append(" ⭐");
+                    .append(hoursOfSleep).append("h sleep)");
+            if (i >= 4)
+                sb.append(" ⭐");
             sb.append("\n");
         }
         return sb.toString();
@@ -239,11 +249,13 @@ public class SleepFragment extends Fragment {
 
     private void updateToggleButtonState(boolean isActive) {
         if (isActive) {
-            btnToggleSleepSession.setText("Désactiver la Session Nuit");
-            btnToggleSleepSession.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.primary_red));
+            btnToggleSleepSession.setText("Disable Night Session");
+            btnToggleSleepSession
+                    .setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.primary_red));
         } else {
-            btnToggleSleepSession.setText("Activer la Session Nuit");
-            btnToggleSleepSession.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.success_green));
+            btnToggleSleepSession.setText("Activate Night Session");
+            btnToggleSleepSession
+                    .setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.success_green));
         }
     }
 
@@ -275,13 +287,15 @@ public class SleepFragment extends Fragment {
     }
 
     private void checkCurrentSessionStatus() {
-        SharedPreferences prefs = requireContext().getSharedPreferences(AlarmScheduler.PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences prefs = requireContext().getSharedPreferences(AlarmScheduler.PREFS_NAME,
+                Context.MODE_PRIVATE);
         updateToggleButtonState(prefs.getBoolean(AlarmScheduler.KEY_IS_SESSION_ACTIVE, false));
     }
 
     private Calendar getRetainedSleepTime() {
         Calendar calendar = (Calendar) selectedSleepTime.clone();
-        if (calendar.before(Calendar.getInstance())) calendar.add(Calendar.DATE, 1);
+        if (calendar.before(Calendar.getInstance()))
+            calendar.add(Calendar.DATE, 1);
         return calendar;
     }
 }
