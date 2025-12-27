@@ -106,20 +106,43 @@ public class MainActivity extends AppCompatActivity
 
     // --- THEME HANDLING (from alarm-feature) ---
 
-    private void applyTheme() {
+    private boolean shouldApplyDarkMode() {
+        // 1. Check Sleep Schedule (Highest Priority)
+        SharedPreferences alarmPrefs = getSharedPreferences(AlarmScheduler.PREFS_NAME, Context.MODE_PRIVATE);
+        boolean isSessionActive = alarmPrefs.getBoolean(AlarmScheduler.KEY_IS_SESSION_ACTIVE, false);
+
+        if (isSessionActive) {
+            long now = System.currentTimeMillis();
+            long sleepTime = alarmPrefs.getLong(AlarmScheduler.KEY_SLEEP_TIME, 0);
+            long wakeUpTime = alarmPrefs.getLong(AlarmScheduler.KEY_WAKE_UP_TIME, 0);
+            long startTime = sleepTime - (2 * 60 * 60 * 1000);
+
+            if (wakeUpTime > startTime) {
+                if (now >= startTime && now <= wakeUpTime)
+                    return true;
+            } else {
+                if (now >= startTime || now <= wakeUpTime)
+                    return true;
+            }
+        }
+
+        // 2. Check User Preference (Fallback)
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String theme = prefs.getString("theme", "light");
+        return "dark".equals(theme);
+    }
 
-        // Check the actual current night mode from configuration
-        int currentNightMode = getResources().getConfiguration().uiMode
-                & android.content.res.Configuration.UI_MODE_NIGHT_MASK;
-        boolean isDarkModeActive = (currentNightMode == android.content.res.Configuration.UI_MODE_NIGHT_YES);
-        boolean shouldBeDark = "dark".equals(theme);
+    private void applyTheme() {
+        boolean shouldBeDark = shouldApplyDarkMode();
+        int desiredMode = shouldBeDark ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO;
 
-        // Only change the mode if it's actually different from what's currently applied
-        if (isDarkModeActive != shouldBeDark) {
-            int desiredMode = shouldBeDark ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO;
+        // Get the current mode that AppCompatDelegate is set to
+        int currentMode = AppCompatDelegate.getDefaultNightMode();
+
+        // Only change if the mode is different
+        if (currentMode != desiredMode) {
             AppCompatDelegate.setDefaultNightMode(desiredMode);
+            // The activity will be automatically recreated by AppCompatDelegate
         }
     }
 
@@ -157,36 +180,8 @@ public class MainActivity extends AppCompatActivity
     // --- DYNAMIC NIGHT MODE LOGIC (from main) ---
 
     public void checkNightModeDynamic() {
-        SharedPreferences prefs = getSharedPreferences(AlarmScheduler.PREFS_NAME, Context.MODE_PRIVATE);
-        boolean isSessionActive = prefs.getBoolean(AlarmScheduler.KEY_IS_SESSION_ACTIVE, false);
-
-        // Check the actual current night mode from configuration
-        int currentNightMode = getResources().getConfiguration().uiMode
-                & android.content.res.Configuration.UI_MODE_NIGHT_MASK;
-        boolean isDarkModeActive = (currentNightMode == android.content.res.Configuration.UI_MODE_NIGHT_YES);
-
-        boolean shouldBeDark;
-        if (isSessionActive) {
-            long now = System.currentTimeMillis();
-            long sleepTime = prefs.getLong(AlarmScheduler.KEY_SLEEP_TIME, 0);
-            long wakeUpTime = prefs.getLong(AlarmScheduler.KEY_WAKE_UP_TIME, 0);
-
-            long startTime = sleepTime - (2 * 60 * 60 * 1000);
-
-            if (wakeUpTime > startTime) {
-                shouldBeDark = (now >= startTime && now <= wakeUpTime);
-            } else {
-                shouldBeDark = (now >= startTime || now <= wakeUpTime);
-            }
-        } else {
-            shouldBeDark = false;
-        }
-
-        // Only change the mode if it's different from the current applied mode
-        if (isDarkModeActive != shouldBeDark) {
-            int desiredMode = shouldBeDark ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO;
-            AppCompatDelegate.setDefaultNightMode(desiredMode);
-        }
+        // Now mostly a wrapper ensuring the theme is correct when returning to the app
+        applyTheme();
     }
 
     // --- NAVIGATION AND SERVICES (from main + alarm-feature cleanup) ---

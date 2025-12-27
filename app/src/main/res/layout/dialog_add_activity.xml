@@ -8,7 +8,7 @@
     app:cardElevation="0dp"
     app:strokeWidth="1dp"
     app:strokeColor="@color/glass_card_stroke"
-    app:cardBackgroundColor="@color/glass_card_bg">
+    app:cardBackgroundColor="@color/glass_dialog_bg">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -46,9 +46,10 @@
             <TimePicker
                 android:id="@+id/timePicker"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:theme="@style/ThemeOverlay.MaterialComponents.Dark"/>
+                android:layout_height="250dp"
+                android:timePickerMode="spinner"
+                android:theme="@style/ThemeOverlay.MaterialComponents.Dark"
+                android:layout_gravity="center"/>
 
         </LinearLayout>
 

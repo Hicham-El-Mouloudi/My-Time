@@ -1,92 +1,101 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme - Glassmorphism Dark -->
+    <!-- Base application theme - Clean Light Mode -->
     <style name="Base.Theme.MyTime" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Primary Colors - Using glass accent blue -->
-        <item name="colorPrimary">@color/glass_accent_blue</item>
-        <item name="colorOnPrimary">@color/glass_text_primary</item>
-        <item name="colorPrimaryContainer">@color/glass_accent_indigo</item>
-        <item name="colorOnPrimaryContainer">@color/glass_text_primary</item>
+        <!-- Primary Colors - Deep blue brand -->
+        <item name="colorPrimary">@color/light_primary</item>
+        <item name="colorOnPrimary">@color/light_on_primary</item>
+        <item name="colorPrimaryContainer">@color/light_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/light_on_primary_container</item>
         
         <!-- Secondary Colors -->
-        <item name="colorSecondary">@color/glass_accent_purple</item>
-        <item name="colorOnSecondary">@color/glass_text_primary</item>
-        <item name="colorSecondaryContainer">@color/glass_card_bg_medium</item>
-        <item name="colorOnSecondaryContainer">@color/glass_text_primary</item>
+        <item name="colorSecondary">@color/light_secondary</item>
+        <item name="colorOnSecondary">@color/light_on_secondary</item>
+        <item name="colorSecondaryContainer">@color/light_secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/light_on_secondary_container</item>
         
         <!-- Tertiary Colors -->
-        <item name="colorTertiary">@color/glass_accent_teal</item>
-        <item name="colorOnTertiary">@color/glass_text_primary</item>
+        <item name="colorTertiary">@color/light_tertiary</item>
+        <item name="colorOnTertiary">@color/light_on_tertiary</item>
         
-        <!-- Background & Surface - Always dark for glassmorphism -->
-        <item name="android:colorBackground">@color/glass_bg_dark</item>
-        <item name="colorSurface">@color/glass_bg_mid</item>
-        <item name="colorSurfaceVariant">@color/glass_card_bg</item>
-        <item name="colorOnSurface">@color/glass_text_primary</item>
-        <item name="colorOnSurfaceVariant">@color/glass_text_secondary</item>
+        <!-- Background & Surface - Light clean surfaces -->
+        <item name="android:colorBackground">@color/light_background</item>
+        <item name="colorSurface">@color/light_surface</item>
+        <item name="colorSurfaceVariant">@color/light_surface_variant</item>
+        <item name="colorOnSurface">@color/light_on_surface</item>
+        <item name="colorOnSurfaceVariant">@color/light_on_surface_variant</item>
         
         <!-- Error -->
-        <item name="colorError">@color/glass_error</item>
-        <item name="colorOnError">@color/glass_text_primary</item>
+        <item name="colorError">@color/light_error</item>
+        <item name="colorOnError">@color/light_on_error</item>
         
-        <!-- Status Bar - Dark transparent -->
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar">false</item>
+        <!-- Status Bar - Light with dark icons -->
+        <item name="android:statusBarColor">@color/light_background</item>
+        <item name="android:windowLightStatusBar">true</item>
         
-        <!-- Navigation Bar - Dark -->
-        <item name="android:navigationBarColor">@color/glass_nav_bg</item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
+        <!-- Navigation Bar - Light -->
+        <item name="android:navigationBarColor">@color/light_nav_bg</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
         
         <!-- Toolbar Style -->
-        <item name="toolbarStyle">@style/GlassToolbarStyle</item>
-        <item name="actionOverflowButtonStyle">@style/GlassOverflowButtonStyle</item>
+        <item name="toolbarStyle">@style/LightToolbarStyle</item>
+        <item name="actionOverflowButtonStyle">@style/LightOverflowButtonStyle</item>
         
         <!-- Popup Menu Style -->
-        <item name="popupMenuStyle">@style/GlassPopupMenuStyle</item>
-        <item name="android:popupMenuStyle">@style/GlassPopupMenuStyle</item>
-        <item name="actionOverflowMenuStyle">@style/GlassPopupMenuStyle</item>
+        <item name="popupMenuStyle">@style/LightPopupMenuStyle</item>
+        <item name="android:popupMenuStyle">@style/LightPopupMenuStyle</item>
+        <item name="actionOverflowMenuStyle">@style/LightPopupMenuStyle</item>
         
         <!-- Bottom Navigation Style -->
-        <item name="bottomNavigationStyle">@style/GlassBottomNavigationStyle</item>
+        <item name="bottomNavigationStyle">@style/LightBottomNavigationStyle</item>
         
         <!-- Card styling -->
-        <item name="materialCardViewStyle">@style/GlassCardStyle</item>
+        <item name="materialCardViewStyle">@style/LightCardStyle</item>
         
         <!-- Button styling -->
-        <item name="materialButtonStyle">@style/GlassButtonStyle</item>
+        <item name="materialButtonStyle">@style/LightButtonStyle</item>
     </style>
 
     <style name="Theme.MyTime" parent="Base.Theme.MyTime" />
     
-    <!-- Glass Card Style -->
-    <style name="GlassCardStyle" parent="Widget.Material3.CardView.Elevated">
-        <item name="cardBackgroundColor">@color/glass_card_bg</item>
-        <item name="cardElevation">0dp</item>
-        <item name="strokeWidth">1dp</item>
-        <item name="strokeColor">@color/glass_card_stroke</item>
+    <!-- ========== LIGHT CARD STYLE ========== -->
+    <style name="LightCardStyle" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">@color/light_card_bg</item>
+        <item name="cardElevation">2dp</item>
+        <item name="strokeWidth">0dp</item>
         <item name="cardCornerRadius">16dp</item>
     </style>
     
-    <style name="GlassCardStyle.Large">
+    <style name="LightCardStyle.Large">
         <item name="cardCornerRadius">24dp</item>
     </style>
     
-    <!-- Glass Button Style -->
-    <style name="GlassButtonStyle" parent="Widget.Material3.Button">
-        <item name="backgroundTint">@color/glass_accent_blue</item>
-        <item name="android:textColor">@color/glass_text_primary</item>
+    <!-- Alias for backwards compatibility with glass naming -->
+    <style name="GlassCardStyle" parent="LightCardStyle" />
+    <style name="GlassCardStyle.Large" parent="LightCardStyle.Large" />
+    
+    <!-- ========== LIGHT BUTTON STYLE ========== -->
+    <style name="LightButtonStyle" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/light_primary</item>
+        <item name="android:textColor">@color/light_on_primary</item>
         <item name="cornerRadius">12dp</item>
     </style>
     
-    <style name="GlassButtonStyle.Outlined" parent="Widget.Material3.Button.OutlinedButton">
-        <item name="strokeColor">@color/glass_card_stroke</item>
-        <item name="android:textColor">@color/glass_text_primary</item>
+    <style name="LightButtonStyle.Outlined" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="strokeColor">@color/light_outline</item>
+        <item name="android:textColor">@color/light_primary</item>
         <item name="cornerRadius">12dp</item>
     </style>
     
-    <style name="GlassButtonStyle.Text" parent="Widget.Material3.Button.TextButton">
-        <item name="android:textColor">@color/glass_accent_blue</item>
+    <style name="LightButtonStyle.Text" parent="Widget.Material3.Button.TextButton">
+        <item name="android:textColor">@color/light_primary</item>
     </style>
+    
+    <!-- Aliases for backwards compatibility -->
+    <style name="GlassButtonStyle" parent="LightButtonStyle" />
+    <style name="GlassButtonStyle.Outlined" parent="LightButtonStyle.Outlined" />
+    <style name="GlassButtonStyle.Text" parent="LightButtonStyle.Text" />
 
+    <!-- ========== DAY TOGGLE STYLES ========== -->
     <style name="DayToggle" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:layout_width">36dp</item>
         <item name="android:layout_height">36dp</item>
@@ -118,10 +127,11 @@
         <item name="background">@drawable/selector_day_toggle_background_weekend</item>
     </style>
     
+    <!-- ========== SUDOKU THEME (Light) ========== -->
     <style name="Base.Theme.Sudoku" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/glass_accent_blue</item>
-        <item name="colorSecondary">@color/glass_accent_purple</item>
-        <item name="android:colorBackground">@color/glass_bg_dark</item>
+        <item name="colorPrimary">@color/light_primary</item>
+        <item name="colorSecondary">@color/light_secondary</item>
+        <item name="android:colorBackground">@color/light_background</item>
     </style>
 
     <style name="Theme.Sudoku" parent="Base.Theme.Sudoku" />
@@ -132,7 +142,7 @@
         <item name="android:layout_weight">1</item>
         <item name="android:layout_margin">2dp</item>
         <item name="android:background">?attr/selectableItemBackground</item>
-        <item name="android:textColor">@color/glass_accent_blue</item>
+        <item name="android:textColor">@color/light_primary</item>
         <item name="android:textSize">24sp</item>
         <item name="android:textStyle">bold</item>
     </style>
@@ -142,74 +152,97 @@
         <item name="cornerSize">16dp</item>
     </style>
     
-    <!-- Glass Text Styles -->
-    <style name="GlassTextStyle" parent="">
-        <item name="android:textColor">@color/glass_text_primary</item>
+    <!-- ========== LIGHT TEXT STYLES ========== -->
+    <style name="LightTextStyle" parent="">
+        <item name="android:textColor">@color/light_on_surface</item>
     </style>
     
-    <style name="GlassTextStyle.Title">
-        <item name="android:textColor">@color/glass_text_primary</item>
+    <style name="LightTextStyle.Title">
+        <item name="android:textColor">@color/light_on_surface</item>
         <item name="android:textSize">24sp</item>
         <item name="android:textStyle">bold</item>
     </style>
     
-    <style name="GlassTextStyle.Subtitle">
-        <item name="android:textColor">@color/glass_text_secondary</item>
+    <style name="LightTextStyle.Subtitle">
+        <item name="android:textColor">@color/light_on_surface_variant</item>
         <item name="android:textSize">16sp</item>
     </style>
     
-    <style name="GlassTextStyle.Body">
-        <item name="android:textColor">@color/glass_text_primary</item>
+    <style name="LightTextStyle.Body">
+        <item name="android:textColor">@color/light_on_surface</item>
         <item name="android:textSize">14sp</item>
     </style>
     
-    <!-- ========== GLASS TOOLBAR STYLE ========== -->
-    <style name="GlassToolbarStyle" parent="Widget.Material3.Toolbar">
-        <item name="android:background">@color/glass_card_bg</item>
-        <item name="titleTextColor">@color/glass_text_primary</item>
-        <item name="subtitleTextColor">@color/glass_text_secondary</item>
-        <item name="navigationIconTint">@color/glass_icon_primary</item>
-        <item name="titleTextAppearance">@style/GlassToolbarTitleTextAppearance</item>
+    <!-- Aliases for backwards compatibility -->
+    <style name="GlassTextStyle" parent="LightTextStyle" />
+    <style name="GlassTextStyle.Title" parent="LightTextStyle.Title" />
+    <style name="GlassTextStyle.Subtitle" parent="LightTextStyle.Subtitle" />
+    <style name="GlassTextStyle.Body" parent="LightTextStyle.Body" />
+    
+    <!-- ========== LIGHT TOOLBAR STYLE ========== -->
+    <style name="LightToolbarStyle" parent="Widget.Material3.Toolbar">
+        <item name="android:background">@color/light_surface</item>
+        <item name="titleTextColor">@color/light_on_surface</item>
+        <item name="subtitleTextColor">@color/light_on_surface_variant</item>
+        <item name="navigationIconTint">@color/light_on_surface</item>
+        <item name="titleTextAppearance">@style/LightToolbarTitleTextAppearance</item>
     </style>
     
-    <style name="GlassToolbarTitleTextAppearance" parent="TextAppearance.Material3.TitleLarge">
-        <item name="android:textColor">@color/glass_text_primary</item>
+    <style name="LightToolbarTitleTextAppearance" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:textColor">@color/light_on_surface</item>
         <item name="android:textSize">20sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
     
-    <!-- ========== GLASS OVERFLOW BUTTON STYLE ========== -->
-    <style name="GlassOverflowButtonStyle" parent="Widget.AppCompat.ActionButton.Overflow">
-        <item name="android:tint">@color/glass_icon_primary</item>
+    <!-- Aliases for backwards compatibility -->
+    <style name="GlassToolbarStyle" parent="LightToolbarStyle" />
+    <style name="GlassToolbarTitleTextAppearance" parent="LightToolbarTitleTextAppearance" />
+    
+    <!-- ========== LIGHT OVERFLOW BUTTON STYLE ========== -->
+    <style name="LightOverflowButtonStyle" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:tint">@color/light_on_surface</item>
     </style>
     
-    <!-- ========== GLASS POPUP MENU STYLE ========== -->
-    <style name="GlassPopupMenuStyle" parent="Widget.Material3.PopupMenu">
-        <item name="android:popupBackground">@drawable/bg_glass_popup_menu</item>
+    <!-- Alias for backwards compatibility -->
+    <style name="GlassOverflowButtonStyle" parent="LightOverflowButtonStyle" />
+    
+    <!-- ========== LIGHT POPUP MENU STYLE ========== -->
+    <style name="LightPopupMenuStyle" parent="Widget.Material3.PopupMenu">
+        <item name="android:popupBackground">@drawable/bg_light_popup_menu</item>
     </style>
     
-    <!-- ========== GLASS BOTTOM NAVIGATION STYLE ========== -->
-    <style name="GlassBottomNavigationStyle" parent="Widget.Material3.BottomNavigationView">
-        <item name="android:background">@color/glass_nav_bg</item>
+    <!-- Alias for backwards compatibility -->
+    <style name="GlassPopupMenuStyle" parent="LightPopupMenuStyle" />
+    
+    <!-- ========== LIGHT BOTTOM NAVIGATION STYLE ========== -->
+    <style name="LightBottomNavigationStyle" parent="Widget.Material3.BottomNavigationView">
+        <item name="android:background">@color/light_nav_bg</item>
         <item name="backgroundTint">@null</item>
-        <item name="itemIconTint">@color/selector_glass_nav_item</item>
-        <item name="itemTextColor">@color/selector_glass_nav_item</item>
-        <item name="itemActiveIndicatorStyle">@style/GlassBottomNavIndicator</item>
+        <item name="itemIconTint">@color/selector_light_nav_item</item>
+        <item name="itemTextColor">@color/selector_light_nav_item</item>
+        <item name="itemActiveIndicatorStyle">@style/LightBottomNavIndicator</item>
         <item name="labelVisibilityMode">labeled</item>
-        <item name="elevation">0dp</item>
+        <item name="elevation">4dp</item>
     </style>
     
-    <style name="GlassBottomNavIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
-        <item name="android:color">@color/glass_card_bg_medium</item>
+    <style name="LightBottomNavIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/light_primary_container</item>
     </style>
     
-    <!-- ========== GLASS POPUP OVERLAY (for toolbar menus) ========== -->
-    <style name="GlassPopupOverlay" parent="ThemeOverlay.Material3.Dark">
-        <item name="android:colorBackground">@color/glass_bg_dark</item>
-        <item name="colorSurface">@color/glass_bg_mid</item>
-        <item name="android:textColor">@color/glass_text_primary</item>
-        <item name="android:textColorPrimary">@color/glass_text_primary</item>
-        <item name="android:textColorSecondary">@color/glass_text_secondary</item>
-        <item name="popupMenuBackground">@drawable/bg_glass_popup_menu</item>
+    <!-- Aliases for backwards compatibility -->
+    <style name="GlassBottomNavigationStyle" parent="LightBottomNavigationStyle" />
+    <style name="GlassBottomNavIndicator" parent="LightBottomNavIndicator" />
+    
+    <!-- ========== LIGHT POPUP OVERLAY (for toolbar menus) ========== -->
+    <style name="LightPopupOverlay" parent="ThemeOverlay.Material3.Light">
+        <item name="android:colorBackground">@color/light_surface</item>
+        <item name="colorSurface">@color/light_surface</item>
+        <item name="android:textColor">@color/light_on_surface</item>
+        <item name="android:textColorPrimary">@color/light_on_surface</item>
+        <item name="android:textColorSecondary">@color/light_on_surface_variant</item>
+        <item name="popupMenuBackground">@drawable/bg_light_popup_menu</item>
     </style>
+    
+    <!-- Alias for backwards compatibility -->
+    <style name="GlassPopupOverlay" parent="LightPopupOverlay" />
 </resources>

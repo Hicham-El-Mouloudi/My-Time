@@ -1,77 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- ========== GLASSMORPHISM BACKGROUND COLORS ========== -->
-    <color name="glass_bg_dark">#0F172A</color>
-    <color name="glass_bg_mid">#1E293B</color>
-    <color name="glass_bg_accent">#312E81</color>
-    <color name="glass_background">#0F172A</color>
+    <!-- ========== LIGHT THEME COLORS ========== -->
+    
+    <!-- Primary Colors - Deep Blue -->
+    <color name="light_primary">#3B82F6</color>
+    <color name="light_on_primary">#FFFFFF</color>
+    <color name="light_primary_container">#DBEAFE</color>
+    <color name="light_on_primary_container">#1E3A5F</color>
+    
+    <!-- Secondary Colors - Violet -->
+    <color name="light_secondary">#8B5CF6</color>
+    <color name="light_on_secondary">#FFFFFF</color>
+    <color name="light_secondary_container">#EDE9FE</color>
+    <color name="light_on_secondary_container">#4C1D95</color>
+    
+    <!-- Tertiary Colors - Teal -->
+    <color name="light_tertiary">#14B8A6</color>
+    <color name="light_on_tertiary">#FFFFFF</color>
+    
+    <!-- Background & Surface -->
+    <color name="light_background">#F8FAFC</color>
+    <color name="light_surface">#FFFFFF</color>
+    <color name="light_surface_variant">#F1F5F9</color>
+    <color name="light_on_surface">#0F172A</color>
+    <color name="light_on_surface_variant">#64748B</color>
+    
+    <!-- Error -->
+    <color name="light_error">#DC2626</color>
+    <color name="light_on_error">#FFFFFF</color>
+    
+    <!-- Card Colors -->
+    <color name="light_card_bg">#FFFFFF</color>
+    <color name="light_card_stroke">#E2E8F0</color>
+    
+    <!-- Navigation -->
+    <color name="light_nav_bg">#FFFFFF</color>
+    <color name="light_nav_active">#3B82F6</color>
+    <color name="light_nav_inactive">#94A3B8</color>
+    
+    <!-- Outline -->
+    <color name="light_outline">#CBD5E1</color>
+    
+    <!-- ========== GLASSMORPHISM COLORS (Light mode - solid versions) ========== -->
+    <!-- These are provided for compatibility but will use solid light colors -->
+    
+    <color name="glass_bg_dark">#F8FAFC</color>
+    <color name="glass_bg_mid">#FFFFFF</color>
+    <color name="glass_bg_accent">#DBEAFE</color>
+    <color name="glass_background">#F8FAFC</color>
 
-    <!-- ========== GLASS CARD COLORS ========== -->
-    <color name="glass_card_bg">#1AFFFFFF</color>
-    <color name="glass_card_bg_light">#1AFFFFFF</color>
-    <color name="glass_card_bg_medium">#26FFFFFF</color>
-    <color name="glass_card_bg_strong">#33FFFFFF</color>
-    <color name="glass_card_stroke">#2EFFFFFF</color>
-    <color name="glass_card_stroke_light">#1AFFFFFF</color>
+    <color name="glass_card_bg">#FFFFFF</color>
+    <color name="glass_card_bg_light">#FFFFFF</color>
+    <color name="glass_dialog_bg">#F8FFFFFF</color>
+    <color name="glass_card_bg_medium">#F1F5F9</color>
+    <color name="glass_card_bg_strong">#E2E8F0</color>
+    <color name="glass_card_stroke">#E2E8F0</color>
+    <color name="glass_card_stroke_light">#F1F5F9</color>
 
-    <!-- ========== GLASS TEXT COLORS ========== -->
-    <color name="glass_text_primary">#FFFFFF</color>
-    <color name="glass_text_secondary">#B3FFFFFF</color>
-    <color name="glass_text_tertiary">#66FFFFFF</color>
-    <color name="glass_text_hint">#4DFFFFFF</color>
+    <color name="glass_text_primary">#0F172A</color>
+    <color name="glass_text_secondary">#64748B</color>
+    <color name="glass_text_tertiary">#94A3B8</color>
+    <color name="glass_text_hint">#CBD5E1</color>
 
-    <!-- ========== GLASS ICON COLORS ========== -->
-    <color name="glass_icon_primary">#FFFFFF</color>
-    <color name="glass_icon_secondary">#B3FFFFFF</color>
+    <color name="glass_icon_primary">#0F172A</color>
+    <color name="glass_icon_secondary">#64748B</color>
 
-    <!-- ========== GLASS ACCENT COLORS ========== -->
-    <color name="glass_accent_blue">#60A5FA</color>
-    <color name="glass_accent_indigo">#818CF8</color>
-    <color name="glass_accent_purple">#A78BFA</color>
-    <color name="glass_accent_teal">#2DD4BF</color>
-    <color name="glass_accent_cyan">#22D3EE</color>
-    <color name="glass_accent_rose">#FB7185</color>
-    <color name="glass_accent_amber">#FBBF24</color>
-    <color name="glass_accent_green">#34D399</color>
-    <color name="glass_accent_orange">#FB923C</color>
+    <!-- Accent colors remain vibrant -->
+    <color name="glass_accent_blue">#3B82F6</color>
+    <color name="glass_accent_indigo">#6366F1</color>
+    <color name="glass_accent_purple">#8B5CF6</color>
+    <color name="glass_accent_teal">#14B8A6</color>
+    <color name="glass_accent_cyan">#06B6D4</color>
+    <color name="glass_accent_rose">#F43F5E</color>
+    <color name="glass_accent_amber">#F59E0B</color>
+    <color name="glass_accent_green">#10B981</color>
+    <color name="glass_accent_orange">#F97316</color>
 
-    <!-- ========== GLASS STATUS COLORS ========== -->
-    <color name="glass_success">#34D399</color>
-    <color name="glass_success_bg">#1A34D399</color>
-    <color name="glass_warning">#FBBF24</color>
-    <color name="glass_warning_bg">#1AFBBF24</color>
-    <color name="glass_error">#FB7185</color>
-    <color name="glass_error_bg">#1AFB7185</color>
-    <color name="glass_info">#60A5FA</color>
-    <color name="glass_info_bg">#1A60A5FA</color>
+    <color name="glass_success">#10B981</color>
+    <color name="glass_success_bg">#D1FAE5</color>
+    <color name="glass_warning">#F59E0B</color>
+    <color name="glass_warning_bg">#FEF3C7</color>
+    <color name="glass_error">#EF4444</color>
+    <color name="glass_error_bg">#FEE2E2</color>
+    <color name="glass_info">#3B82F6</color>
+    <color name="glass_info_bg">#DBEAFE</color>
 
-    <!-- ========== GLASS NAVIGATION COLORS ========== -->
-    <color name="glass_nav_bg">#0D1117</color>
-    <color name="glass_nav_bg_elevated">#161B22</color>
-    <color name="glass_nav_active">#60A5FA</color>
-    <color name="glass_nav_inactive">#64748B</color>
+    <color name="glass_nav_bg">#FFFFFF</color>
+    <color name="glass_nav_bg_elevated">#FFFFFF</color>
+    <color name="glass_nav_active">#3B82F6</color>
+    <color name="glass_nav_inactive">#94A3B8</color>
 
-    <!-- ========== GLASS BUTTON COLORS ========== -->
-    <color name="glass_button_primary">#60A5FA</color>
-    <color name="glass_button_primary_pressed">#3B82F6</color>
-    <color name="glass_button_secondary">#26FFFFFF</color>
-    <color name="glass_button_secondary_pressed">#33FFFFFF</color>
-    <color name="glass_button_danger">#FB7185</color>
-    <color name="glass_button_success">#34D399</color>
+    <color name="glass_button_primary">#3B82F6</color>
+    <color name="glass_button_primary_pressed">#2563EB</color>
+    <color name="glass_button_secondary">#F1F5F9</color>
+    <color name="glass_button_secondary_pressed">#E2E8F0</color>
+    <color name="glass_button_danger">#EF4444</color>
+    <color name="glass_button_success">#10B981</color>
 
-    <!-- ========== GLASS DIVIDER/BORDER COLORS ========== -->
-    <color name="glass_divider">#1AFFFFFF</color>
-    <color name="glass_border">#2EFFFFFF</color>
+    <color name="glass_divider">#E2E8F0</color>
+    <color name="glass_border">#CBD5E1</color>
 
-    <!-- ========== POMODORO GLASS COLORS ========== -->
-    <color name="glass_pomodoro_mint">#34D399</color>
-    <color name="glass_pomodoro_gold">#FBBF24</color>
-    <color name="glass_pomodoro_coral">#FB7185</color>
-    <color name="glass_pomodoro_blue">#60A5FA</color>
-    <color name="glass_pomodoro_teal">#2DD4BF</color>
+    <color name="glass_pomodoro_mint">#10B981</color>
+    <color name="glass_pomodoro_gold">#F59E0B</color>
+    <color name="glass_pomodoro_coral">#F43F5E</color>
+    <color name="glass_pomodoro_blue">#3B82F6</color>
+    <color name="glass_pomodoro_teal">#14B8A6</color>
 
-    <!-- ========== GLASS HEADER/ACCENT GRADIENTS (solid fallbacks) ========== -->
-    <color name="glass_header_start">#312E81</color>
-    <color name="glass_header_center">#4338CA</color>
-    <color name="glass_header_end">#6366F1</color>
+    <color name="glass_header_start">#DBEAFE</color>
+    <color name="glass_header_center">#C7D2FE</color>
+    <color name="glass_header_end">#EDE9FE</color>
 </resources>
