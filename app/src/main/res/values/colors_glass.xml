@@ -9,6 +9,7 @@
     <!-- ========== GLASS CARD COLORS ========== -->
     <color name="glass_card_bg">#1AFFFFFF</color>
     <color name="glass_card_bg_light">#1AFFFFFF</color>
+    <color name="glass_dialog_bg">#E61E293B</color>
     <color name="glass_card_bg_medium">#26FFFFFF</color>
     <color name="glass_card_bg_strong">#33FFFFFF</color>
     <color name="glass_card_stroke">#2EFFFFFF</color>

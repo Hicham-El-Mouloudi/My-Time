@@ -165,6 +165,10 @@ public class StudySessionFragment extends Fragment {
 
         androidx.appcompat.app.AlertDialog dialog = builder.create();
         dialog.show();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(
+                    new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+        }
     }
 
     private void setupButtonListeners() {
