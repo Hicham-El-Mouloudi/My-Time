@@ -109,6 +109,11 @@ public class AlarmFullScreenUI extends AppCompatActivity {
             @Override
             public void onFinish() {
                 counterText.setText("0");
+                // Auto-Snooze if no interaction
+                int alarmId = getIntent().getIntExtra("ALARM_ID", -1);
+                if (alarmId != -1) {
+                    handleAutoSnooze(alarmId);
+                }
             }
         }.start();
     }
@@ -119,6 +124,12 @@ public class AlarmFullScreenUI extends AppCompatActivity {
 
         Intent serviceIntent = new Intent(this, RingtoneService.class);
         stopService(serviceIntent); // Stop ringing
+
+        // Close any active puzzle
+        android.util.Log.d("AlarmFullScreenUI", "Sending ACTION_FINISH_PUZZLE broadcast");
+        Intent finishIntent = new Intent(Puzzleable.ACTION_FINISH_PUZZLE);
+        finishIntent.setPackage(getPackageName());
+        sendBroadcast(finishIntent);
 
         // Schedule Snooze
         long triggerTime = System.currentTimeMillis() + (AlarmConfig.SNOOZE_DELAY_SECONDS * 1000L);
@@ -144,16 +155,17 @@ public class AlarmFullScreenUI extends AppCompatActivity {
                 stopService(serviceIntent);
 
                 if (alarm != null && alarm.isSleepAlarm()) {
-                    // Broadcast that puzzle mode is starting
-                    // This tells the service to use puzzle-mode auto-snooze delays
-                    // and to ignore subsequent alarm triggers while puzzle is active
+                    // 1. Schedule Fallout Alarm (Auto-Snooze) for +3 mins
+                    long falloutTime = System.currentTimeMillis()
+                            + (AlarmConfig.PUZZLE_MODE_AUTO_SNOOZE_DELAY_SECONDS * 1000L);
+                    AlarmScheduler.scheduleFalloutAlarm(this, alarmId, falloutTime);
+
+                    // 2. Broadcast that puzzle mode is starting
                     Intent puzzleStartIntent = new Intent(Puzzleable.ACTION_PUZZLE_STARTED);
                     puzzleStartIntent.putExtra(Puzzleable.EXTRA_ALARM_ID, alarmId);
                     sendBroadcast(puzzleStartIntent);
 
-                    // Redirect to selected puzzle game
-                    // NOTE: Alarm deactivation happens ONLY when puzzle is solved (in game
-                    // activity)
+                    // 3. Redirect to selected puzzle game
                     String puzzleType = alarm.getPuzzleType();
                     Intent puzzleIntent;
                     switch (puzzleType != null ? puzzleType : "jpegchaos") {
@@ -170,7 +182,7 @@ public class AlarmFullScreenUI extends AppCompatActivity {
                             break;
                     }
                     puzzleIntent.putExtra("ALARM_ID", alarmId);
-                    puzzleIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    puzzleIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivity(puzzleIntent);
                 } else {
                     // Normal Dismiss - Turn off if not repeating
@@ -186,6 +198,55 @@ public class AlarmFullScreenUI extends AppCompatActivity {
             Intent serviceIntent = new Intent(this, RingtoneService.class);
             stopService(serviceIntent);
             finish();
+        }
+    }
+
+    private void handleAutoSnooze(int alarmId) {
+        int autoSnoozeCount = getIntent().getIntExtra("AUTO_SNOOZE_COUNT", 0);
+        boolean isSleepAlarm = getIntent().getBooleanExtra("IS_SLEEP_ALARM", false);
+
+        if (autoSnoozeCount < AlarmConfig.MAX_AUTO_SNOOZES) {
+            if (countDownTimer != null)
+                countDownTimer.cancel();
+
+            Intent serviceIntent = new Intent(this, RingtoneService.class);
+            stopService(serviceIntent);
+
+            int delay = isSleepAlarm ? AlarmConfig.PUZZLE_MODE_AUTO_SNOOZE_DELAY_SECONDS
+                    : AlarmConfig.AUTO_SNOOZE_DELAY_SECONDS;
+            long triggerTime = System.currentTimeMillis() + (delay * 1000L);
+            AlarmScheduler.scheduleSnooze(this, alarmId, triggerTime, autoSnoozeCount + 1);
+
+            // Close any active puzzle
+            android.util.Log.d("AlarmFullScreenUI", "Sending ACTION_FINISH_PUZZLE broadcast (AutoSnooze)");
+            Intent finishIntent = new Intent(Puzzleable.ACTION_FINISH_PUZZLE);
+            finishIntent.setPackage(getPackageName());
+            sendBroadcast(finishIntent);
+
+            finish();
+        } else {
+            // Max reached, dismiss silently (turn off)
+            if (countDownTimer != null)
+                countDownTimer.cancel();
+            Intent serviceIntent = new Intent(this, RingtoneService.class);
+            stopService(serviceIntent);
+
+            // Close any active puzzle
+            android.util.Log.d("AlarmFullScreenUI", "Sending ACTION_FINISH_PUZZLE broadcast (MaxSnooze)");
+            Intent finishIntent = new Intent(Puzzleable.ACTION_FINISH_PUZZLE);
+            finishIntent.setPackage(getPackageName());
+            sendBroadcast(finishIntent);
+
+            new Thread(() -> {
+                com.ensao.mytime.alarm.database.AlarmRepository repository = new com.ensao.mytime.alarm.database.AlarmRepository(
+                        getApplication());
+                com.ensao.mytime.alarm.database.Alarm alarm = repository.getAlarmByIdSync(alarmId);
+                if (alarm != null && alarm.getDaysOfWeek() == 0) {
+                    alarm.setEnabled(false);
+                    repository.update(alarm);
+                }
+                finish();
+            }).start();
         }
     }
 

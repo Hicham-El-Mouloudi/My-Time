@@ -82,11 +82,11 @@ public class ActivityRepo {
     }
 
     // Update activity
-    public void Update(long id, String title, String description, long startDate, long endDate, 
+    public void Update(long id, String title, String description, long startDate, long endDate, long categoryId,
                        Activity CurrentActivity, CallBackAfterDbOperation<Boolean> Callback){
         _executor.execute(()->{
             try {
-                _userActivityDAO.Update(id, title, description, startDate, endDate);
+                _userActivityDAO.Update(id, title, description, startDate, endDate, categoryId);
                 if(Callback!=null)
                     CurrentActivity.runOnUiThread(()-> Callback.onComplete(true));
             } catch (Exception e) {

@@ -1,15 +1,17 @@
 package com.ensao.mytime.calendar;
 
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.ensao.mytime.R;
 import com.ensao.mytime.study.model.DailyActivity;
+
 import java.util.List;
 
 public class DayActivitiesAdapter extends RecyclerView.Adapter<DayActivitiesAdapter.ActivityViewHolder> {
@@ -48,6 +50,8 @@ public class DayActivitiesAdapter extends RecyclerView.Adapter<DayActivitiesAdap
 
     static class ActivityViewHolder extends RecyclerView.ViewHolder {
         private TextView tvTime;
+        private TextView tvEndTime;
+        private TextView tvTitle;
         private TextView tvDescription;
         private ImageButton btnEdit;
         private ImageButton btnDelete;
@@ -55,22 +59,46 @@ public class DayActivitiesAdapter extends RecyclerView.Adapter<DayActivitiesAdap
         public ActivityViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTime = itemView.findViewById(R.id.tvTime);
+            tvEndTime = itemView.findViewById(R.id.tvEndTime);
+            tvTitle = itemView.findViewById(R.id.tvTitle);
             tvDescription = itemView.findViewById(R.id.tvDescription);
             btnEdit = itemView.findViewById(R.id.btnEdit);
             btnDelete = itemView.findViewById(R.id.btnDelete);
         }
 
         public void bind(DailyActivity activity, OnActivityClickListener listener, int position) {
-            tvTime.setText(activity.getTime());
+            // Set start time
+            tvTime.setText(activity.getTime() != null ? activity.getTime() : "");
 
-            if (activity.getDescription().isEmpty()) {
-                tvDescription.setText("Créneau disponible");
-                tvDescription.setTextColor(itemView.getContext().getColor(R.color.medium_gray));
-                tvDescription.setAlpha(0.6f);
+            // Set end time
+            if (tvEndTime != null) {
+                String endTime = activity.getEndTime();
+                if (endTime != null && !endTime.equals(activity.getTime())) {
+                    tvEndTime.setText(endTime);
+                    tvEndTime.setVisibility(View.VISIBLE);
+                } else {
+                    tvEndTime.setVisibility(View.GONE);
+                }
+            }
+
+            // Set title
+            if (tvTitle != null) {
+                String title = activity.getTitle();
+                if (title != null && !title.isEmpty()) {
+                    tvTitle.setText(title);
+                } else {
+                    tvTitle.setText(activity.getDescription());
+                }
+            }
+
+            // Set description
+            String description = activity.getDescription();
+            if (description != null && !description.isEmpty() && 
+                !description.equals(activity.getTitle())) {
+                tvDescription.setText(description);
+                tvDescription.setVisibility(View.VISIBLE);
             } else {
-                tvDescription.setText(activity.getDescription());
-                tvDescription.setTextColor(itemView.getContext().getColor(R.color.text_dark));
-                tvDescription.setAlpha(1.0f);
+                tvDescription.setVisibility(View.GONE);
             }
 
             btnEdit.setOnClickListener(v -> {
@@ -85,7 +113,7 @@ public class DayActivitiesAdapter extends RecyclerView.Adapter<DayActivitiesAdap
                 }
             });
 
-            // Clic sur l'item pour éditer
+            // Click on item to edit
             itemView.setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onActivityEdit(position, activity);
@@ -93,5 +121,4 @@ public class DayActivitiesAdapter extends RecyclerView.Adapter<DayActivitiesAdap
             });
         }
     }
-
 }

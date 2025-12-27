@@ -16,8 +16,10 @@ import com.ensao.mytime.R;
 import com.ensao.mytime.alarm.Puzzleable;
 import com.ensao.mytime.statistics.StatisticsHelper;
 
-public class MinesweeperGameActivity extends AppCompatActivity
-        implements MinesweeperView.OnCellClickListener, Puzzleable {
+import com.ensao.mytime.alarm.BasePuzzleActivity;
+
+public class MinesweeperGameActivity extends BasePuzzleActivity
+        implements MinesweeperView.OnCellClickListener {
     private static final String TAG = "Minesweeper";
 
     private MinesweeperView minesweeperView;
@@ -35,8 +37,8 @@ public class MinesweeperGameActivity extends AppCompatActivity
     private boolean isDarkMode = true;
 
     // Alarm integration
-    private int alarmId = -1;
-    private boolean puzzleActive = false;
+    // Alarm integration
+    // Fields handled by BasePuzzleActivity
 
     // Default difficulty (can be set from intent later)
     private Difficulty currentDifficulty = Difficulty.BEGINNER;
@@ -64,39 +66,14 @@ public class MinesweeperGameActivity extends AppCompatActivity
 
         minesweeperView.setOnCellClickListener(this);
 
-        // Get alarm ID if launched from alarm
-        alarmId = getIntent().getIntExtra("ALARM_ID", -1);
-        if (alarmId != -1) {
-            onPuzzleModeActivated(alarmId);
-        }
+        // Alarm ID handled by BasePuzzleActivity
 
         startNewGame();
     }
 
-    // Puzzleable interface implementation
     @Override
-    public void onPuzzleModeActivated(int alarmId) {
-        this.alarmId = alarmId;
-        this.puzzleActive = true;
-    }
-
-    @Override
-    public boolean isPuzzleActive() {
-        return puzzleActive;
-    }
-
-    @Override
-    public int getAssociatedAlarmId() {
-        return alarmId;
-    }
-
-    @Override
-    public void onPuzzleSolved() {
-        puzzleActive = false;
-        // Broadcast puzzle completed to stop alarm and let service know
-        Intent puzzleCompleteIntent = new Intent(Puzzleable.ACTION_PUZZLE_COMPLETED);
-        puzzleCompleteIntent.putExtra(Puzzleable.EXTRA_ALARM_ID, alarmId);
-        sendBroadcast(puzzleCompleteIntent);
+    protected void onPuzzleReset() {
+        startNewGame();
     }
 
     private void showDifficultyDialog() {
@@ -123,6 +100,18 @@ public class MinesweeperGameActivity extends AppCompatActivity
                     startNewGame();
                 })
                 .show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Register receiver - Handled by BasePuzzleActivity
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Unregister receiver - Handled by BasePuzzleActivity
     }
 
     private void startNewGame() {
@@ -241,7 +230,8 @@ public class MinesweeperGameActivity extends AppCompatActivity
                 if (engine.isGameWon()) {
                     btnRestart.setImageResource(R.drawable.ic_face_win);
                     Toast.makeText(this, "🎉 Congratulations! You won!", Toast.LENGTH_LONG).show();
-                    disableAlarmIfNeeded();
+
+                    completePuzzleSession();
                 } else {
                     btnRestart.setImageResource(R.drawable.ic_face_dead);
                     Toast.makeText(this, "💥 Game Over! You hit a mine.", Toast.LENGTH_SHORT).show();
@@ -250,27 +240,7 @@ public class MinesweeperGameActivity extends AppCompatActivity
         }
     }
 
-    private void disableAlarmIfNeeded() {
-        if (alarmId != -1) {
-            // Broadcast puzzle completed first
-            onPuzzleSolved();
-
-            // Save wake statistics when puzzle is solved
-            StatisticsHelper.saveWakeStatistics(this);
-
-            new Thread(() -> {
-                com.ensao.mytime.alarm.database.AlarmRepository repository = new com.ensao.mytime.alarm.database.AlarmRepository(
-                        getApplication());
-                com.ensao.mytime.alarm.database.Alarm alarm = repository.getAlarmByIdSync(alarmId);
-                if (alarm != null && alarm.getDaysOfWeek() == 0) {
-                    alarm.setEnabled(false);
-                    repository.update(alarm);
-                }
-                // Finish activity after disabling alarm
-                runOnUiThread(this::finish);
-            }).start();
-        }
-    }
+    // disableAlarmIfNeeded replaced by completePuzzleSession
 
     @Override
     protected void onDestroy() {

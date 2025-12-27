@@ -24,14 +24,16 @@
         android:layout_marginBottom="12dp">
 
         <!-- Durée du sommeil -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="6dp"
             app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="@color/surface_color">
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/glass_card_stroke"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/glass_dialog_bg">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -45,7 +47,7 @@
                     android:layout_height="wrap_content"
                     android:text="Durée"
                     android:textSize="14sp"
-                    android:textColor="@color/text_secondary" />
+                    android:textColor="@color/glass_text_secondary" />
 
                 <TextView
                     android:id="@+id/tv_sleep_duration_value"
@@ -54,7 +56,7 @@
                     android:layout_marginTop="8dp"
                     android:textSize="24sp"
                     android:textStyle="bold"
-                    android:textColor="@color/text_primary" />
+                    android:textColor="@color/glass_text_primary" />
 
                 <TextView
                     android:id="@+id/tv_sleep_duration_status"
@@ -62,19 +64,21 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:textSize="12sp"
-                    android:textColor="@color/secondary_color" />
+                    android:textColor="@color/glass_text_tertiary" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Temps passé au lit -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="6dp"
             app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="@color/surface_color">
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/glass_card_stroke"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/glass_dialog_bg">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -88,7 +92,7 @@
                     android:layout_height="wrap_content"
                     android:text="Temps au lit"
                     android:textSize="14sp"
-                    android:textColor="@color/text_secondary" />
+                    android:textColor="@color/glass_text_secondary" />
 
                 <TextView
                     android:id="@+id/tv_time_in_bed_value"
@@ -97,16 +101,15 @@
                     android:layout_marginTop="8dp"
                     android:textSize="24sp"
                     android:textStyle="bold"
-                    android:textColor="@color/text_primary" />
+                    android:textColor="@color/glass_text_primary" />
                 
-                <!-- Spacer to match height if status is present on left, or just keeping it simple -->
                  <View
                     android:layout_width="1dp"
                     android:layout_height="18dp" 
                     android:layout_marginTop="4dp"/>
 
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
 </LinearLayout>

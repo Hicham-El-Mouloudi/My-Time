@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/dialog_background">
+
+    <!-- Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nouvelle catégorie"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/aurora_primary"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dp"/>
+
+    <!-- Category Name -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nom de la catégorie *"
+        android:textSize="14sp"
+        android:textColor="@color/text_dark"
+        android:layout_marginBottom="4dp"/>
+
+    <EditText
+        android:id="@+id/categoryNameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ex: Étude, Sport, Travail..."
+        android:inputType="textCapSentences"
+        android:padding="12dp"
+        android:background="@drawable/edit_text_background"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Category Description -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Description"
+        android:textSize="14sp"
+        android:textColor="@color/text_dark"
+        android:layout_marginBottom="4dp"/>
+
+    <EditText
+        android:id="@+id/categoryDescriptionEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Description optionnelle"
+        android:inputType="textCapSentences"
+        android:padding="12dp"
+        android:background="@drawable/edit_text_background"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Repetition Kind -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Répétition *"
+        android:textSize="14sp"
+        android:textColor="@color/text_dark"
+        android:layout_marginBottom="4dp"/>
+
+    <RadioGroup
+        android:id="@+id/repetitionRadioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="24dp">
+
+        <RadioButton
+            android:id="@+id/radioOnetime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Une seule fois"
+            android:textSize="14sp"
+            android:checked="true"
+            android:padding="8dp"/>
+
+        <RadioButton
+            android:id="@+id/radioEachday"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Chaque jour"
+            android:textSize="14sp"
+            android:padding="8dp"/>
+
+        <RadioButton
+            android:id="@+id/radioEachweek"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Chaque semaine (même jour)"
+            android:textSize="14sp"
+            android:padding="8dp"/>
+
+        <RadioButton
+            android:id="@+id/radioEachmonth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Chaque mois (même date)"
+            android:textSize="14sp"
+            android:padding="8dp"/>
+
+    </RadioGroup>
+
+    <!-- Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <Button
+            android:id="@+id/btnCancelCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Annuler"
+            android:textColor="@color/text_dark"
+            android:background="?attr/selectableItemBackground"
+            android:layout_marginEnd="16dp"/>
+
+        <Button
+            android:id="@+id/btnCreateCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Créer"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/aurora_primary"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

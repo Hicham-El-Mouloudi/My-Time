@@ -19,6 +19,7 @@ public class AlarmScheduler {
         intent.putExtra("ALARM_ID", alarm.getId());
         intent.putExtra("ALARM_TIME", alarm.getTimeInMillis());
         intent.putExtra("ALARM_RINGTONE", alarm.getRingtoneUri());
+        intent.putExtra("IS_SLEEP_ALARM", alarm.isSleepAlarm());
         // Label removed
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
@@ -146,6 +147,65 @@ public class AlarmScheduler {
                         triggerTimeInMillis,
                         pendingIntent);
             }
+        }
+    }
+
+    public static void scheduleFalloutAlarm(Context context, int alarmId, long triggerTimeInMillis) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        intent.setAction(Puzzleable.ACTION_FALLOUT_TRIGGERED);
+        intent.putExtra("ALARM_ID", alarmId);
+        intent.putExtra("ALARM_TIME", triggerTimeInMillis);
+
+        // Use a derived ID for fallout to avoid conflict with main alarm
+        // Using bitwise complement to ensure unique but deterministic ID
+        int falloutId = ~alarmId;
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                context,
+                falloutId,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        if (alarmManager != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (alarmManager.canScheduleExactAlarms()) {
+                    alarmManager.setExactAndAllowWhileIdle(
+                            AlarmManager.RTC_WAKEUP,
+                            triggerTimeInMillis,
+                            pendingIntent);
+                } else {
+                    alarmManager.setAndAllowWhileIdle(
+                            AlarmManager.RTC_WAKEUP,
+                            triggerTimeInMillis,
+                            pendingIntent);
+                }
+            } else {
+                alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        triggerTimeInMillis,
+                        pendingIntent);
+            }
+        }
+    }
+
+    public static void cancelFalloutAlarm(Context context, int alarmId) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        intent.setAction(Puzzleable.ACTION_FALLOUT_TRIGGERED);
+
+        int falloutId = ~alarmId;
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                context,
+                falloutId,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        if (alarmManager != null) {
+            alarmManager.cancel(pendingIntent);
         }
     }
 }

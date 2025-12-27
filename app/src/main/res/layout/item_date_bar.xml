@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dateItemContainer"
+    android:layout_width="72dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="8dp"
+    android:layout_marginHorizontal="4dp"
+    android:background="@drawable/date_item_background">
+
+    <!-- Day name (Mon, Tue, etc.) -->
+    <TextView
+        android:id="@+id/tvDayName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lun"
+        android:textSize="12sp"
+        android:textColor="@color/medium_gray" />
+
+    <!-- Day number -->
+    <TextView
+        android:id="@+id/tvDayNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="27"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_dark"
+        android:layout_marginTop="4dp" />
+
+    <!-- Month (short) -->
+    <TextView
+        android:id="@+id/tvMonth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Déc"
+        android:textSize="11sp"
+        android:textColor="@color/medium_gray"
+        android:layout_marginTop="2dp" />
+
+</LinearLayout>
