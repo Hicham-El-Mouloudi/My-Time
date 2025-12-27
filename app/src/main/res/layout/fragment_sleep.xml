@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@drawable/gradient_glass_primary">
+    android:background="@drawable/bg_main_background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -31,14 +31,10 @@
         <!-- Merged Sleep Schedule Container -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_sleep_schedule"
+            style="@style/GlassCardStyle.Large"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            app:cardElevation="0dp"
-            app:cardCornerRadius="24dp"
-            app:strokeWidth="1dp"
-            app:strokeColor="@color/glass_card_stroke"
-            app:cardBackgroundColor="@color/glass_card_bg"
             app:layout_constraintTop_toBottomOf="@id/sleep_title">
 
             <LinearLayout
@@ -134,14 +130,10 @@
         <!-- Sleep Focus Container -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_sleep_focus"
+            style="@style/GlassCardStyle.Large"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:cardElevation="0dp"
-            app:cardCornerRadius="24dp"
-            app:strokeWidth="1dp"
-            app:strokeColor="@color/glass_card_stroke"
-            app:cardBackgroundColor="@color/glass_card_bg"
             app:layout_constraintTop_toBottomOf="@id/card_sleep_schedule">
 
             <LinearLayout

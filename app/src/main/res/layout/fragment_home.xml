@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@drawable/gradient_glass_primary">
+    android:background="@drawable/bg_main_background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -35,15 +35,11 @@
         <!-- Main Glass Container -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/main_glass_container"
+            style="@style/GlassCardStyle.Large"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:layout_marginBottom="32dp"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="0dp"
-            app:strokeWidth="1dp"
-            app:strokeColor="@color/glass_card_stroke"
-            app:cardBackgroundColor="@color/glass_card_bg"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/app_title"
@@ -60,13 +56,9 @@
                 <!-- Clock + Date Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/clock_date_card"
+                    style="@style/GlassCardStyle.ExtraLarge"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="32dp"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="@color/glass_card_stroke"
-                    app:cardBackgroundColor="@color/glass_card_bg_light">
+                    android:layout_height="wrap_content">
 
                     <LinearLayout
                         android:layout_width="wrap_content"

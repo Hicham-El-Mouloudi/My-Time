@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@drawable/gradient_glass_primary">
+    android:background="@drawable/bg_main_background">
 
     <!-- Calendar Header with Glass Styling -->
     <TextView
@@ -20,14 +20,10 @@
 
     <!-- Month Navigation Controls with Glass Styling -->
     <com.google.android.material.card.MaterialCardView
+        style="@style/GlassCardStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="0dp"
-        app:strokeWidth="1dp"
-        app:strokeColor="@color/glass_card_stroke"
-        app:cardBackgroundColor="@color/glass_card_bg">
+        android:layout_marginBottom="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -149,14 +145,10 @@
 
     <!-- Calendar Grid in Glass Card -->
     <com.google.android.material.card.MaterialCardView
+        style="@style/GlassCardStyle"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="0dp"
-        app:strokeWidth="1dp"
-        app:strokeColor="@color/glass_card_stroke"
-        app:cardBackgroundColor="@color/glass_card_bg">
+        android:layout_weight="1">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/calendarRecyclerView"

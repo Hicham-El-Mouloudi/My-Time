@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/gradient_glass_primary">
+    android:background="@drawable/bg_main_background">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/settingsToolbar"
@@ -15,14 +15,10 @@
         app:navigationIconTint="@color/glass_text_primary" />
 
     <com.google.android.material.card.MaterialCardView
+        style="@style/GlassCardStyle.Large"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="16dp"
-        app:cardCornerRadius="24dp"
-        app:cardElevation="0dp"
-        app:strokeWidth="1dp"
-        app:strokeColor="@color/glass_card_stroke"
-        app:cardBackgroundColor="@color/glass_card_bg">
+        android:layout_margin="16dp">
 
         <FrameLayout
             android:id="@+id/settingsContainer"

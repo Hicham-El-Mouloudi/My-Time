@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:background="@drawable/gradient_glass_primary"
+    android:background="@drawable/bg_main_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
@@ -11,12 +11,9 @@
     <!-- Glass Toolbar with translucent glass background -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/toolbar_container"
+        style="@style/MainContainerStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="0dp"
-        app:cardElevation="0dp"
-        app:strokeWidth="0dp"
-        app:cardBackgroundColor="@color/glass_card_bg"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -35,12 +32,9 @@
     <!-- Glass Bottom Navigation with same background as toolbar -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/bottom_nav_container"
+        style="@style/MainContainerStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="0dp"
-        app:cardElevation="0dp"
-        app:strokeWidth="0dp"
-        app:cardBackgroundColor="@color/glass_card_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">

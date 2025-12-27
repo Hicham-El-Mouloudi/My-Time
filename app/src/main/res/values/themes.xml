@@ -56,6 +56,14 @@
     </style>
 
     <style name="Theme.MyTime" parent="Base.Theme.MyTime" />
+
+    <!-- ========== MAIN CONTAINER STYLE ========== -->
+    <style name="MainContainerStyle" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">@color/light_surface</item>
+        <item name="cardElevation">8dp</item>
+        <item name="strokeWidth">0dp</item>
+        <item name="cardCornerRadius">0dp</item>
+    </style>
     
     <!-- ========== LIGHT CARD STYLE ========== -->
     <style name="LightCardStyle" parent="Widget.Material3.CardView.Elevated">
@@ -68,10 +76,15 @@
     <style name="LightCardStyle.Large">
         <item name="cardCornerRadius">24dp</item>
     </style>
+
+    <style name="LightCardStyle.ExtraLarge">
+        <item name="cardCornerRadius">32dp</item>
+    </style>
     
     <!-- Alias for backwards compatibility with glass naming -->
     <style name="GlassCardStyle" parent="LightCardStyle" />
     <style name="GlassCardStyle.Large" parent="LightCardStyle.Large" />
+    <style name="GlassCardStyle.ExtraLarge" parent="LightCardStyle.ExtraLarge" />
     
     <!-- ========== LIGHT BUTTON STYLE ========== -->
     <style name="LightButtonStyle" parent="Widget.Material3.Button">
