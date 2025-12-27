@@ -1,250 +1,259 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:background="@drawable/gradient_glass_primary">
 
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
-
-    <!-- Header with Glass Gradient -->
-    <com.google.android.material.card.MaterialCardView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="0dp"
-        app:strokeWidth="0dp"
-        app:cardBackgroundColor="@android:color/transparent">
+        android:orientation="vertical"
+        android:padding="16dp">
 
-        <LinearLayout
+        <!-- Timer Container with Glass Styling -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/timer_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/gradient_glass_header"
-            android:padding="20dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="POMODORO"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:textColor="@color/glass_text_primary"
-                android:fontFamily="sans-serif-condensed" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Technique de productivité"
-                android:textSize="14sp"
-                android:gravity="center"
-                android:textColor="@color/glass_text_secondary"
-                android:layout_marginTop="4dp" />
-
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <!-- Timer Circle with Glass Effect -->
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="280dp"
-        android:gravity="center"
-        android:layout_marginBottom="32dp">
-
-        <!-- Glass Circle Background -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="260dp"
-            android:layout_height="260dp"
-            android:layout_centerInParent="true"
-            app:cardCornerRadius="130dp"
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="24dp"
             app:cardElevation="0dp"
-            app:strokeWidth="2dp"
+            app:strokeWidth="1dp"
             app:strokeColor="@color/glass_card_stroke"
             app:cardBackgroundColor="@color/glass_card_bg">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp"
+                android:gravity="center_horizontal">
 
-                <!-- Timer Display -->
-                <TextView
-                    android:id="@+id/tv_timer"
-                    android:layout_width="wrap_content"
+                <!-- Circular Timer -->
+                <FrameLayout
+                    android:layout_width="260dp"
+                    android:layout_height="260dp"
+                    android:layout_marginBottom="32dp">
+
+                    <!-- Progress Bar Track -->
+                    <ProgressBar
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:indeterminate="false"
+                        android:max="100"
+                        android:progress="100"
+                        android:progressDrawable="@drawable/circular_progress_track"
+                        android:rotation="-90"
+                        style="?android:attr/progressBarStyleHorizontal" />
+
+                    <!-- Actual Progress -->
+                    <ProgressBar
+                        android:id="@+id/progress_timer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:indeterminate="false"
+                        android:max="100"
+                        android:progress="75"
+                        android:progressDrawable="@drawable/circular_progress_bar"
+                        android:rotation="-90"
+                        style="?android:attr/progressBarStyleHorizontal" />
+
+                    <!-- Digital Clock Center -->
+                    <TextView
+                        android:id="@+id/tv_timer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="25:00"
+                        android:textSize="56sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/glass_text_primary"
+                        android:fontFamily="sans-serif"
+                        android:letterSpacing="0.05"/>
+
+                </FrameLayout>
+
+                <!-- Duration Controls -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="25:00"
-                    android:textSize="56sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/glass_accent_blue"
-                    android:layout_centerInParent="true"
-                    android:fontFamily="monospace" />
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginBottom="24dp">
 
-            </RelativeLayout>
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_25_min"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:text="25 min"
+                        android:textSize="14sp"
+                        android:textColor="@color/glass_text_primary"
+                        app:backgroundTint="@color/glass_button_secondary"
+                        app:strokeColor="@color/glass_card_stroke"
+                        app:strokeWidth="1dp"
+                        app:cornerRadius="16dp"
+                        android:layout_marginEnd="8dp"
+                        android:stateListAnimator="@null"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_45_min"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:text="45 min"
+                        android:textSize="14sp"
+                        android:textColor="@color/glass_text_primary"
+                        app:backgroundTint="@color/glass_button_secondary"
+                        app:strokeColor="@color/glass_card_stroke"
+                        app:strokeWidth="1dp"
+                        app:cornerRadius="16dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:stateListAnimator="@null"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_custom"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:text="Custom"
+                        android:textSize="14sp"
+                        android:textColor="@color/glass_text_primary"
+                        app:backgroundTint="@color/glass_button_secondary"
+                        app:strokeColor="@color/glass_card_stroke"
+                        app:strokeWidth="1dp"
+                        app:cornerRadius="16dp"
+                        android:layout_marginStart="8dp"
+                        android:stateListAnimator="@null"/>
+
+                </LinearLayout>
+
+                <!-- Timer Controls -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_start"
+                        android:layout_width="0dp"
+                        android:layout_height="60dp"
+                        android:layout_weight="1"
+                        android:text="Start"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/glass_text_primary"
+                        app:backgroundTint="@color/glass_accent_blue"
+                        app:cornerRadius="20dp"
+                        android:layout_marginEnd="8dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_pause"
+                        android:layout_width="0dp"
+                        android:layout_height="60dp"
+                        android:layout_weight="1"
+                        android:text="Pause"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/glass_text_primary"
+                        app:backgroundTint="@color/glass_warning"
+                        app:cornerRadius="20dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_stop"
+                        android:layout_width="0dp"
+                        android:layout_height="60dp"
+                        android:layout_weight="1"
+                        android:text="Stop"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/glass_text_primary"
+                        app:backgroundTint="@color/glass_error"
+                        app:cornerRadius="20dp"
+                        android:layout_marginStart="8dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-    </RelativeLayout>
+        <!-- Subjects Container with Glass Styling -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/subjects_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/glass_card_stroke"
+            app:cardBackgroundColor="@color/glass_card_bg">
 
-    <!-- Duration Controls with Glass Styling -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginBottom="24dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_25_min"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:text="25 min"
-            android:textSize="14sp"
-            android:textColor="@color/glass_text_primary"
-            app:backgroundTint="@color/glass_pomodoro_blue"
-            app:cornerRadius="12dp"
-            android:layout_marginEnd="8dp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Subjects to Study"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/glass_text_primary"
+                    android:layout_marginBottom="16dp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_45_min"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:text="45 min"
-            android:textSize="14sp"
-            android:textColor="@color/glass_text_primary"
-            app:backgroundTint="@color/glass_pomodoro_teal"
-            app:cornerRadius="12dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="24dp">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_custom"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:text="Personnalisé"
-            android:textSize="12sp"
-            android:textColor="@color/glass_bg_dark"
-            app:backgroundTint="@color/glass_pomodoro_gold"
-            app:cornerRadius="12dp"
-            android:layout_marginStart="8dp" />
+                    <EditText
+                        android:id="@+id/et_subject_name"
+                        android:layout_width="0dp"
+                        android:layout_height="55dp"
+                        android:layout_weight="1"
+                        android:hint="Subject name"
+                        android:textSize="16sp"
+                        android:textColor="@color/glass_text_primary"
+                        android:textColorHint="@color/glass_text_hint"
+                        android:background="@drawable/bg_glass_input"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
+                        android:layout_marginEnd="12dp" />
 
-    </LinearLayout>
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_add_subject"
+                        android:layout_width="wrap_content"
+                        android:layout_height="55dp"
+                        android:text="Add"
+                        android:textSize="16sp"
+                        android:textColor="@color/glass_text_primary"
+                        app:backgroundTint="@color/glass_button_secondary"
+                        app:strokeColor="@color/glass_card_stroke"
+                        app:strokeWidth="1dp"
+                        app:cornerRadius="16dp"
+                        android:stateListAnimator="@null"/>
 
-    <!-- Timer Controls with Glass Styling -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginBottom="40dp">
+                </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_start"
-            android:layout_width="0dp"
-            android:layout_height="55dp"
-            android:layout_weight="1"
-            android:text="Start"
-            android:textSize="16sp"
-            android:textColor="@color/glass_text_primary"
-            app:backgroundTint="@color/glass_pomodoro_mint"
-            app:cornerRadius="12dp"
-            android:layout_marginEnd="8dp" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_subjects"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_pause"
-            android:layout_width="0dp"
-            android:layout_height="55dp"
-            android:layout_weight="1"
-            android:text="Pause"
-            android:textSize="16sp"
-            android:textColor="@color/glass_bg_dark"
-            app:backgroundTint="@color/glass_pomodoro_gold"
-            app:cornerRadius="12dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_stop"
-            android:layout_width="0dp"
-            android:layout_height="55dp"
-            android:layout_weight="1"
-            android:text="Stop"
-            android:textSize="16sp"
-            android:textColor="@color/glass_text_primary"
-            app:backgroundTint="@color/glass_pomodoro_coral"
-            app:cornerRadius="12dp"
-            android:layout_marginStart="8dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
-
-    <!-- Add Subject Section with Glass Styling -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Ajouter une Matière"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="@color/glass_text_primary"
-        android:layout_marginBottom="12dp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="32dp">
-
-        <EditText
-            android:id="@+id/et_subject_name"
-            android:layout_width="0dp"
-            android:layout_height="55dp"
-            android:layout_weight="1"
-            android:hint="Nom de la matière"
-            android:textSize="16sp"
-            android:textColor="@color/glass_text_primary"
-            android:textColorHint="@color/glass_text_hint"
-            android:background="@drawable/bg_glass_input"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:layout_marginEnd="12dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_add_subject"
-            android:layout_width="120dp"
-            android:layout_height="55dp"
-            android:text="Ajouter"
-            android:textSize="16sp"
-            android:textColor="@color/glass_text_primary"
-            app:backgroundTint="@color/glass_accent_blue"
-            app:cornerRadius="12dp" />
-
-    </LinearLayout>
-
-    <!-- Subject List with Glass Styling -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Matières à Étudier"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="@color/glass_text_primary"
-        android:layout_marginBottom="12dp" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_subjects"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginBottom="16dp" />
-
-</LinearLayout>
-
-</ScrollView>
+</androidx.core.widget.NestedScrollView>
