@@ -12,7 +12,10 @@ import com.ensao.mytime.Activityfeature.Repos.StatisticsWakeSessionRepo;
 import com.ensao.mytime.statistics.model.DayData;
 import com.ensao.mytime.statistics.model.WeekData;
 
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -244,6 +247,15 @@ public class StatisticsDAOProxyDB implements StatisticsDAO {
             data.setTimeInBed(sleepSession.getTimeInBed());
             data.setSleepLatency(sleepSession.getSleepLatency());
             data.setWakeDuringSleep(sleepSession.getWakeDuringSleep());
+            // Parse JSON string to List<WakeWhileSleepingDuration>
+            String json = sleepSession.getWakeDuringSleepDistributionJSON();
+            if (json != null && !json.isEmpty()) {
+                Gson gson = new Gson();
+                Type listType = new TypeToken<List<WakeWhileSleepingDuration>>() {
+                }.getType();
+                List<WakeWhileSleepingDuration> distribution = gson.fromJson(json, listType);
+                data.setWakeDuringSleepDistribution(distribution);
+            }
         }
 
         if (wakeSession != null) {

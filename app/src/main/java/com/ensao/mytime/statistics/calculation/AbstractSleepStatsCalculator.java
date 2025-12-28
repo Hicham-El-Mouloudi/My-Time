@@ -1,7 +1,10 @@
 package com.ensao.mytime.statistics.calculation;
 
+import com.ensao.mytime.statistics.data.WakeWhileSleepingDuration;
 import com.ensao.mytime.statistics.model.DayData;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractSleepStatsCalculator {
@@ -14,6 +17,9 @@ public abstract class AbstractSleepStatsCalculator {
         stats.put("timeInBed", getTimeInBed(dayData));
         stats.put("sleepLatency", getSleepLatency(dayData));
         stats.put("wakeDuringSleep", getWakeDuringSleep(dayData));
+        stats.put("bedTime", getBedTime(dayData));
+        stats.put("wakeTime", getWakeTime(dayData));
+        stats.put("wakeDuringSleepDistribution", getWakeDuringSleepDistribution(dayData));
         return stats;
     }
 
@@ -27,4 +33,10 @@ public abstract class AbstractSleepStatsCalculator {
     protected abstract int getSleepLatency(DayData dayData);
 
     protected abstract int getWakeDuringSleep(DayData dayData);
+
+    protected abstract long getBedTime(DayData dayData);
+
+    protected abstract long getWakeTime(DayData dayData);
+
+    protected abstract List<WakeWhileSleepingDuration> getWakeDuringSleepDistribution(DayData dayData);
 }
