@@ -92,9 +92,6 @@ public class StatisticsHelper {
 
         long now = System.currentTimeMillis();
 
-        // Calculate wake latency (time from first alarm to now, in minutes)
-        int wakeLatencyMinutes = (int) ((now - firstAlarmTimeMillis) / (1000 * 60));
-
         // Calculate time variability (difference from expected wake time, in minutes)
         float timeVariabilityMinutes = 0;
         if (expectedWakeTimeMillis > 0) {
@@ -114,7 +111,6 @@ public class StatisticsHelper {
 
         StatisticsWakeSession session = new StatisticsWakeSession(
                 today,
-                wakeLatencyMinutes, // wakeLatency
                 ringCount, // ringCount
                 timeVariabilityMinutes, // timeVariability
                 firstAlarmStr, // firstAlarm
@@ -128,7 +124,7 @@ public class StatisticsHelper {
         StatisticsWakeSessionRepo repo = new StatisticsWakeSessionRepo(app);
         repo.insert(session, id -> {
             Log.d(TAG, "Wake statistics saved with id: " + id +
-                    ", wakeLatency: " + wakeLatencyMinutes + "min, ringCount: " + ringCount);
+                    ", wakeDuration: " + wakeDurationMinutes + "min, ringCount: " + ringCount);
         });
 
         // Reset tracking data for next session

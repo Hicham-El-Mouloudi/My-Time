@@ -6,56 +6,19 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Row 1: Latence + Nombre de Sonneries -->
+    <!-- Row 1: Nombre de Sonneries (single card) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="12dp">
-
-        <!-- Latence -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginEnd="6dp"
-            app:cardCornerRadius="16dp"
-            app:strokeWidth="1dp"
-            app:strokeColor="@color/glass_card_stroke"
-            app:cardElevation="0dp"
-            app:cardBackgroundColor="@color/glass_dialog_bg">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Latence"
-                    android:textSize="12sp"
-                    android:textColor="@color/glass_text_secondary" />
-
-                <TextView
-                    android:id="@+id/tv_wake_latency_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/glass_text_primary" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+        android:layout_marginBottom="12dp"
+        android:gravity="center">
 
         <!-- Nombre de Sonneries -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginStart="6dp"
             app:cardCornerRadius="16dp"
             app:strokeWidth="1dp"
             app:strokeColor="@color/glass_card_stroke"

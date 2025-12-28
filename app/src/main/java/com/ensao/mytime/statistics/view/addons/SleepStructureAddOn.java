@@ -30,6 +30,8 @@ public class SleepStructureAddOn extends StatsViewGenerator {
         TextView tvDuration = view.findViewById(R.id.tv_sleep_duration_value);
         TextView tvTimeInBed = view.findViewById(R.id.tv_time_in_bed_value);
         TextView tvDurationStatus = view.findViewById(R.id.tv_sleep_duration_status);
+        TextView tvSleepLatency = view.findViewById(R.id.tv_sleep_latency_value);
+        TextView tvWakeDuringSleep = view.findViewById(R.id.tv_wake_during_sleep_value);
 
         // Populate Data
         if (tvDuration != null) {
@@ -54,6 +56,24 @@ public class SleepStructureAddOn extends StatsViewGenerator {
                 timeInBed = ((Number) timeInBedObj).floatValue();
             }
             tvTimeInBed.setText(String.format(Locale.getDefault(), "%.1f h", timeInBed));
+        }
+
+        if (tvSleepLatency != null) {
+            Object sleepLatencyObj = stats.get("sleepLatency");
+            int sleepLatency = 0;
+            if (sleepLatencyObj instanceof Number) {
+                sleepLatency = ((Number) sleepLatencyObj).intValue();
+            }
+            tvSleepLatency.setText(String.format(Locale.getDefault(), "%d min", sleepLatency));
+        }
+
+        if (tvWakeDuringSleep != null) {
+            Object wakeDuringObj = stats.get("wakeDuringSleep");
+            int wakeDuringSleep = 0;
+            if (wakeDuringObj instanceof Number) {
+                wakeDuringSleep = ((Number) wakeDuringObj).intValue();
+            }
+            tvWakeDuringSleep.setText(String.format(Locale.getDefault(), "%d min", wakeDuringSleep));
         }
     }
 

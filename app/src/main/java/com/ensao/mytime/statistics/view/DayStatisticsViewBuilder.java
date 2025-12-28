@@ -253,7 +253,7 @@ public class DayStatisticsViewBuilder {
             container.addView(wakeView);
             new WakeStructureAddOn(wakeView, wakeStats);
             new WakeStyleAddOn(wakeView);
-            int quality = calculateWakeQuality(day.getWakeLatency());
+            int quality = calculateWakeQuality(day.getWakeDuration());
             updatePieChart(pbQuality, pbQualityBackground, quality, false, COLOR_WAKE);
         } else {
             if (unavailableWakeLayoutId != 0) {
@@ -289,11 +289,12 @@ public class DayStatisticsViewBuilder {
         return (int) (quality * 100);
     }
 
-    private int calculateWakeQuality(int wakeLatencyMins) {
-        float normalThreshold = 10.0f;
-        if (wakeLatencyMins <= 0)
-            wakeLatencyMins = 1;
-        float quality = normalThreshold / (float) wakeLatencyMins;
+    private int calculateWakeQuality(float wakeDurationMins) {
+        // Target: 15 minutes or less = 100% quality
+        float normalThreshold = 15.0f;
+        if (wakeDurationMins <= 0)
+            wakeDurationMins = 1;
+        float quality = normalThreshold / wakeDurationMins;
         if (quality > 1.0f)
             quality = 1.0f;
         return (int) (quality * 100);

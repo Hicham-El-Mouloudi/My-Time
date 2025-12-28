@@ -127,7 +127,6 @@ public class StatisticsDAOProxy implements StatisticsDAO {
         data.setWakeDuringSleep(random.nextInt(40)); // 0 to 40 min
 
         // Wake Data
-        data.setWakeLatency(random.nextInt(15)); // 0 to 15 min
         data.setRingCount(1 + random.nextInt(5)); // 1 to 6 rings
         data.setTimeVariability(random.nextFloat() * 5.0f);
 

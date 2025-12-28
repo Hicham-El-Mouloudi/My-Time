@@ -14,7 +14,6 @@ public class StatisticsWakeSession {
     private long id;
 
     private Date date;
-    private int wakeLatency; // minutes to get up after first alarm
     private int ringCount; // number of alarm rings
     private float timeVariability; // variation from expected wake time
     private String firstAlarm; // HH:mm format
@@ -27,10 +26,9 @@ public class StatisticsWakeSession {
     }
 
     @Ignore
-    public StatisticsWakeSession(Date date, int wakeLatency, int ringCount, float timeVariability,
+    public StatisticsWakeSession(Date date, int ringCount, float timeVariability,
             String firstAlarm, String lastOff, float wakeDuration, boolean hasWake) {
         this.date = date;
-        this.wakeLatency = wakeLatency;
         this.ringCount = ringCount;
         this.timeVariability = timeVariability;
         this.firstAlarm = firstAlarm;
@@ -46,10 +44,6 @@ public class StatisticsWakeSession {
 
     public Date getDate() {
         return date;
-    }
-
-    public int getWakeLatency() {
-        return wakeLatency;
     }
 
     public int getRingCount() {
@@ -83,10 +77,6 @@ public class StatisticsWakeSession {
 
     public void setDate(Date date) {
         this.date = date;
-    }
-
-    public void setWakeLatency(int wakeLatency) {
-        this.wakeLatency = wakeLatency;
     }
 
     public void setRingCount(int ringCount) {

@@ -6,11 +6,6 @@ import java.util.List;
 public class WakeStatsCalculator extends AbstractWakeStatsCalculator {
 
     @Override
-    protected int getWakeLatency(DayData dayData) {
-        return dayData.getWakeLatency();
-    }
-
-    @Override
     protected int getRingCount(DayData dayData) {
         return dayData.getRingCount();
     }

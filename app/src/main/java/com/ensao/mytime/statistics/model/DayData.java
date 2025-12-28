@@ -17,7 +17,6 @@ public class DayData {
     private int wakeDuringSleep; // minutes
 
     // Wake Data
-    private int wakeLatency; // minutes
     private int ringCount;
     private float timeVariability;
     private String firstAlarm; // HH:mm
@@ -109,14 +108,6 @@ public class DayData {
 
     public void setWakeDuringSleep(int wakeDuringSleep) {
         this.wakeDuringSleep = wakeDuringSleep;
-    }
-
-    public int getWakeLatency() {
-        return wakeLatency;
-    }
-
-    public void setWakeLatency(int wakeLatency) {
-        this.wakeLatency = wakeLatency;
     }
 
     public int getRingCount() {

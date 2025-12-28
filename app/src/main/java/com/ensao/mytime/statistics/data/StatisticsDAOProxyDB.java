@@ -247,7 +247,6 @@ public class StatisticsDAOProxyDB implements StatisticsDAO {
         }
 
         if (wakeSession != null) {
-            data.setWakeLatency(wakeSession.getWakeLatency());
             data.setRingCount(wakeSession.getRingCount());
             data.setTimeVariability(wakeSession.getTimeVariability());
             data.setFirstAlarm(wakeSession.getFirstAlarm());

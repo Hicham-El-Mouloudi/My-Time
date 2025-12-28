@@ -23,7 +23,6 @@ public class WakeStructureAddOn extends StatsViewGenerator {
 
     public WakeStructureAddOn(View view, Map<String, Object> stats) {
         // Find Views
-        TextView tvLatency = view.findViewById(R.id.tv_wake_latency_value);
         TextView tvRingCount = view.findViewById(R.id.tv_ring_count_value);
         TextView tvTimeVariability = view.findViewById(R.id.tv_time_variability_value);
         TextView tvFirstAlarm = view.findViewById(R.id.tv_first_alarm_value);
@@ -33,12 +32,6 @@ public class WakeStructureAddOn extends StatsViewGenerator {
         LineChart chart = view.findViewById(R.id.chart_wake_weekly);
 
         // Populate Text with proper type casting
-        if (tvLatency != null) {
-            Object latencyObj = stats.get("wakeLatency");
-            float latency = latencyObj instanceof Number ? ((Number) latencyObj).floatValue() : 0;
-            tvLatency.setText(String.format(Locale.getDefault(), "%.1f min", latency));
-        }
-
         if (tvRingCount != null)
             tvRingCount.setText(String.valueOf(stats.get("ringCount")));
 
