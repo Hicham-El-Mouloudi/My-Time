@@ -2,8 +2,14 @@ package com.ensao.mytime.statistics.view.addons;
 
 import android.view.View;
 import android.widget.TextView;
+
 import com.ensao.mytime.R;
+import com.ensao.mytime.statistics.data.WakeWhileSleepingDuration;
+import com.ensao.mytime.statistics.view.SleepTimelineChartHelper;
 import com.ensao.mytime.statistics.view.StatsViewGenerator;
+import com.github.mikephil.charting.charts.HorizontalBarChart;
+
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -74,6 +80,28 @@ public class SleepStructureAddOn extends StatsViewGenerator {
                 wakeDuringSleep = ((Number) wakeDuringObj).intValue();
             }
             tvWakeDuringSleep.setText(String.format(Locale.getDefault(), "%d min", wakeDuringSleep));
+        }
+
+        // Setup Sleep Timeline Chart
+        HorizontalBarChart chart = view.findViewById(R.id.chart_sleep_timeline);
+        if (chart != null) {
+            // Get bed time and wake time from stats
+            Object bedTimeObj = stats.get("bedTime");
+            Object wakeTimeObj = stats.get("wakeTime");
+            Object wakeDistributionObj = stats.get("wakeDuringSleepDistribution");
+
+            long bedTime = (bedTimeObj instanceof Number) ? ((Number) bedTimeObj).longValue()
+                    : System.currentTimeMillis() - 8 * 3600000;
+            long wakeTime = (wakeTimeObj instanceof Number) ? ((Number) wakeTimeObj).longValue()
+                    : System.currentTimeMillis();
+
+            @SuppressWarnings("unchecked")
+            List<WakeWhileSleepingDuration> wakeDistribution = (wakeDistributionObj instanceof List)
+                    ? (List<WakeWhileSleepingDuration>) wakeDistributionObj
+                    : null;
+
+            SleepTimelineChartHelper chartHelper = new SleepTimelineChartHelper(chart);
+            chartHelper.setupChart(bedTime, wakeTime, wakeDistribution);
         }
     }
 
