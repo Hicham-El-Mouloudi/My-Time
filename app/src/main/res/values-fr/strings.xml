@@ -12,10 +12,9 @@
     <string name="genral_settings">Paramètres Généraux</string>
     <string name="theme_title">Thème</string>
     <string name="language_title">Langue</string>
-    <string name="lang_restart_title">Redémarrage requis</string>
-    <string name="lang_restart_message">La langue a été changée. Utiliser la nouvelle langue ?</string>
-    <string name="lang_restart_now">Redémarrer</string>
-    <string name="lang_restart_later">Plus tard</string>
+    <string name="lang_restart_title">Langue Modifiée</string>
+    <string name="lang_restart_message">Veuillez redémarrer l\'application pour que le changement de langue prenne pleinement effet.</string>
+    <string name="lang_restart_ok">OK</string>
 
     <!-- Theme Preferences -->
     <string name="theme_light">Clair</string>

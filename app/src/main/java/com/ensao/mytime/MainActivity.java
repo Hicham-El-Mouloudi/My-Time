@@ -51,6 +51,11 @@ public class MainActivity extends AppCompatActivity
             });
 
     @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(com.ensao.mytime.settings.LocaleHelper.onAttach(newBase));
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         // 1. Appliquer le thème avant tout
         applyTheme();

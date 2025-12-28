@@ -12,10 +12,9 @@
     <string name="genral_settings">General Settings</string>
     <string name="theme_title">Theme</string>
     <string name="language_title">Language</string>
-    <string name="lang_restart_title">Restart Required</string>
-    <string name="lang_restart_message">The language has been changed. Use the new language?</string>
-    <string name="lang_restart_now">Restart Now</string>
-    <string name="lang_restart_later">Later</string>
+    <string name="lang_restart_title">Language Changed</string>
+    <string name="lang_restart_message">Please restart the app for the language change to take full effect.</string>
+    <string name="lang_restart_ok">OK</string>
 
     <!-- Theme Preferences -->
     <string name="theme_light">Light</string>

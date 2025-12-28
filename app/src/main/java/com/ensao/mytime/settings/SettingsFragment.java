@@ -12,6 +12,25 @@ public class SettingsFragment extends PreferenceFragmentCompat
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
+
+        // SYNC: Ensure the preference is initialized with the current system language
+        // if not set
+        android.content.SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
+        if (!prefs.contains("language")) {
+            String systemLang = java.util.Locale.getDefault().getLanguage();
+            // Fallback to English if system lang is not supported (optional, but good
+            // practice)
+            if (!"fr".equals(systemLang)) {
+                systemLang = "en";
+            }
+            prefs.edit().putString("language", systemLang).apply();
+
+            // Force update UI of the preference widget itself if screen is already visible
+            androidx.preference.ListPreference langPref = findPreference("language");
+            if (langPref != null) {
+                langPref.setValue(systemLang);
+            }
+        }
     }
 
     @Override
@@ -35,10 +54,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
             new androidx.appcompat.app.AlertDialog.Builder(requireContext())
                     .setTitle(R.string.lang_restart_title)
                     .setMessage(R.string.lang_restart_message)
-                    .setPositiveButton(R.string.lang_restart_now, (dialog, which) -> {
-                        requireActivity().recreate();
-                    })
-                    .setNegativeButton(R.string.lang_restart_later, null)
+                    .setPositiveButton(R.string.lang_restart_ok, null)
                     .setCancelable(false)
                     .show();
         }
