@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.content.Intent;
 import android.view.View;
 import android.view.WindowManager;
-import android.os.CountDownTimer;
+
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,12 +20,9 @@ import java.util.Locale;
 
 public class AlarmFullScreenUI extends AppCompatActivity {
 
-    private TextView counterText;
     private TextView alarmTimeText;
     private View btnSnooze;
     private View btnStop;
-
-    private CountDownTimer countDownTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +41,6 @@ public class AlarmFullScreenUI extends AppCompatActivity {
 
         setContentView(R.layout.fragment_alarm_fullscreen_ui);
 
-        counterText = findViewById(R.id.counter_text);
         alarmTimeText = findViewById(R.id.alarm_time_text);
         btnSnooze = findViewById(R.id.btn_snooze);
         btnStop = findViewById(R.id.btn_stop);
@@ -57,9 +53,6 @@ public class AlarmFullScreenUI extends AppCompatActivity {
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
         String formattedTime = timeFormat.format(new Date(alarmTime));
         alarmTimeText.setText(formattedTime);
-
-        // Start Countdown
-        startCountdown();
 
         // Setup Buttons
         btnSnooze.setOnClickListener(v -> performSnooze(alarmId));
@@ -98,30 +91,7 @@ public class AlarmFullScreenUI extends AppCompatActivity {
         btnStop.startAnimation(pulse);
     }
 
-    private void startCountdown() {
-        long durationMillis = AlarmConfig.RING_DURATION_SECONDS * 1000L;
-        countDownTimer = new CountDownTimer(durationMillis, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                counterText.setText(String.valueOf(millisUntilFinished / 1000));
-            }
-
-            @Override
-            public void onFinish() {
-                counterText.setText("0");
-                // Auto-Snooze if no interaction
-                int alarmId = getIntent().getIntExtra("ALARM_ID", -1);
-                if (alarmId != -1) {
-                    handleAutoSnooze(alarmId);
-                }
-            }
-        }.start();
-    }
-
     private void performSnooze(int alarmId) {
-        if (countDownTimer != null)
-            countDownTimer.cancel();
-
         Intent serviceIntent = new Intent(this, RingtoneService.class);
         stopService(serviceIntent); // Stop ringing
 
@@ -139,9 +109,6 @@ public class AlarmFullScreenUI extends AppCompatActivity {
     }
 
     private void performDismiss() {
-        if (countDownTimer != null)
-            countDownTimer.cancel();
-
         // Check if Sleep Alarm
         int alarmId = getIntent().getIntExtra("ALARM_ID", -1);
         if (alarmId != -1) {
@@ -203,64 +170,10 @@ public class AlarmFullScreenUI extends AppCompatActivity {
         }
     }
 
-    private void handleAutoSnooze(int alarmId) {
-        int autoSnoozeCount = getIntent().getIntExtra("AUTO_SNOOZE_COUNT", 0);
-        boolean isSleepAlarm = getIntent().getBooleanExtra("IS_SLEEP_ALARM", false);
-
-        if (autoSnoozeCount < AlarmConfig.MAX_AUTO_SNOOZES) {
-            if (countDownTimer != null)
-                countDownTimer.cancel();
-
-            Intent serviceIntent = new Intent(this, RingtoneService.class);
-            stopService(serviceIntent);
-
-            int delay = isSleepAlarm ? AlarmConfig.PUZZLE_MODE_AUTO_SNOOZE_DELAY_SECONDS
-                    : AlarmConfig.AUTO_SNOOZE_DELAY_SECONDS;
-            long triggerTime = System.currentTimeMillis() + (delay * 1000L);
-            AlarmScheduler.scheduleSnooze(this, alarmId, triggerTime, autoSnoozeCount + 1);
-
-            // Close any active puzzle
-            android.util.Log.d("AlarmFullScreenUI", "Sending ACTION_FINISH_PUZZLE broadcast (AutoSnooze)");
-            Intent finishIntent = new Intent(Puzzleable.ACTION_FINISH_PUZZLE);
-            finishIntent.setPackage(getPackageName());
-            sendBroadcast(finishIntent);
-
-            finish();
-        } else {
-            // Max reached, dismiss silently (turn off)
-            if (countDownTimer != null)
-                countDownTimer.cancel();
-            Intent serviceIntent = new Intent(this, RingtoneService.class);
-            stopService(serviceIntent);
-
-            // Save wake statistics when max snooze is reached
-            com.ensao.mytime.statistics.StatisticsHelper.saveWakeStatistics(getApplicationContext());
-
-            // Close any active puzzle
-            android.util.Log.d("AlarmFullScreenUI", "Sending ACTION_FINISH_PUZZLE broadcast (MaxSnooze)");
-            Intent finishIntent = new Intent(Puzzleable.ACTION_FINISH_PUZZLE);
-            finishIntent.setPackage(getPackageName());
-            sendBroadcast(finishIntent);
-
-            new Thread(() -> {
-                com.ensao.mytime.alarm.database.AlarmRepository repository = new com.ensao.mytime.alarm.database.AlarmRepository(
-                        getApplication());
-                com.ensao.mytime.alarm.database.Alarm alarm = repository.getAlarmByIdSync(alarmId);
-                if (alarm != null && alarm.getDaysOfWeek() == 0) {
-                    alarm.setEnabled(false);
-                    repository.update(alarm);
-                }
-                finish();
-            }).start();
-        }
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
+
         try {
             unregisterReceiver(finishReceiver);
         } catch (Exception e) {

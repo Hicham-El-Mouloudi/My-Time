@@ -7,20 +7,6 @@
     android:background="@drawable/bg_alarm_gradient"
     android:keepScreenOn="true">
 
-    <!-- Counter TextView -->
-    <TextView
-        android:id="@+id/counter_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
-        android:fontFamily="sans-serif-medium"
-        android:text="60"
-        android:textColor="@android:color/white"
-        android:textSize="48sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <!-- Alarm Time TextView -->
     <TextView
         android:id="@+id/alarm_time_text"
