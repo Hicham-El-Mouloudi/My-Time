@@ -177,6 +177,9 @@ public class StudySessionFragment extends Fragment {
             if ("paused".equals(currentState)) {
                 studyViewModel.resumeTimer();
             } else {
+                if (etSubjectName != null) {
+                    studyViewModel.setCurrentSubject(etSubjectName.getText().toString());
+                }
                 studyViewModel.startTimer();
             }
         });

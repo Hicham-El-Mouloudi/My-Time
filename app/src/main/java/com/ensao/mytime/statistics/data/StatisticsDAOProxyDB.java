@@ -67,32 +67,35 @@ public class StatisticsDAOProxyDB implements StatisticsDAO {
 
         int maxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 
-        // First, get all sleep sessions for the month
         sleepSessionRepo.getInRange(startDate, endDate, activity,
                 CallbackAdapter.from(sleepSessions -> {
                     // Then get all wake sessions for the month
                     wakeSessionRepo.getInRange(startDate, endDate, activity,
                             CallbackAdapter.from(wakeSessions -> {
-                                // Build DayData list from both
-                                List<DayData> days = new ArrayList<>();
-                                Calendar dayCalendar = Calendar.getInstance();
-                                dayCalendar.set(Calendar.MONTH, month);
-                                dayCalendar.set(Calendar.YEAR, year);
+                                // Then get all study sessions for the month
+                                studySessionRepo.getInRange(startDate, endDate, activity,
+                                        CallbackAdapter.from(studySessions -> {
+                                            // Build DayData list from all
+                                            List<DayData> days = new ArrayList<>();
+                                            Calendar dayCalendar = Calendar.getInstance();
+                                            dayCalendar.set(Calendar.MONTH, month);
+                                            dayCalendar.set(Calendar.YEAR, year);
 
-                                for (int i = 1; i <= maxDays; i++) {
-                                    dayCalendar.set(Calendar.DAY_OF_MONTH, i);
-                                    LocalDate localDate = dayCalendar.getTime().toInstant()
-                                            .atZone(ZoneId.systemDefault()).toLocalDate();
-                                    Date dayDate = dayCalendar.getTime();
+                                            for (int i = 1; i <= maxDays; i++) {
+                                                dayCalendar.set(Calendar.DAY_OF_MONTH, i);
+                                                LocalDate localDate = dayCalendar.getTime().toInstant()
+                                                        .atZone(ZoneId.systemDefault()).toLocalDate();
+                                                Date dayDate = dayCalendar.getTime();
 
-                                    DayData dayData = buildDayDataFromSessions(
-                                            localDate, dayDate, sleepSessions, wakeSessions);
-                                    days.add(dayData);
-                                }
+                                                DayData dayData = buildDayDataFromSessions(
+                                                        localDate, dayDate, sleepSessions, wakeSessions, studySessions);
+                                                days.add(dayData);
+                                            }
 
-                                if (callback != null) {
-                                    callback.onComplete(days);
-                                }
+                                            if (callback != null) {
+                                                callback.onComplete(days);
+                                            }
+                                        }));
                             }));
                 }));
     }
@@ -107,21 +110,25 @@ public class StatisticsDAOProxyDB implements StatisticsDAO {
                     // Get wake session for this date
                     wakeSessionRepo.getByDate(javaDate, activity,
                             CallbackAdapter.from(wakeSession -> {
-                                DayData data = buildDayData(date, sleepSession, wakeSession);
+                                // Get study session for this date
+                                studySessionRepo.getByDate(javaDate, activity,
+                                        CallbackAdapter.from(studySession -> {
+                                            DayData data = buildDayData(date, sleepSession, wakeSession, studySession);
 
-                                // Get last 7 days for variance calculation
-                                LocalDate startDate = date.minusDays(6);
-                                Date startJavaDate = Date
-                                        .from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                                            // Get last 7 days for variance calculation
+                                            LocalDate startDate = date.minusDays(6);
+                                            Date startJavaDate = Date
+                                                    .from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-                                wakeSessionRepo.getInRange(startJavaDate, javaDate, activity,
-                                        CallbackAdapter.from(wakeSessions -> {
-                                            data.setWakeVariance(calculateWakeVariance(date, wakeSessions));
-                                            data.setAverageWakeTime(calculateAverageWakeTime(wakeSessions));
+                                            wakeSessionRepo.getInRange(startJavaDate, javaDate, activity,
+                                                    CallbackAdapter.from(wakeSessions -> {
+                                                        data.setWakeVariance(calculateWakeVariance(date, wakeSessions));
+                                                        data.setAverageWakeTime(calculateAverageWakeTime(wakeSessions));
 
-                                            if (callback != null) {
-                                                callback.onComplete(data);
-                                            }
+                                                        if (callback != null) {
+                                                            callback.onComplete(data);
+                                                        }
+                                                    }));
                                         }));
                             }));
                 }));
@@ -199,9 +206,11 @@ public class StatisticsDAOProxyDB implements StatisticsDAO {
      */
     private DayData buildDayDataFromSessions(LocalDate date, Date javaDate,
             List<StatisticsSleepSession> sleepSessions,
-            List<StatisticsWakeSession> wakeSessions) {
+            List<StatisticsWakeSession> wakeSessions,
+            List<StatisticsStudySession> studySessions) {
         StatisticsSleepSession sleepSession = null;
         StatisticsWakeSession wakeSession = null;
+        StatisticsStudySession studySession = null;
 
         // Find matching sessions
         for (StatisticsSleepSession s : sleepSessions) {
@@ -216,8 +225,16 @@ public class StatisticsDAOProxyDB implements StatisticsDAO {
                 break;
             }
         }
+        if (studySessions != null) {
+            for (StatisticsStudySession s : studySessions) {
+                if (isSameDay(s.getDate(), javaDate)) {
+                    studySession = s;
+                    break;
+                }
+            }
+        }
 
-        return buildDayData(date, sleepSession, wakeSession);
+        return buildDayData(date, sleepSession, wakeSession, studySession);
     }
 
     private boolean isSameDay(Date d1, Date d2) {
@@ -235,9 +252,12 @@ public class StatisticsDAOProxyDB implements StatisticsDAO {
      * Build DayData from individual sessions
      */
     private DayData buildDayData(LocalDate date, StatisticsSleepSession sleepSession,
-            StatisticsWakeSession wakeSession) {
+            StatisticsWakeSession wakeSession, StatisticsStudySession studySession) {
         boolean hasSleep = sleepSession != null && sleepSession.isHasSleep();
         boolean hasWake = wakeSession != null && wakeSession.isHasWake();
+        // Since study session might exist with 0 focus time if just initialized, check
+        // focus time or hasStudy flag
+        boolean hasStudy = studySession != null && studySession.isHasStudy();
 
         DayData data = new DayData(date, hasSleep, hasWake);
 
@@ -266,10 +286,25 @@ public class StatisticsDAOProxyDB implements StatisticsDAO {
             data.setWakeDuration(wakeSession.getWakeDuration());
         }
 
-        // Note: Study data from DB would need additional async call chain
-        // For now, study data is populated by the mock proxy (StatisticsDAOProxy)
-        // Real DB integration for study would require refactoring the callback chain
-        data.setHasStudy(false);
+        if (studySession != null) {
+            data.setHasStudy(hasStudy);
+            data.setTotalFocusTime(studySession.getTotalFocusTime());
+            data.setStreakCount(studySession.getStreakCount());
+            data.setPauseCount(studySession.getPauseCount());
+            data.setCompletedTasksCount(studySession.getCompletedTasksCount());
+            data.setTotalTasksCount(studySession.getTotalTasksCount());
+
+            String json = studySession.getSubjectDistribution();
+            if (json != null && !json.isEmpty()) {
+                Gson gson = new Gson();
+                Type mapType = new TypeToken<Map<String, Integer>>() {
+                }.getType();
+                Map<String, Integer> distribution = gson.fromJson(json, mapType);
+                data.setSubjectDistribution(distribution);
+            }
+        } else {
+            data.setHasStudy(false);
+        }
 
         return data;
     }

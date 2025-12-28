@@ -63,8 +63,11 @@ public class StatisticsHelper {
         int wakeDuringSleepMinutes = UsageStatsHelper.getTotalWakeDurationMinutes(wakeSegmentsJson);
 
         // Calculate sleep efficiency: (actual sleep time / time in bed) * 100
+        // Calculate sleep efficiency: (actual sleep time / time in bed) * 100
         float timeInBedHours = sleepDurationHours;
-        int sleepLatencyMinutes = 15; // Default sleep latency
+
+        // Get configured sleep latency (default 15 min)
+        int sleepLatencyMinutes = prefs.getInt("pref_sleep_latency", 15);
         float actualSleepHours = sleepDurationHours - (wakeDuringSleepMinutes / 60f) - (sleepLatencyMinutes / 60f);
         int sleepEfficiency = (int) ((actualSleepHours / timeInBedHours) * 100);
         sleepEfficiency = Math.max(0, Math.min(100, sleepEfficiency)); // Clamp to 0-100
@@ -79,7 +82,7 @@ public class StatisticsHelper {
                 sleepDurationHours, // sleepDuration
                 sleepEfficiency, // sleepEfficiency (calculated from wake time)
                 timeInBedHours, // timeInBed
-                15, // sleepLatency (default 15 min to fall asleep)
+                sleepLatencyMinutes, // sleepLatency (configured value)
                 wakeDuringSleepMinutes, // wakeDuringSleep (actual detected value)
                 wakeSegmentsJson, // wakeDuringSleepDistributionJSON
                 true // hasSleep
@@ -206,6 +209,68 @@ public class StatisticsHelper {
                 .remove(AlarmScheduler.KEY_EXPECTED_WAKE_TIME)
                 .apply();
         Log.d(TAG, "Wake session tracking data reset");
+    }
+
+    /**
+     * Updates study statistics when a Pomodoro session is completed.
+     *
+     * @param context         Application context
+     * @param durationMinutes Duration of the session in minutes
+     * @param subjectName     Name of the subject studied (can be null/empty)
+     */
+    public static void updateStudyStatistics(Context context, int durationMinutes, String subjectName) {
+        Application app = (Application) context.getApplicationContext();
+        com.ensao.mytime.Activityfeature.Repos.StatisticsStudySessionRepo repo = new com.ensao.mytime.Activityfeature.Repos.StatisticsStudySessionRepo(
+                app);
+        Date today = normalizeToStartOfDay(new Date());
+
+        repo.getByDate(today, null, session -> {
+            if (session == null) {
+                session = new com.ensao.mytime.Activityfeature.Busniss.StatisticsStudySession();
+                session.setDate(today);
+                session.setTotalFocusTime(0);
+                session.setStreakCount(1); // Basic streak logic
+                session.setPauseCount(0);
+                session.setCompletedTasksCount(0);
+                session.setTotalTasksCount(0);
+                session.setSubjectsStudiedCount(0);
+                session.setHasStudy(true);
+                session.setSubjectDistribution("{}");
+            }
+
+            // Update Total Focus Time
+            session.setTotalFocusTime(session.getTotalFocusTime() + durationMinutes);
+
+            // Update Subject Distribution
+            java.util.Map<String, Integer> subjects = new java.util.HashMap<>();
+            com.google.gson.Gson gson = new com.google.gson.Gson();
+            if (session.getSubjectDistribution() != null && !session.getSubjectDistribution().isEmpty()) {
+                java.lang.reflect.Type type = new com.google.gson.reflect.TypeToken<java.util.Map<String, Integer>>() {
+                }.getType();
+                try {
+                    subjects = gson.fromJson(session.getSubjectDistribution(), type);
+                    if (subjects == null)
+                        subjects = new java.util.HashMap<>();
+                } catch (Exception e) {
+                    subjects = new java.util.HashMap<>();
+                }
+            }
+
+            if (subjectName != null && !subjectName.trim().isEmpty()) {
+                String key = subjectName.trim();
+                int currentSubjectTime = 0;
+                if (subjects.containsKey(key)) {
+                    currentSubjectTime = subjects.get(key);
+                }
+                subjects.put(key, currentSubjectTime + durationMinutes);
+            }
+
+            session.setSubjectDistribution(gson.toJson(subjects));
+            session.setSubjectsStudiedCount(subjects.size());
+
+            repo.insert(session,
+                    id -> Log.d(TAG, "Study statistics updated: + " + durationMinutes + " min for " + subjectName));
+        });
     }
 
     /**

@@ -81,17 +81,23 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
             if (timeLeft > 0) {
                 currentTime.setValue((int) (timeLeft / 1000));
                 isTimerRunning.setValue(pomodoroService.isTimerRunning());
-                
+
                 String state = "stopped";
                 if (pomodoroService.isTimerRunning()) {
                     state = "running";
                 } else if (pomodoroService.isTimerPaused()) {
                     state = "paused";
                 }
-                
+
                 timerState.setValue(state);
             }
         }
+    }
+
+    private String currentSubject;
+
+    public void setCurrentSubject(String subject) {
+        this.currentSubject = subject;
     }
 
     // Implémentation de l'interface PomodoroListener
@@ -105,6 +111,13 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
         currentTime.postValue(0);
         isTimerRunning.postValue(false);
         timerState.postValue("finished");
+
+        // Save study statistics
+        int durationMinutes = initialTime / 60;
+        if (durationMinutes > 0) {
+            com.ensao.mytime.statistics.StatisticsHelper.updateStudyStatistics(getApplication(), durationMinutes,
+                    currentSubject);
+        }
 
         // Optionnel : Redémarrer automatiquement ou afficher une notification
     }
@@ -241,7 +254,7 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
         if (fallbackTimer != null) {
             fallbackTimer.cancel();
         }
-        
+
         isTimerRunning.setValue(true);
         timerState.setValue("running");
 
@@ -276,7 +289,7 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
             getApplication().unbindService(serviceConnection);
             isServiceBound = false;
         }
-        
+
         if (fallbackTimer != null) {
             fallbackTimer.cancel();
             fallbackTimer = null;
