@@ -12,6 +12,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.ensao.mytime.Activityfeature.Busniss.*;
 import com.ensao.mytime.Activityfeature.DataAccess.*;
+import com.ensao.mytime.Activityfeature.Repos.RepetitionKindRepo;
 
 @Database(entities = { userActivity.class, RepetitionKind.class, CourseContent.class, Course.class, Category.class,
         ActivityHistory.class, StatisticsSleepSession.class, StatisticsWakeSession.class,
@@ -98,6 +99,10 @@ public abstract class ActivityRoomDB extends RoomDatabase {
 
             // if we wanted we can add some default categories here
 
+            //_categoryDao.Insert(new Category("each day category", "each day category", EachDayID));
+            //_categoryDao.Insert(new Category("each month category", "each month category", EachMonthID));
+            // _categoryDao.Insert(new Category("each week category", "each week category", EachDWeekID));
+
             _categoryDao.Insert(new Category("the dafault category", "default", OneTimeID));
 
             return null;
@@ -105,3 +110,5 @@ public abstract class ActivityRoomDB extends RoomDatabase {
     }
 
 }
+
+
