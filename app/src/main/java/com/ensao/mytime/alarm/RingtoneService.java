@@ -269,8 +269,19 @@ public class RingtoneService extends Service {
     public void onDestroy() {
         super.onDestroy();
 
+        // Remove notification
+        stopForeground(true);
+
+        // Explicitly cancel notification as backup
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notificationManager != null) {
+            notificationManager.cancel(1); // Same ID used in startForeground
+        }
+
         // Notify UI to close
-        sendBroadcast(new Intent("com.ensao.mytime.ACTION_STOP_ALARM_UI"));
+        Intent stopUIIntent = new Intent("com.ensao.mytime.ACTION_STOP_ALARM_UI");
+        stopUIIntent.setPackage(getPackageName());
+        sendBroadcast(stopUIIntent);
 
         if (mediaPlayer != null) {
             mediaPlayer.stop();
