@@ -47,6 +47,9 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
             pomodoroService = binder.getService();
             pomodoroService.setPomodoroListener(StudyViewModel.this);
             isServiceBound = true;
+            if (currentSubject != null) {
+                pomodoroService.setCurrentSubject(currentSubject);
+            }
             updateTimerFromService();
         }
 
@@ -98,6 +101,9 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
 
     public void setCurrentSubject(String subject) {
         this.currentSubject = subject;
+        if (isServiceBound && pomodoroService != null) {
+            pomodoroService.setCurrentSubject(subject);
+        }
     }
 
     // Implémentation de l'interface PomodoroListener
@@ -112,12 +118,7 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
         isTimerRunning.postValue(false);
         timerState.postValue("finished");
 
-        // Save study statistics
-        int durationMinutes = initialTime / 60;
-        if (durationMinutes > 0) {
-            com.ensao.mytime.statistics.StatisticsHelper.updateStudyStatistics(getApplication(), durationMinutes,
-                    currentSubject);
-        }
+        // Note: Statistics saving is now handled by PomodoroService directly
 
         // Optionnel : Redémarrer automatiquement ou afficher une notification
     }

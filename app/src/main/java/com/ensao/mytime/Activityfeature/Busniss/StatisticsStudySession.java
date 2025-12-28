@@ -21,6 +21,7 @@ public class StatisticsStudySession {
     private int completedTasksCount; // tasks completed on this day
     private int totalTasksCount; // total tasks for this day
     private int subjectsStudiedCount; // distinct subjects studied
+    private int sessionsCount; // total number of sessions for this day
     private boolean hasStudy;
 
     // Default constructor for Room
@@ -30,7 +31,7 @@ public class StatisticsStudySession {
     @Ignore
     public StatisticsStudySession(Date date, int totalFocusTime, int streakCount, float pauseCount,
             String subjectDistribution, int completedTasksCount, int totalTasksCount,
-            int subjectsStudiedCount, boolean hasStudy) {
+            int subjectsStudiedCount, int sessionsCount, boolean hasStudy) {
         this.date = date;
         this.totalFocusTime = totalFocusTime;
         this.streakCount = streakCount;
@@ -39,6 +40,7 @@ public class StatisticsStudySession {
         this.completedTasksCount = completedTasksCount;
         this.totalTasksCount = totalTasksCount;
         this.subjectsStudiedCount = subjectsStudiedCount;
+        this.sessionsCount = sessionsCount;
         this.hasStudy = hasStudy;
     }
 
@@ -118,6 +120,14 @@ public class StatisticsStudySession {
 
     public void setSubjectsStudiedCount(int subjectsStudiedCount) {
         this.subjectsStudiedCount = subjectsStudiedCount;
+    }
+
+    public int getSessionsCount() {
+        return sessionsCount;
+    }
+
+    public void setSessionsCount(int sessionsCount) {
+        this.sessionsCount = sessionsCount;
     }
 
     public void setHasStudy(boolean hasStudy) {

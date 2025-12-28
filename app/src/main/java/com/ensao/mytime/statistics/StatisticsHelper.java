@@ -32,13 +32,17 @@ public class StatisticsHelper {
      * @param context Application context
      */
     public static void saveSleepStatistics(Context context) {
+        Log.d(TAG, "saveSleepStatistics called");
         SharedPreferences prefs = context.getSharedPreferences(AlarmScheduler.PREFS_NAME, Context.MODE_PRIVATE);
 
         long sleepTimeMillis = prefs.getLong(AlarmScheduler.KEY_SLEEP_TIME, 0);
         long wakeUpTimeMillis = prefs.getLong(AlarmScheduler.KEY_WAKE_UP_TIME, 0);
 
+        Log.d(TAG, "Sleep stats - sleepTime: " + sleepTimeMillis + ", wakeUpTime: " + wakeUpTimeMillis);
+
         if (sleepTimeMillis == 0 || wakeUpTimeMillis == 0) {
-            Log.w(TAG, "Sleep or wake time not set, cannot save sleep statistics");
+            Log.w(TAG, "Sleep or wake time not set, cannot save sleep statistics. " +
+                    "sleepTime=" + sleepTimeMillis + ", wakeUpTime=" + wakeUpTimeMillis);
             return;
         }
 
@@ -106,14 +110,20 @@ public class StatisticsHelper {
      * @param context Application context
      */
     public static void saveWakeStatistics(Context context) {
+        Log.d(TAG, "saveWakeStatistics called");
         SharedPreferences prefs = context.getSharedPreferences(AlarmScheduler.PREFS_NAME, Context.MODE_PRIVATE);
 
         long firstAlarmTimeMillis = prefs.getLong(AlarmScheduler.KEY_FIRST_ALARM_TIME, 0);
         int ringCount = prefs.getInt(AlarmScheduler.KEY_RING_COUNT, 0);
         long expectedWakeTimeMillis = prefs.getLong(AlarmScheduler.KEY_EXPECTED_WAKE_TIME, 0);
 
+        Log.d(TAG, "Wake stats - firstAlarmTime: " + firstAlarmTimeMillis +
+                ", ringCount: " + ringCount +
+                ", expectedWakeTime: " + expectedWakeTimeMillis);
+
         if (firstAlarmTimeMillis == 0) {
-            Log.w(TAG, "First alarm time not set, cannot save wake statistics");
+            Log.w(TAG, "First alarm time not set, cannot save wake statistics. " +
+                    "This may indicate recordFirstAlarmRing was not called.");
             return;
         }
 
@@ -146,6 +156,13 @@ public class StatisticsHelper {
                 true // hasWake
         );
 
+        Log.d(TAG, "Creating StatisticsWakeSession: date=" + today +
+                ", ringCount=" + ringCount +
+                ", timeVariability=" + timeVariabilityMinutes +
+                ", firstAlarm=" + firstAlarmStr +
+                ", lastOff=" + lastOffStr +
+                ", wakeDuration=" + wakeDurationMinutes + "min");
+
         // Save to database
         Application app = (Application) context.getApplicationContext();
         StatisticsWakeSessionRepo repo = new StatisticsWakeSessionRepo(app);
@@ -167,19 +184,24 @@ public class StatisticsHelper {
      *                         calculation
      */
     public static void recordFirstAlarmRing(Context context, long expectedWakeTime) {
+        Log.d(TAG, "recordFirstAlarmRing called with expectedWakeTime: " + expectedWakeTime);
         SharedPreferences prefs = context.getSharedPreferences(AlarmScheduler.PREFS_NAME, Context.MODE_PRIVATE);
         long existingFirstAlarm = prefs.getLong(AlarmScheduler.KEY_FIRST_ALARM_TIME, 0);
+        Log.d(TAG, "Existing firstAlarmTime in prefs: " + existingFirstAlarm);
 
         if (existingFirstAlarm == 0) {
             // First ring of this wake session
+            long currentTime = System.currentTimeMillis();
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putLong(AlarmScheduler.KEY_FIRST_ALARM_TIME, System.currentTimeMillis());
+            editor.putLong(AlarmScheduler.KEY_FIRST_ALARM_TIME, currentTime);
             editor.putInt(AlarmScheduler.KEY_RING_COUNT, 1);
             if (expectedWakeTime > 0) {
                 editor.putLong(AlarmScheduler.KEY_EXPECTED_WAKE_TIME, expectedWakeTime);
             }
             editor.apply();
-            Log.d(TAG, "First alarm ring recorded");
+            Log.d(TAG, "First alarm ring recorded at: " + currentTime + ", ringCount set to 1");
+        } else {
+            Log.d(TAG, "First alarm already recorded, not overwriting");
         }
     }
 
@@ -218,7 +240,16 @@ public class StatisticsHelper {
      * @param durationMinutes Duration of the session in minutes
      * @param subjectName     Name of the subject studied (can be null/empty)
      */
-    public static void updateStudyStatistics(Context context, int durationMinutes, String subjectName) {
+    /**
+     * Updates study statistics when a Pomodoro session is completed.
+     *
+     * @param context         Application context
+     * @param durationMinutes Duration of the session in minutes
+     * @param subjectName     Name of the subject studied (can be null/empty)
+     * @param sessionPauses   Number of times paused during the session
+     */
+    public static void updateStudyStatistics(Context context, int durationMinutes, String subjectName,
+            int sessionPauses) {
         Application app = (Application) context.getApplicationContext();
         com.ensao.mytime.Activityfeature.Repos.StatisticsStudySessionRepo repo = new com.ensao.mytime.Activityfeature.Repos.StatisticsStudySessionRepo(
                 app);
@@ -231,6 +262,7 @@ public class StatisticsHelper {
                 session.setTotalFocusTime(0);
                 session.setStreakCount(1); // Basic streak logic
                 session.setPauseCount(0);
+                session.setSessionsCount(0); // Initialize new field
                 session.setCompletedTasksCount(0);
                 session.setTotalTasksCount(0);
                 session.setSubjectsStudiedCount(0);
@@ -240,6 +272,12 @@ public class StatisticsHelper {
 
             // Update Total Focus Time
             session.setTotalFocusTime(session.getTotalFocusTime() + durationMinutes);
+
+            // Update Session count and Pauses
+            session.setSessionsCount(session.getSessionsCount() + 1);
+            session.setPauseCount(session.getPauseCount() + sessionPauses);
+            // Note: We store total pauses here. The DAO/DayData converter will calculate
+            // the mean.
 
             // Update Subject Distribution
             java.util.Map<String, Integer> subjects = new java.util.HashMap<>();

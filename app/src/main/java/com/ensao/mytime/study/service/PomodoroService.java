@@ -24,6 +24,7 @@ public class PomodoroService extends Service {
     private boolean ispaused = false;
 
     private long totalTime = 25 * 60 * 1000;
+    private int pauseCount = 0;
 
     // Interface pour la communication avec le ViewModel
     public interface PomodoroListener {
@@ -93,6 +94,7 @@ public class PomodoroService extends Service {
         }
 
         Log.d("TIMER_DEBUG", "Timer démarré (fresh): " + duration + "ms");
+        pauseCount = 0;
     }
 
     public void pauseTimer() {
@@ -108,6 +110,7 @@ public class PomodoroService extends Service {
             }
 
             Log.d("TIMER_DEBUG", "Timer mis en pause. Temps restant: " + timeLeftInMillis + "ms");
+            pauseCount++;
         }
     }
 
@@ -146,6 +149,12 @@ public class PomodoroService extends Service {
      * Helper method to create and start a new CountDownTimer.
      * This centralizes the timer creation logic.
      */
+    private String currentSubject;
+
+    public void setCurrentSubject(String subject) {
+        this.currentSubject = subject;
+    }
+
     private void createAndStartCountdown(long durationMillis) {
         this.isTimerRunning = true;
 
@@ -168,10 +177,19 @@ public class PomodoroService extends Service {
                 timeLeftInMillis = 0;
                 isTimerRunning = false;
                 ispaused = false;
+
+                // Save study statistics
+                int durationMinutes = (int) (totalTime / (1000 * 60));
+                if (durationMinutes > 0) {
+                    com.ensao.mytime.statistics.StatisticsHelper.updateStudyStatistics(getApplicationContext(),
+                            durationMinutes, currentSubject, pauseCount);
+                }
+
                 if (listener != null) {
                     listener.onTimerFinished();
                 }
                 updateNotification(0);
+                pauseCount = 0;
             }
         }.start();
     }
@@ -182,6 +200,7 @@ public class PomodoroService extends Service {
         isTimerRunning = false;
         ispaused = false; // Reset paused state on stop
         timeLeftInMillis = totalTime;
+        pauseCount = 0;
 
         if (listener != null) {
             listener.onTimerStopped();

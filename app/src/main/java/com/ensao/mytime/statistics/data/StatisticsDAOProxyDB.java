@@ -290,7 +290,14 @@ public class StatisticsDAOProxyDB implements StatisticsDAO {
             data.setHasStudy(hasStudy);
             data.setTotalFocusTime(studySession.getTotalFocusTime());
             data.setStreakCount(studySession.getStreakCount());
-            data.setPauseCount(studySession.getPauseCount());
+
+            // Calculate Mean Pauses
+            float meanPauses = 0;
+            if (studySession.getSessionsCount() > 0) {
+                meanPauses = studySession.getPauseCount() / (float) studySession.getSessionsCount();
+            }
+            data.setPauseCount(meanPauses);
+
             data.setCompletedTasksCount(studySession.getCompletedTasksCount());
             data.setTotalTasksCount(studySession.getTotalTasksCount());
 
