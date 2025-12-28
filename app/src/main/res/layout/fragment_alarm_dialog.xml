@@ -20,7 +20,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Set Alarm Time"
+            android:text="@string/alarm_set_time"
             android:textSize="20sp"
             android:textColor="@color/glass_text_primary"
             android:textStyle="bold"
@@ -37,7 +37,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Repeat"
+            android:text="@string/alarm_repeat"
             android:textColor="@color/glass_text_primary"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp"/>
@@ -74,7 +74,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ringtone"
+                android:text="@string/alarm_ringtone"
                 android:textColor="@color/glass_text_primary"
                 android:textStyle="bold"/>
 
@@ -82,7 +82,7 @@
                 android:id="@+id/ringtone_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Default"
+                android:text="@string/alarm_default"
                 android:textColor="@color/glass_text_secondary"
                 android:layout_marginTop="4dp"/>
 
@@ -93,7 +93,7 @@
             android:id="@+id/sleep_alarm_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sleep Alarm (Requires Puzzle)"
+            android:text="@string/alarm_sleep_mode"
             android:textColor="@color/glass_text_primary"
             android:textSize="16sp"
             android:layout_marginTop="12dp"
@@ -114,7 +114,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Puzzle Type: "
+                android:text="@string/alarm_puzzle_type"
                 android:textColor="@color/glass_text_primary"
                 android:textSize="14sp"
                 android:layout_marginEnd="8dp"/>
@@ -141,7 +141,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:text="Delete"
+                android:text="@string/alarm_delete_action"
                 android:textColor="@color/glass_error"
                 android:visibility="gone"/>
 
@@ -155,7 +155,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:text="Cancel"
+                android:text="@string/action_cancel"
                 android:textColor="@color/glass_text_primary"
                 android:layout_marginEnd="8dp"
                 app:strokeColor="@color/glass_card_stroke"
@@ -166,7 +166,7 @@
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Save"
+                android:text="@string/save"
                 app:backgroundTint="@color/glass_accent_blue"
                 android:textColor="@color/glass_text_primary"/>
 

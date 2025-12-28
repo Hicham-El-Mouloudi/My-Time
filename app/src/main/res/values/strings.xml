@@ -153,9 +153,156 @@
     <string name="study_btn_stop">Stop</string>
     <string name="study_btn_custom">Custom</string>
 
-    <!-- Content Descriptions -->
+    <string name="study_btn_resume">Resume</string>
+    <string name="dialog_custom_duration_title">Custom Duration</string>
+    <string name="dialog_custom_duration_min_format">%d min</string>
+    <string name="dialog_custom_duration_confirm">Start</string>
+    <string name="dialog_custom_duration_cancel">Cancel</string>
     <string name="desc_sleep_data_available">Sleep Data Available</string>
     <string name="desc_wake_data_available">Wake Data Available</string>
     <string name="desc_study_data_available">Study Data Available</string>
+    <!-- Sleep Fragment -->
+    <string name="sleep_toggle_enable">Activate Night Session</string>
+    <string name="sleep_toggle_disable">Disable Night Session</string>
+    <string name="sleep_msg_scheduled">Session Scheduled! 🌙</string>
+    <string name="sleep_msg_disabled">Session Disabled.</string>
+    <string name="sleep_recommended_bedtimes">Recommended Bedtimes:\n\n</string>
+    <string name="sleep_cycles_one">cycle</string>
+    <string name="sleep_cycles_many">cycles</string>
+    <string name="sleep_hours_suffix">h sleep)</string>
+    <string name="perm_usage_title">Usage Access Permission</string>
+    <string name="perm_usage_msg">MyTime needs usage access to detect phone usage during sleep for accurate sleep statistics.</string>
+    <string name="perm_overlay_title">Display Over Apps</string>
+    <string name="perm_overlay_msg">MyTime needs this permission to show the blocking alert.</string>
+    <string name="perm_alarm_required">Alarm permission required.</string>
+    <string name="perm_notif_title">Notification Permission Required</string>
+    <string name="perm_notif_msg">This app needs notification permission to show alarm alerts. Without this, you won\'t see alarm notifications.</string>
+    <string name="perm_fullscreen_msg">To show alarms on the lock screen, please enable Full Screen Notifications.</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_allow">Allow</string>
+    <string name="action_grant">Grant Permission</string>
+    <string name="action_delete">Delete</string>
+
+    <!-- Calendar Fragment -->
+    <string name="cal_header_prefix">Activities - </string>
+    <string name="cal_empty_title">No activity for this day</string>
+    <string name="cal_empty_subtitle">Tap + to add one</string>
+    <string name="cal_fab_desc">Add an activity</string>
+    <string name="cal_today_desc">Go to today</string>
+    <string name="cal_toast_added">Activity added</string>
+    <string name="cal_toast_updated">Activity updated</string>
+    <string name="cal_toast_deleted">Activity deleted</string>
+    <string name="cal_error_id">Error: Invalid ID</string>
+
+    <!-- Alarm Fragment -->
+    <string name="alarm_select_ringtone_title">Select Alarm Ringtone</string>
+    <string name="alarm_silent">Silent</string>
+    <string name="alarm_default">Default</string>
+    <string name="alarm_delete_title">Delete Alarms</string>
+    <string name="alarm_delete_msg">Delete %d selected alarms?</string>
+    <string name="alarm_select_all_fmt">Select All (%d/%d)</string>
+    <string name="alarm_select_all">Select All</string>
+    <string name="alarm_delete_action">Delete</string>
+    <string name="alarm_empty_title">No alarms</string>
+    <string name="alarm_empty_subtitle">Tap + to add an alarm</string>
+    <string name="alarm_perm_required">Permission Required</string>
+    <string name="alarm_perm_exact_msg">This app needs permission to schedule exact alarms...</string>
+    <string name="alarm_notif_disabled_title">Notifications Disabled</string>
+    <string name="alarm_notif_disabled_msg">Please enable notifications for this app to receive alarm alerts.</string>
+    <string name="alarm_msg_deleted">Alarms deleted</string>
+    <string name="alarm_msg_notif_warning">Alarm notifications will not work without this permission</string>
+
+    <!-- Statistics Fragment -->
+    <string name="stats_yesterday">Yesterday</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_calendar">Calendar</string>
+
+    <!-- Sleep Fragment -->
+    <string name="sleep_title_header">Sleep Optimization</string>
+    <string name="sleep_schedule_title">Sleep Schedule</string>
+    <string name="sleep_wake_up_label">I want to wake up at</string>
+    <string name="sleep_target_label">Target Bedtime</string>
+    <string name="sleep_latency_label">Average sleep latency</string>
+    <string name="sleep_focus_title">Sleep Focus</string>
+    <string name="sleep_blocked_apps_label">Blocked Apps</string>
+    <string name="sleep_btn_manage">Manage</string>
+    <string name="sleep_auto_dark_mode_label">Auto Dark Mode</string>
+    <string name="sleep_suggested_cycles">Suggested cycles...</string>
+
+    <!-- Calendar Fragment -->
+    <string name="cal_activities_header">Activities of the day</string>
+
+    <!-- Statistics Layouts & Runtime -->
+    <string name="stats_no_data">No data available</string>
+    <string name="stats_title_sleep_diagnostic">Sleep Diagnosis</string>
+    <string name="stats_duration">Duration</string>
+    <string name="stats_time_in_bed">Time in bed</string>
+    <string name="stats_latency">Latency</string>
+    <string name="stats_wakes">Wakes</string>
+    <string name="stats_sleep_timeline_title">Sleep Timeline</string>
+    
+    <string name="stats_rings">Rings</string>
+    <string name="stats_first_alarm">First Alarm</string>
+    <string name="stats_last_off">Last Off</string>
+    <string name="stats_variability">Variability</string>
+    <string name="stats_wake_duration">Wake Duration</string>
+    <string name="stats_wake_variance_title">Wake Time Variance (Last 7 Days)</string>
+    <string name="stats_avg_wake_time_title">Average Wake Up Time</string>
+    
+    <string name="stats_focus_time">Focus Time</string>
+    <string name="stats_streak">Streak</string>
+    <string name="stats_avg_pauses">Avg. Pauses</string>
+    <string name="stats_subjects">Subjects</string>
+    <string name="stats_minutes_per_subject_title">Minutes per Subject Distribution</string>
+    <string name="stats_completed_tasks_title">Completed Tasks Distribution</string>
+    <string name="stats_weekly_subjects_title">Subject Variety (Last 7 Days)</string>
+    <string name="stats_productivity_summary_title">Daily Productivity</string>
+
+    <string name="stats_days_suffix">days</string>
+    <string name="stats_status_bad">Bad</string>
+    <string name="stats_status_medium">Medium</string>
+    <string name="stats_status_good">Good</string>
+    
+    <string name="stats_chart_wake_time">Wake Up Time</string>
+    <string name="stats_chart_limit_line_avg">Average</string>
+    
+    <string name="stats_prod_excellent">Excellent!</string>
+    <string name="stats_prod_good_job">Good job!</string>
+    <string name="stats_prod_keep_going">Keep going!</string>
+    <string name="stats_prod_start">Start!</string>
+    
+    <string name="stats_chart_no_tasks">No tasks</string>
+    <string name="stats_chart_completed">Completed</string>
+    <string name="stats_chart_in_progress">In Progress</string>
+    <string name="stats_chart_subjects_studied">Subjects Studied</string>
+    
+    <string name="date_mon">Mon</string>
+    <string name="date_tue">Tue</string>
+    <string name="date_wed">Wed</string>
+    <string name="date_thu">Thu</string>
+    <string name="date_fri">Fri</string>
+    <string name="date_sat">Sat</string>
+    <string name="date_sun">Sun</string>
+
+    <!-- Sleep Permissions -->
+    <string name="perm_accessibility_title">Blocking Permission</string>
+    <string name="perm_accessibility_msg">To block apps, MyTime needs Accessibility permission.</string>
+
+
+    <!-- Alarm Dialog -->
+    <string name="alarm_set_time">Set Alarm Time</string>
+    <string name="alarm_repeat">Repeat</string>
+    <string name="alarm_ringtone">Ringtone</string>
+    <string name="alarm_sleep_mode">Sleep Alarm (Requires Puzzle)</string>
+    <string name="alarm_puzzle_type">Puzzle Type:</string>
+    
+    <string-array name="puzzle_types">
+        <item>Jpeg Chaos</item>
+        <item>Minesweeper</item>
+        <item>Sudoku</item>
+    </string-array>
 
 </resources>

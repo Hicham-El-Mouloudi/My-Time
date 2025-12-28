@@ -140,9 +140,9 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
         java.time.LocalDate yesterday = today.minusDays(1);
 
         if (date.equals(today)) {
-            tvSelectedDay.setText("Today");
+            tvSelectedDay.setText(getString(R.string.stats_today));
         } else if (date.equals(yesterday)) {
-            tvSelectedDay.setText("Yesterday");
+            tvSelectedDay.setText(getString(R.string.stats_yesterday));
         } else {
             java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("EEE, MMM d");
             tvSelectedDay.setText(date.format(formatter));

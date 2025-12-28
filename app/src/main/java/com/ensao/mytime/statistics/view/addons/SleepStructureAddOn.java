@@ -16,18 +16,18 @@ import java.util.Map;
 public class SleepStructureAddOn extends StatsViewGenerator {
 
     private enum SleepStatus {
-        MAUVAIS("Mauvais"),
-        MOYEN("Moyen"),
-        BON("Bon");
+        MAUVAIS(R.string.stats_status_bad),
+        MOYEN(R.string.stats_status_medium),
+        BON(R.string.stats_status_good);
 
-        private final String label;
+        private final int labelResId;
 
-        SleepStatus(String label) {
-            this.label = label;
+        SleepStatus(int labelResId) {
+            this.labelResId = labelResId;
         }
 
-        public String getLabel() {
-            return label;
+        public int getLabelResId() {
+            return labelResId;
         }
     }
 
@@ -57,7 +57,7 @@ public class SleepStructureAddOn extends StatsViewGenerator {
             // Set Status
             if (tvDurationStatus != null) {
                 SleepStatus status = getSleepStatus(duration);
-                tvDurationStatus.setText(status.getLabel());
+                tvDurationStatus.setText(tvDurationStatus.getContext().getString(status.getLabelResId()));
             }
         }
 

@@ -60,7 +60,8 @@ public class StudyStructureAddOn extends StatsViewGenerator {
         if (tvStreakCount != null) {
             Object streakObj = stats.get("streakCount");
             int streak = streakObj instanceof Number ? ((Number) streakObj).intValue() : 0;
-            tvStreakCount.setText(String.format(Locale.getDefault(), "%d jours", streak));
+            tvStreakCount.setText(String.format(Locale.getDefault(), "%d %s", streak,
+                    tvStreakCount.getContext().getString(R.string.stats_days_suffix)));
         }
 
         // Populate Pause Count
@@ -83,13 +84,13 @@ public class StudyStructureAddOn extends StatsViewGenerator {
             int focusTime = focusTimeObj instanceof Number ? ((Number) focusTimeObj).intValue() : 0;
             String summary;
             if (focusTime >= 180) {
-                summary = "Excellent!";
+                summary = tvProductivitySummary.getContext().getString(R.string.stats_prod_excellent);
             } else if (focusTime >= 90) {
-                summary = "Bon travail!";
+                summary = tvProductivitySummary.getContext().getString(R.string.stats_prod_good_job);
             } else if (focusTime > 0) {
-                summary = "Continuez!";
+                summary = tvProductivitySummary.getContext().getString(R.string.stats_prod_keep_going);
             } else {
-                summary = "Démarrez!";
+                summary = tvProductivitySummary.getContext().getString(R.string.stats_prod_start);
             }
             tvProductivitySummary.setText(summary);
         }
@@ -115,7 +116,7 @@ public class StudyStructureAddOn extends StatsViewGenerator {
         Map<String, Integer> distribution = (Map<String, Integer>) stats.get("subjectDistribution");
 
         if (distribution == null || distribution.isEmpty()) {
-            chart.setNoDataText("Pas de données");
+            chart.setNoDataText(chart.getContext().getString(R.string.stats_no_data));
             chart.invalidate();
             return;
         }
@@ -157,17 +158,17 @@ public class StudyStructureAddOn extends StatsViewGenerator {
         int notCompleted = Math.max(0, total - completed);
 
         if (total == 0) {
-            chart.setNoDataText("Pas de tâches");
+            chart.setNoDataText(chart.getContext().getString(R.string.stats_chart_no_tasks));
             chart.invalidate();
             return;
         }
 
         ArrayList<PieEntry> entries = new ArrayList<>();
         if (completed > 0) {
-            entries.add(new PieEntry(completed, "Complétées"));
+            entries.add(new PieEntry(completed, chart.getContext().getString(R.string.stats_chart_completed)));
         }
         if (notCompleted > 0) {
-            entries.add(new PieEntry(notCompleted, "En cours"));
+            entries.add(new PieEntry(notCompleted, chart.getContext().getString(R.string.stats_chart_in_progress)));
         }
 
         PieDataSet dataSet = new PieDataSet(entries, "");
@@ -201,7 +202,7 @@ public class StudyStructureAddOn extends StatsViewGenerator {
         List<Integer> weeklyData = (List<Integer>) stats.get("weeklySubjectsStudied");
 
         if (weeklyData == null || weeklyData.isEmpty()) {
-            chart.setNoDataText("Pas de données");
+            chart.setNoDataText(chart.getContext().getString(R.string.stats_no_data));
             chart.invalidate();
             return;
         }
@@ -213,7 +214,8 @@ public class StudyStructureAddOn extends StatsViewGenerator {
             entries.add(new BarEntry(i, val != null ? val : 0));
         }
 
-        BarDataSet dataSet = new BarDataSet(entries, "Matières étudiées");
+        BarDataSet dataSet = new BarDataSet(entries,
+                chart.getContext().getString(R.string.stats_chart_subjects_studied));
         dataSet.setColor(COLOR_STUDY_PRIMARY);
         dataSet.setValueTextSize(10f);
         int chartTextColor = chart.getContext().getResources().getColor(R.color.chart_text_color);
@@ -228,7 +230,15 @@ public class StudyStructureAddOn extends StatsViewGenerator {
         xAxis.setDrawGridLines(false);
         xAxis.setGranularity(1f);
         xAxis.setTextColor(chartTextColor);
-        final String[] days = { "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim" };
+        final String[] days = {
+                chart.getContext().getString(R.string.date_mon),
+                chart.getContext().getString(R.string.date_tue),
+                chart.getContext().getString(R.string.date_wed),
+                chart.getContext().getString(R.string.date_thu),
+                chart.getContext().getString(R.string.date_fri),
+                chart.getContext().getString(R.string.date_sat),
+                chart.getContext().getString(R.string.date_sun)
+        };
         xAxis.setValueFormatter(new ValueFormatter() {
             @Override
             public String getAxisLabel(float value, com.github.mikephil.charting.components.AxisBase axis) {

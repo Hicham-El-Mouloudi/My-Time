@@ -66,7 +66,7 @@ public class WakeStructureAddOn extends StatsViewGenerator {
         List<Float> varianceData = (List<Float>) stats.get("last7DaysGraph");
 
         if (varianceData == null || varianceData.isEmpty()) {
-            chart.setNoDataText("Pas de données disponibles");
+            chart.setNoDataText(chart.getContext().getString(R.string.stats_no_data));
             return;
         }
 
@@ -84,7 +84,7 @@ public class WakeStructureAddOn extends StatsViewGenerator {
             }
         }
 
-        LineDataSet dataSet = new LineDataSet(entries, "Heure de réveil");
+        LineDataSet dataSet = new LineDataSet(entries, chart.getContext().getString(R.string.stats_chart_wake_time));
         dataSet.setColor(Color.parseColor("#00BCD4"));
         dataSet.setCircleColor(Color.parseColor("#00BCD4"));
         dataSet.setLineWidth(2f);
@@ -102,7 +102,15 @@ public class WakeStructureAddOn extends StatsViewGenerator {
         xAxis.setGranularity(1f);
         int chartTextColor = chart.getContext().getResources().getColor(R.color.chart_text_color);
         xAxis.setTextColor(chartTextColor);
-        final String[] days = { "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim" };
+        final String[] days = {
+                chart.getContext().getString(R.string.date_mon),
+                chart.getContext().getString(R.string.date_tue),
+                chart.getContext().getString(R.string.date_wed),
+                chart.getContext().getString(R.string.date_thu),
+                chart.getContext().getString(R.string.date_fri),
+                chart.getContext().getString(R.string.date_sat),
+                chart.getContext().getString(R.string.date_sun)
+        };
         xAxis.setValueFormatter(new ValueFormatter() {
             @Override
             public String getAxisLabel(float value, com.github.mikephil.charting.components.AxisBase axis) {
@@ -128,7 +136,8 @@ public class WakeStructureAddOn extends StatsViewGenerator {
 
         if (validCount > 0) {
             float average = sum / validCount;
-            LimitLine avgLine = new LimitLine(average, "Moyenne");
+            LimitLine avgLine = new LimitLine(average,
+                    chart.getContext().getString(R.string.stats_chart_limit_line_avg));
             avgLine.setLineWidth(1f);
             avgLine.setLineColor(Color.GRAY);
             avgLine.enableDashedLine(10f, 10f, 0f);

@@ -156,7 +156,7 @@ public class SleepFragment extends Fragment {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (!alarmManager.canScheduleExactAlarms()) {
                 startActivity(new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM));
-                Toast.makeText(requireContext(), "Alarm permission required.", Toast.LENGTH_LONG).show();
+                Toast.makeText(requireContext(), getString(R.string.perm_alarm_required), Toast.LENGTH_LONG).show();
                 return;
             }
         }
@@ -185,13 +185,12 @@ public class SleepFragment extends Fragment {
 
     private void showUsageAccessDialog() {
         new AlertDialog.Builder(requireContext())
-                .setTitle("Usage Access Permission")
-                .setMessage(
-                        "MyTime needs usage access to detect phone usage during sleep for accurate sleep statistics.")
-                .setPositiveButton("Settings", (dialog, which) -> {
+                .setTitle(getString(R.string.perm_usage_title))
+                .setMessage(getString(R.string.perm_usage_msg))
+                .setPositiveButton(getString(R.string.action_settings), (dialog, which) -> {
                     startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
                 })
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton(getString(R.string.action_cancel), null)
                 .show();
     }
 
@@ -204,24 +203,24 @@ public class SleepFragment extends Fragment {
 
     private void showAccessibilityInstructions() {
         new AlertDialog.Builder(requireContext())
-                .setTitle("Blocking Permission")
-                .setMessage("To block apps, MyTime needs Accessibility permission.")
-                .setPositiveButton("Settings",
+                .setTitle(getString(R.string.perm_accessibility_title))
+                .setMessage(getString(R.string.perm_accessibility_msg))
+                .setPositiveButton(getString(R.string.action_settings),
                         (dialog, which) -> startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)))
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton(getString(R.string.action_cancel), null)
                 .show();
     }
 
     private void showOverlayPermissionDialog() {
         new AlertDialog.Builder(requireContext())
-                .setTitle("Display Over Apps")
-                .setMessage("MyTime needs this permission to show the blocking alert.")
-                .setPositiveButton("Allow", (dialog, which) -> {
+                .setTitle(getString(R.string.perm_overlay_title))
+                .setMessage(getString(R.string.perm_overlay_msg))
+                .setPositiveButton(getString(R.string.action_allow), (dialog, which) -> {
                     Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                             android.net.Uri.parse("package:" + requireContext().getPackageName()));
                     startActivity(intent);
                 })
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton(getString(R.string.action_cancel), null)
                 .show();
     }
 
@@ -243,7 +242,7 @@ public class SleepFragment extends Fragment {
 
         saveSleepSettings(true);
         updateToggleButtonState(true);
-        Toast.makeText(requireContext(), "Session Scheduled! 🌙", Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), getString(R.string.sleep_msg_scheduled), Toast.LENGTH_SHORT).show();
     }
 
     private void cancelAllAlarmsAndServices() {
@@ -252,7 +251,7 @@ public class SleepFragment extends Fragment {
         AlarmScheduler.cancelWakeUpAlarm(requireContext());
 
         updateToggleButtonState(false);
-        Toast.makeText(requireContext(), "Session Disabled.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), getString(R.string.sleep_msg_disabled), Toast.LENGTH_SHORT).show();
     }
 
     private void saveSleepSettings(boolean isActive) {
@@ -284,7 +283,8 @@ public class SleepFragment extends Fragment {
             tvSelectedSleepTime.setText(timeFormatter.format(selectedSleepTime.getTime()));
         }
         tvSuggestedSleepTimes
-                .setText("Recommended Bedtimes:\n\n" + calculateSuggestedSleepTimes(selectedWakeUpCalendar));
+                .setText(getString(R.string.sleep_recommended_bedtimes)
+                        + calculateSuggestedSleepTimes(selectedWakeUpCalendar));
     }
 
     private String calculateSuggestedSleepTimes(Calendar wakeUpCalendar) {
@@ -296,8 +296,10 @@ public class SleepFragment extends Fragment {
             suggestedCalendar.add(Calendar.MINUTE, -totalMinutesBack);
             String time = timeFormatter.format(suggestedCalendar.getTime());
             double hoursOfSleep = i * 1.5;
-            sb.append("• ").append(time).append(" (").append(i).append(i > 1 ? " cycles, " : " cycle, ")
-                    .append(hoursOfSleep).append("h sleep)");
+            sb.append("• ").append(time).append(" (").append(i)
+                    .append(i > 1 ? " " + getString(R.string.sleep_cycles_many) + ", "
+                            : " " + getString(R.string.sleep_cycles_one) + ", ")
+                    .append(hoursOfSleep).append(getString(R.string.sleep_hours_suffix));
             if (i >= 4)
                 sb.append(" ⭐");
             sb.append("\n");
@@ -307,11 +309,11 @@ public class SleepFragment extends Fragment {
 
     private void updateToggleButtonState(boolean isActive) {
         if (isActive) {
-            btnToggleSleepSession.setText("Disable Night Session");
+            btnToggleSleepSession.setText(getString(R.string.sleep_toggle_disable));
             btnToggleSleepSession
                     .setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.primary_red));
         } else {
-            btnToggleSleepSession.setText("Activate Night Session");
+            btnToggleSleepSession.setText(getString(R.string.sleep_toggle_enable));
             btnToggleSleepSession
                     .setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.success_green));
         }

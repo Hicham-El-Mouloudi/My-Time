@@ -18,7 +18,7 @@
             android:id="@+id/sleep_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Sleep Optimization"
+            android:text="@string/sleep_title_header"
             android:textSize="28sp"
             android:textStyle="bold"
             android:fontFamily="sans-serif-condensed"
@@ -46,7 +46,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sleep Schedule"
+                    android:text="@string/sleep_schedule_title"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="@color/glass_text_primary"
@@ -62,7 +62,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="I want to wake up at"
+                        android:text="@string/sleep_wake_up_label"
                         android:textSize="14sp"
                         android:textColor="@color/glass_text_secondary"
                         android:layout_marginBottom="8dp"/>
@@ -93,7 +93,7 @@
                     android:textSize="14sp"
                     android:lineSpacingExtra="6dp"
                     android:textColor="@color/glass_text_secondary"
-                    tools:text="Suggested cycles..." />
+                    tools:text="@string/sleep_suggested_cycles" />
 
                 <!-- 3. Sleep Target Section -->
                 <LinearLayout
@@ -104,7 +104,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Target Bedtime"
+                        android:text="@string/sleep_target_label"
                         android:textSize="14sp"
                         android:textColor="@color/glass_text_secondary"
                         android:layout_marginBottom="8dp"/>
@@ -142,7 +142,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Average sleep latency"
+                            android:text="@string/sleep_latency_label"
                             android:textSize="14sp"
                             android:textColor="@color/glass_text_secondary" />
 
@@ -190,7 +190,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sleep Focus"
+                    android:text="@string/sleep_focus_title"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="@color/glass_text_primary"
@@ -207,7 +207,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Blocked Apps"
+                        android:text="@string/sleep_blocked_apps_label"
                         android:textSize="16sp"
                         android:textColor="@color/glass_text_primary"/>
 
@@ -215,7 +215,7 @@
                         android:id="@+id/btn_manage_blocked_apps"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Manage"
+                        android:text="@string/sleep_btn_manage"
                         android:textColor="@color/glass_accent_teal"
                         app:backgroundTint="@color/glass_card_bg_medium"
                         app:cornerRadius="12dp"
@@ -232,7 +232,7 @@
                          android:layout_width="0dp"
                          android:layout_height="wrap_content"
                          android:layout_weight="1"
-                         android:text="Auto Dark Mode"
+                          android:text="@string/sleep_auto_dark_mode_label"
                          android:textSize="16sp"
                          android:textColor="@color/glass_text_primary"/>
 
@@ -251,7 +251,7 @@
             android:id="@+id/btn_toggle_sleep_session"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:text="Activate Night Session"
+            android:text="@string/sleep_toggle_enable"
             android:textSize="16sp"
             android:textStyle="bold"
             android:layout_marginTop="32dp"

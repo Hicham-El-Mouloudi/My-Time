@@ -41,7 +41,7 @@
                     android:layout_height="40dp"
                     android:src="@android:drawable/ic_menu_today"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Aller à aujourd'hui"
+                    android:contentDescription="@string/cal_today_desc"
                     app:tint="@color/glass_text_primary" />
 
             </LinearLayout>
@@ -67,7 +67,7 @@
                 android:id="@+id/tvSelectedDateHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Activités du jour"
+                android:text="@string/cal_activities_header"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="@color/glass_text_primary"
@@ -108,7 +108,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Aucune activité pour ce jour"
+                        android:text="@string/cal_empty_title"
                         android:textSize="16sp"
                         android:textColor="@color/glass_text_secondary"
                         android:layout_marginTop="16dp"
@@ -117,7 +117,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Appuyez sur + pour en ajouter une"
+                        android:text="@string/cal_empty_subtitle"
                         android:textSize="14sp"
                         android:textColor="@color/glass_text_secondary"
                         android:layout_marginTop="8dp"
@@ -139,6 +139,6 @@
         android:src="@android:drawable/ic_input_add"
         app:backgroundTint="@color/glass_accent_blue"
         app:tint="@color/glass_text_primary"
-        android:contentDescription="Ajouter une activité" />
+        android:contentDescription="@string/cal_fab_desc" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
