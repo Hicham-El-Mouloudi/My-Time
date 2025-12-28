@@ -71,6 +71,26 @@ public class SleepFragment extends Fragment {
         selectedSleepTime.set(Calendar.SECOND, 0);
 
         loadSleepSettings();
+
+        // Setup Sleep Latency Slider
+        com.google.android.material.slider.Slider slider = view.findViewById(R.id.slider_sleep_latency);
+        TextView tvLatencyDisplay = view.findViewById(R.id.tv_sleep_latency_display);
+
+        if (slider != null && tvLatencyDisplay != null) {
+            SharedPreferences prefs = requireContext().getSharedPreferences(AlarmScheduler.PREFS_NAME,
+                    Context.MODE_PRIVATE);
+            int currentLatency = prefs.getInt("pref_sleep_latency", 15);
+
+            slider.setValue(currentLatency);
+            tvLatencyDisplay.setText(String.format(Locale.getDefault(), "%d min", currentLatency));
+
+            slider.addOnChangeListener((slider1, value, fromUser) -> {
+                int newValue = (int) value;
+                tvLatencyDisplay.setText(String.format(Locale.getDefault(), "%d min", newValue));
+                prefs.edit().putInt("pref_sleep_latency", newValue).apply();
+            });
+        }
+
         updateUI();
 
         // Click Listeners
