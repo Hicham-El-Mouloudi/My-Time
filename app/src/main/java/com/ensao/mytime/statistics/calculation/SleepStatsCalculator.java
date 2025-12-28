@@ -2,7 +2,7 @@ package com.ensao.mytime.statistics.calculation;
 
 import com.ensao.mytime.statistics.model.DayData;
 
-public class MockSleepStatsCalculator extends AbstractSleepStatsCalculator {
+public class SleepStatsCalculator extends AbstractSleepStatsCalculator {
 
     @Override
     protected float getSleepDuration(DayData dayData) {

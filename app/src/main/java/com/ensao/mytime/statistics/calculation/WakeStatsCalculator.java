@@ -3,7 +3,7 @@ package com.ensao.mytime.statistics.calculation;
 import com.ensao.mytime.statistics.model.DayData;
 import java.util.List;
 
-public class MockWakeStatsCalculator extends AbstractWakeStatsCalculator {
+public class WakeStatsCalculator extends AbstractWakeStatsCalculator {
 
     @Override
     protected int getWakeLatency(DayData dayData) {
