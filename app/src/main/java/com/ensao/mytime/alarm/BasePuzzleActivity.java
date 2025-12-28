@@ -42,10 +42,22 @@ public abstract class BasePuzzleActivity extends AppCompatActivity implements Pu
 
         // Get alarm ID if launched from alarm
         alarmId = getIntent().getIntExtra("ALARM_ID", -1);
+        android.util.Log.d("BasePuzzleActivity", "onCreate - alarmId from intent: " + alarmId);
+
+        // Log SharedPreferences state to verify tracking data exists
+        android.content.SharedPreferences prefs = getSharedPreferences(
+                com.ensao.mytime.home.AlarmScheduler.PREFS_NAME, MODE_PRIVATE);
+        long firstAlarmTime = prefs.getLong(com.ensao.mytime.home.AlarmScheduler.KEY_FIRST_ALARM_TIME, 0);
+        int ringCount = prefs.getInt(com.ensao.mytime.home.AlarmScheduler.KEY_RING_COUNT, 0);
+        android.util.Log.d("BasePuzzleActivity", "SharedPrefs state - firstAlarmTime: " + firstAlarmTime +
+                ", ringCount: " + ringCount);
+
         if (alarmId != -1) {
             android.util.Log.d("BasePuzzleActivity", "Puzzle registered for ALARM_ID: " + alarmId);
             onPuzzleModeActivated(alarmId);
             registerPuzzleReceiver();
+        } else {
+            android.util.Log.w("BasePuzzleActivity", "alarmId is -1, puzzle NOT registered for alarm mode!");
         }
     }
 
@@ -117,11 +129,13 @@ public abstract class BasePuzzleActivity extends AppCompatActivity implements Pu
      * 4. Finish activity
      */
     protected void completePuzzleSession() {
+        android.util.Log.d("BasePuzzleActivity", "completePuzzleSession called, alarmId=" + alarmId);
         if (alarmId != -1) {
             // Broadcast puzzle completed first
             onPuzzleSolved();
 
             // Save wake statistics when puzzle is solved
+            android.util.Log.d("BasePuzzleActivity", "Calling StatisticsHelper.saveWakeStatistics");
             StatisticsHelper.saveWakeStatistics(this);
 
             new Thread(() -> {
