@@ -50,19 +50,8 @@ public class StudyRepository {
         executorService.execute(() -> {
             subjectDao.delete(subject);
         });
-        //subjectsList.removeIf(s -> s.getId() == subject.getId());
-        //subjectsLiveData.setValue(new ArrayList<>(subjectsList));
+        // subjectsList.removeIf(s -> s.getId() == subject.getId());
+        // subjectsLiveData.setValue(new ArrayList<>(subjectsList));
     }
 
-    public Subject getSubjectById(int id) {
-        for (Subject s : subjectsList) {
-            if (s.getId() == id)
-                return s;
-        }
-        return null;
-    }
-
-    public MutableLiveData<List<Subject>> getAllSubjects() {
-        return subjectsLiveData;
-    }
 }

@@ -38,7 +38,7 @@ public class PomodoroService extends Service {
     private PowerManager.WakeLock wakeLock; // INDISPENSABLE : Empêche le CPU de dormir
 
     private long initialTotalDuration; // Durée totale ajustée (avec pauses)
-    private long timeRemainingGlobal;  // Temps global restant
+    private long timeRemainingGlobal; // Temps global restant
 
     private boolean isWorkSession = true; // État actuel
     private boolean isTimerRunning = false;
@@ -47,24 +47,37 @@ public class PomodoroService extends Service {
     private final IBinder binder = new LocalBinder();
 
     public class LocalBinder extends Binder {
-        public PomodoroService getService() { return PomodoroService.this; }
+        public PomodoroService getService() {
+            return PomodoroService.this;
+        }
     }
+
     private long totalTime = 25 * 60 * 1000;
     private int pauseCount = 0;
 
     public interface PomodoroListener {
         void onTimerTick(long remainingTime);
+
         void onTimerFinished();
+
         void onTimerStarted();
+
         void onTimerPaused();
+
         void onTimerStopped();
-        default void onModeChanged(boolean isWorkMode) {}
+
+        default void onModeChanged(boolean isWorkMode) {
+        }
     }
 
     @Override
-    public IBinder onBind(Intent intent) { return binder; }
+    public IBinder onBind(Intent intent) {
+        return binder;
+    }
 
-    public void setPomodoroListener(PomodoroListener listener) { this.listener = listener; }
+    public void setPomodoroListener(PomodoroListener listener) {
+        this.listener = listener;
+    }
 
     @Override
     public void onCreate() {
@@ -102,7 +115,8 @@ public class PomodoroService extends Service {
 
         long adjustedTotalDuration = (fullCycles * CYCLE_DURATION) + partialWork;
 
-        Log.d("POMODORO", "Demande: " + pureWorkDuration + "ms -> Ajusté à: " + adjustedTotalDuration + "ms (avec pauses)");
+        Log.d("POMODORO",
+                "Demande: " + pureWorkDuration + "ms -> Ajusté à: " + adjustedTotalDuration + "ms (avec pauses)");
 
         this.initialTotalDuration = adjustedTotalDuration;
         this.timeRemainingGlobal = adjustedTotalDuration;
@@ -153,12 +167,13 @@ public class PomodoroService extends Service {
 
         boolean newSessionState;
         long displayTime;
-            Log.d("TIMER_DEBUG", "Timer mis en pause. Temps restant: " + timeLeftInMillis + "ms");
-            pauseCount++;
-        }
-    }
 
         if (timeInCycle < WORK_BLOCK) {
+            // === MODE TRAVAIL (0 à 25 min du cycle) ===
+            newSessionState = true;
+
+            // Temps restant avant la pause
+            displayTime = WORK_BLOCK - timeInCycle;
             // === MODE TRAVAIL (0 à 25 min du cycle) ===
             newSessionState = true;
 
@@ -189,7 +204,8 @@ public class PomodoroService extends Service {
 
             this.isWorkSession = newSessionState;
 
-            if (listener != null) listener.onModeChanged(isWorkSession);
+            if (listener != null)
+                listener.onModeChanged(isWorkSession);
         }
 
         // Mise à jour UI
@@ -218,10 +234,11 @@ public class PomodoroService extends Service {
             releaseWakeLock(); // On relâche le CPU quand c'est l'utilisateur qui met pause
             isTimerRunning = false;
             isPausedByUser = true;
-            if (listener != null) listener.onTimerPaused();
+            if (listener != null)
+                listener.onTimerPaused();
             // On garde la notification à jour
             updateNotification(getTimeLeftForDisplay());
-          pauseCount++
+            pauseCount++;
         }
     }
 
@@ -241,7 +258,7 @@ public class PomodoroService extends Service {
         isPausedByUser = false;
         timeRemainingGlobal = 0;
         isWorkSession = true;
-      
+
         pauseCount = 0;
 
         if (listener != null) {
@@ -255,25 +272,26 @@ public class PomodoroService extends Service {
         playNotificationSound(); // Sonnerie finale
         releaseWakeLock();
         isTimerRunning = false;
-      
-      // We use initialTotalDuration instead of totalTime
+
+        // We use initialTotalDuration instead of totalTime
         int durationMinutes = (int) Math.ceil(initialTotalDuration / (1000.0 * 60.0));
-        
+
         Log.d("PomodoroService", "Saving stats: " + durationMinutes + "min, subject: " + currentSubject);
 
-        // Check if StatisticsHelper is imported. If not, import com.ensao.mytime.statistics.StatisticsHelper;
+        // Check if StatisticsHelper is imported. If not, import
+        // com.ensao.mytime.statistics.StatisticsHelper;
         try {
-             com.ensao.mytime.statistics.StatisticsHelper.updateStudyStatistics(
-                getApplicationContext(),
-                durationMinutes,
-                currentSubject,
-                pauseCount
-            );
+            com.ensao.mytime.statistics.StatisticsHelper.updateStudyStatistics(
+                    getApplicationContext(),
+                    durationMinutes,
+                    currentSubject,
+                    pauseCount);
         } catch (Exception e) {
             Log.e("PomodoroService", "Error saving statistics", e);
         }
-      
-        if (listener != null) listener.onTimerFinished();
+
+        if (listener != null)
+            listener.onTimerFinished();
         updateNotification(0);
         stopForeground(true);
         pauseCount = 0; // Reset pause count
@@ -291,7 +309,8 @@ public class PomodoroService extends Service {
     // ==========================================
     private void acquireWakeLock() {
         if (wakeLock != null && !wakeLock.isHeld()) {
-            // On met un timeout de sécurité (ex: 4 heures) pour ne pas vider la batterie si bug
+            // On met un timeout de sécurité (ex: 4 heures) pour ne pas vider la batterie si
+            // bug
             wakeLock.acquire(4 * 60 * 60 * 1000L);
             Log.d("POMODORO", "WakeLock acquired");
         }
@@ -361,6 +380,9 @@ public class PomodoroService extends Service {
     // Helper pour recalculer le temps d'affichage sans faire avancer le timer
     // Utile pour updateNotification quand on est en pause
     private long getTimeLeftForDisplay() {
+        if (activeTimer == null && !isTimerRunning && !isPausedByUser)
+            return 0;
+
         long timeElapsed = initialTotalDuration - timeRemainingGlobal;
         long timeInCycle = timeElapsed % CYCLE_DURATION;
         if (timeInCycle < WORK_BLOCK) {
@@ -371,18 +393,25 @@ public class PomodoroService extends Service {
         }
     }
 
+    public long getTimeLeft() {
+        return timeRemainingGlobal;
+    }
+
+    public boolean isTimerRunning() {
+        return isTimerRunning;
+    }
+
+    public boolean isTimerPaused() {
+        return isPausedByUser;
+    }
+
+    public boolean isWorkSession() {
+        return isWorkSession;
+    }
+
     // ==========================================
     // GETTERS & NOTIFICATIONS
     // ==========================================
-
-    public long getTimeLeft() {
-        // Utilisé par le ViewModel au moment du binding
-        return getTimeLeftForDisplay();
-    }
-
-    public boolean isTimerRunning() { return isTimerRunning; }
-    public boolean isWorkSession() { return isWorkSession; }
-    public boolean isTimerPaused() { return isPausedByUser; }
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -404,7 +433,8 @@ public class PomodoroService extends Service {
 
     private void updateNotification(long displayTime) {
         String title = isWorkSession ? "Concentration" : "Pause Détente ";
-        if (isPausedByUser) title += " (Pause)";
+        if (isPausedByUser)
+            title += " (Pause)";
 
         int min = (int) (displayTime / 1000) / 60;
         int sec = (int) (displayTime / 1000) % 60;
