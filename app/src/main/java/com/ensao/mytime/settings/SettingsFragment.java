@@ -31,7 +31,16 @@ public class SettingsFragment extends PreferenceFragmentCompat
         if ("language".equals(key)) {
             String lang = sharedPreferences.getString(key, "en");
             LocaleHelper.setLocale(requireContext(), lang);
-            requireActivity().recreate();
+
+            new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                    .setTitle(R.string.lang_restart_title)
+                    .setMessage(R.string.lang_restart_message)
+                    .setPositiveButton(R.string.lang_restart_now, (dialog, which) -> {
+                        requireActivity().recreate();
+                    })
+                    .setNegativeButton(R.string.lang_restart_later, null)
+                    .setCancelable(false)
+                    .show();
         }
     }
 }
