@@ -252,11 +252,15 @@ public class RingtoneService extends Service {
      * @param autoSnoozeCount The current auto-snooze count (0 = first ring)
      */
     private void trackAlarmRingStatistics(long alarmTime, int autoSnoozeCount) {
+        android.util.Log.d("RingtoneService", "trackAlarmRingStatistics called - alarmTime: " + alarmTime +
+                ", autoSnoozeCount: " + autoSnoozeCount);
         if (autoSnoozeCount == 0) {
             // First ring - record the initial alarm time
+            android.util.Log.d("RingtoneService", "Recording first alarm ring");
             StatisticsHelper.recordFirstAlarmRing(this, alarmTime);
         } else {
             // Subsequent ring - increment the count
+            android.util.Log.d("RingtoneService", "Incrementing ring count");
             StatisticsHelper.incrementRingCount(this);
         }
     }

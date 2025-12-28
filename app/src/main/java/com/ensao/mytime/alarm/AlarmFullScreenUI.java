@@ -190,6 +190,8 @@ public class AlarmFullScreenUI extends AppCompatActivity {
                         alarm.setEnabled(false);
                         repository.update(alarm);
                     }
+                    // Save wake stats for normal alarms too (if applicable)
+                    com.ensao.mytime.statistics.StatisticsHelper.saveWakeStatistics(getApplicationContext());
                 }
                 finish();
             }).start();
@@ -230,6 +232,9 @@ public class AlarmFullScreenUI extends AppCompatActivity {
                 countDownTimer.cancel();
             Intent serviceIntent = new Intent(this, RingtoneService.class);
             stopService(serviceIntent);
+
+            // Save wake statistics when max snooze is reached
+            com.ensao.mytime.statistics.StatisticsHelper.saveWakeStatistics(getApplicationContext());
 
             // Close any active puzzle
             android.util.Log.d("AlarmFullScreenUI", "Sending ACTION_FINISH_PUZZLE broadcast (MaxSnooze)");
