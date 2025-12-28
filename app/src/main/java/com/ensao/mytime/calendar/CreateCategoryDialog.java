@@ -79,18 +79,23 @@ public class CreateCategoryDialog extends DialogFragment {
     }
 
     private void loadRepetitionKinds() {
+
         repetitionKindRepo.GetKinds(requireActivity(), kinds -> {
             if (kinds != null) {
                 for (RepetitionKind kind : kinds) {
                     repetitionKindMap.put(kind.getTitle(), kind.getId());
+
                 }
             }
-            
+
+
             // If no repetition kinds exist, we need to create them
             if (repetitionKindMap.isEmpty()) {
-                Toast.makeText(getContext(), "Erreur: types de répétition non trouvés", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Erreur: types de répétition non trouvés   " + kinds.toArray().length, Toast.LENGTH_SHORT).show();
             }
         });
+
+
     }
 
     private void createCategory() {
