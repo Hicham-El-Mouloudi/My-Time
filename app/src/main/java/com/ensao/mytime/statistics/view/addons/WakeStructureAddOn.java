@@ -23,7 +23,6 @@ public class WakeStructureAddOn extends StatsViewGenerator {
 
     public WakeStructureAddOn(View view, Map<String, Object> stats) {
         // Find Views
-        TextView tvLatency = view.findViewById(R.id.tv_wake_latency_value);
         TextView tvRingCount = view.findViewById(R.id.tv_ring_count_value);
         TextView tvTimeVariability = view.findViewById(R.id.tv_time_variability_value);
         TextView tvFirstAlarm = view.findViewById(R.id.tv_first_alarm_value);
@@ -33,12 +32,6 @@ public class WakeStructureAddOn extends StatsViewGenerator {
         LineChart chart = view.findViewById(R.id.chart_wake_weekly);
 
         // Populate Text with proper type casting
-        if (tvLatency != null) {
-            Object latencyObj = stats.get("wakeLatency");
-            float latency = latencyObj instanceof Number ? ((Number) latencyObj).floatValue() : 0;
-            tvLatency.setText(String.format(Locale.getDefault(), "%.1f min", latency));
-        }
-
         if (tvRingCount != null)
             tvRingCount.setText(String.valueOf(stats.get("ringCount")));
 
@@ -73,7 +66,7 @@ public class WakeStructureAddOn extends StatsViewGenerator {
         List<Float> varianceData = (List<Float>) stats.get("last7DaysGraph");
 
         if (varianceData == null || varianceData.isEmpty()) {
-            chart.setNoDataText("Pas de données disponibles");
+            chart.setNoDataText(chart.getContext().getString(R.string.stats_no_data));
             return;
         }
 
@@ -91,7 +84,7 @@ public class WakeStructureAddOn extends StatsViewGenerator {
             }
         }
 
-        LineDataSet dataSet = new LineDataSet(entries, "Heure de réveil");
+        LineDataSet dataSet = new LineDataSet(entries, chart.getContext().getString(R.string.stats_chart_wake_time));
         dataSet.setColor(Color.parseColor("#00BCD4"));
         dataSet.setCircleColor(Color.parseColor("#00BCD4"));
         dataSet.setLineWidth(2f);
@@ -109,7 +102,15 @@ public class WakeStructureAddOn extends StatsViewGenerator {
         xAxis.setGranularity(1f);
         int chartTextColor = chart.getContext().getResources().getColor(R.color.chart_text_color);
         xAxis.setTextColor(chartTextColor);
-        final String[] days = { "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim" };
+        final String[] days = {
+                chart.getContext().getString(R.string.date_mon),
+                chart.getContext().getString(R.string.date_tue),
+                chart.getContext().getString(R.string.date_wed),
+                chart.getContext().getString(R.string.date_thu),
+                chart.getContext().getString(R.string.date_fri),
+                chart.getContext().getString(R.string.date_sat),
+                chart.getContext().getString(R.string.date_sun)
+        };
         xAxis.setValueFormatter(new ValueFormatter() {
             @Override
             public String getAxisLabel(float value, com.github.mikephil.charting.components.AxisBase axis) {
@@ -135,7 +136,8 @@ public class WakeStructureAddOn extends StatsViewGenerator {
 
         if (validCount > 0) {
             float average = sum / validCount;
-            LimitLine avgLine = new LimitLine(average, "Moyenne");
+            LimitLine avgLine = new LimitLine(average,
+                    chart.getContext().getString(R.string.stats_chart_limit_line_avg));
             avgLine.setLineWidth(1f);
             avgLine.setLineColor(Color.GRAY);
             avgLine.enableDashedLine(10f, 10f, 0f);

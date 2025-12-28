@@ -47,6 +47,9 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
             pomodoroService = binder.getService();
             pomodoroService.setPomodoroListener(StudyViewModel.this);
             isServiceBound = true;
+            if (currentSubject != null) {
+                pomodoroService.setCurrentSubject(currentSubject);
+            }
             updateTimerFromService();
         }
 
@@ -81,16 +84,25 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
             if (timeLeft > 0) {
                 currentTime.setValue((int) (timeLeft / 1000));
                 isTimerRunning.setValue(pomodoroService.isTimerRunning());
-                
+
                 String state = "stopped";
                 if (pomodoroService.isTimerRunning()) {
                     state = "running";
                 } else if (pomodoroService.isTimerPaused()) {
                     state = "paused";
                 }
-                
+
                 timerState.setValue(state);
             }
+        }
+    }
+
+    private String currentSubject;
+
+    public void setCurrentSubject(String subject) {
+        this.currentSubject = subject;
+        if (isServiceBound && pomodoroService != null) {
+            pomodoroService.setCurrentSubject(subject);
         }
     }
 
@@ -105,6 +117,8 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
         currentTime.postValue(0);
         isTimerRunning.postValue(false);
         timerState.postValue("finished");
+
+        // Note: Statistics saving is now handled by PomodoroService directly
 
         // Optionnel : Redémarrer automatiquement ou afficher une notification
     }
@@ -241,7 +255,7 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
         if (fallbackTimer != null) {
             fallbackTimer.cancel();
         }
-        
+
         isTimerRunning.setValue(true);
         timerState.setValue("running");
 
@@ -276,7 +290,7 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
             getApplication().unbindService(serviceConnection);
             isServiceBound = false;
         }
-        
+
         if (fallbackTimer != null) {
             fallbackTimer.cancel();
             fallbackTimer = null;

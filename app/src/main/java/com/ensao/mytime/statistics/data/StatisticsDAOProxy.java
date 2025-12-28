@@ -124,10 +124,31 @@ public class StatisticsDAOProxy implements StatisticsDAO {
         data.setSleepEfficiency(70 + random.nextInt(30)); // 70% to 99%
         data.setTimeInBed(sleepDuration + 0.5f + random.nextFloat());
         data.setSleepLatency(5 + random.nextInt(25)); // 5 to 30 min
-        data.setWakeDuringSleep(random.nextInt(40)); // 0 to 40 min
+        int wakeDuringSleep = random.nextInt(40); // 0 to 40 min
+        data.setWakeDuringSleep(wakeDuringSleep);
+
+        // Generate wake episodes distribution
+        List<WakeWhileSleepingDuration> wakeEpisodes = new ArrayList<>();
+        if (wakeDuringSleep > 0) {
+            int numEpisodes = 1 + random.nextInt(3); // 1 to 3 episodes
+            int baseHour = 1 + random.nextInt(4); // Start between 1:00 and 4:00 AM
+            for (int i = 0; i < numEpisodes; i++) {
+                int startMinute = random.nextInt(60);
+                int durationMinutes = 3 + random.nextInt(15); // 3 to 18 min per episode
+                int endMinute = startMinute + durationMinutes;
+                int endHour = baseHour + i;
+                if (endMinute >= 60) {
+                    endHour++;
+                    endMinute -= 60;
+                }
+                wakeEpisodes.add(new WakeWhileSleepingDuration(
+                        String.format("%02d:%02d", baseHour + i, startMinute),
+                        String.format("%02d:%02d", endHour, endMinute)));
+            }
+        }
+        data.setWakeDuringSleepDistribution(wakeEpisodes);
 
         // Wake Data
-        data.setWakeLatency(random.nextInt(15)); // 0 to 15 min
         data.setRingCount(1 + random.nextInt(5)); // 1 to 6 rings
         data.setTimeVariability(random.nextFloat() * 5.0f);
 

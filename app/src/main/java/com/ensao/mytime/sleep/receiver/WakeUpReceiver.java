@@ -25,6 +25,9 @@ public class WakeUpReceiver extends BroadcastReceiver {
         // Save sleep statistics before resetting the session
         StatisticsHelper.saveSleepStatistics(context);
 
+        // Also save wake statistics (will use data tracked by RingtoneService)
+        StatisticsHelper.saveWakeStatistics(context);
+
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         // Mise à jour des préférences pour indiquer que la session est terminée

@@ -1,5 +1,7 @@
 package com.ensao.mytime.statistics.model;
 
+import com.ensao.mytime.statistics.data.WakeWhileSleepingDuration;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -15,9 +17,9 @@ public class DayData {
     private float timeInBed; // hours
     private int sleepLatency; // minutes
     private int wakeDuringSleep; // minutes
+    private List<WakeWhileSleepingDuration> wakeDuringSleepDistribution; // wake episodes during sleep
 
     // Wake Data
-    private int wakeLatency; // minutes
     private int ringCount;
     private float timeVariability;
     private String firstAlarm; // HH:mm
@@ -111,12 +113,12 @@ public class DayData {
         this.wakeDuringSleep = wakeDuringSleep;
     }
 
-    public int getWakeLatency() {
-        return wakeLatency;
+    public List<WakeWhileSleepingDuration> getWakeDuringSleepDistribution() {
+        return wakeDuringSleepDistribution;
     }
 
-    public void setWakeLatency(int wakeLatency) {
-        this.wakeLatency = wakeLatency;
+    public void setWakeDuringSleepDistribution(List<WakeWhileSleepingDuration> wakeDuringSleepDistribution) {
+        this.wakeDuringSleepDistribution = wakeDuringSleepDistribution;
     }
 
     public int getRingCount() {

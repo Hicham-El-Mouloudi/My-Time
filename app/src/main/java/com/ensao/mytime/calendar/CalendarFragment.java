@@ -56,7 +56,7 @@ public class CalendarFragment extends Fragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+            Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
 
         Log.d(TAG, "=== CalendarFragment onCreateView ===");
@@ -179,11 +179,12 @@ public class CalendarFragment extends Fragment
         SimpleDateFormat fullFormat = new SimpleDateFormat("EEEE d MMMM", Locale.getDefault());
         String formattedDate = fullFormat.format(date);
         formattedDate = formattedDate.substring(0, 1).toUpperCase() + formattedDate.substring(1);
-        tvSelectedDateHeader.setText("Activités - " + formattedDate);
+        tvSelectedDateHeader.setText(getString(R.string.cal_header_prefix) + formattedDate);
     }
 
     private void loadActivitiesForDate(String date) {
-        if (date == null) return;
+        if (date == null)
+            return;
 
         Log.d(TAG, "========================================");
         Log.d(TAG, "Loading activities for date: " + date);
@@ -223,8 +224,7 @@ public class CalendarFragment extends Fragment
                                 endTime,
                                 ua.getTitle(),
                                 ua.getDescription(),
-                                ua.getCategoryID()
-                        ));
+                                ua.getCategoryID()));
                     }
                 }
 
@@ -314,7 +314,8 @@ public class CalendarFragment extends Fragment
             Log.d(TAG, "  EndDate: " + endDateTime + " (" + endDateTime.getTime() + ")");
             Log.d(TAG, "  CategoryID: " + finalCategoryId);
 
-            // Create a single activity - the query will handle showing it on recurring dates
+            // Create a single activity - the query will handle showing it on recurring
+            // dates
             userActivity newActivity = new userActivity();
             newActivity.setTitle(activity.getTitle());
             newActivity.setDescription(activity.getDescription());
@@ -332,7 +333,7 @@ public class CalendarFragment extends Fragment
                     // Reload activities to show the new one
                     Log.d(TAG, "Reloading activities for current date: " + selectedDate);
                     loadActivitiesForDate(selectedDate);
-                    Toast.makeText(getContext(), "Activité ajoutée", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.cal_toast_added), Toast.LENGTH_SHORT).show();
                 } else {
                     Log.e(TAG, "Failed to insert activity!");
                     Toast.makeText(getContext(), "Erreur lors de l'ajout", Toast.LENGTH_SHORT).show();
@@ -356,11 +357,9 @@ public class CalendarFragment extends Fragment
     @Override
     public void onActivityEdited(int position, DailyActivity updatedActivity) {
         if (updatedActivity.getId() <= 0) {
-            Toast.makeText(getContext(), "Erreur: ID d'activité invalide", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.cal_error_id), Toast.LENGTH_SHORT).show();
             return;
         }
-
-
 
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -398,12 +397,12 @@ public class CalendarFragment extends Fragment
                         if (success) {
                             // Reload activities to reflect the update
                             loadActivitiesForDate(selectedDate);
-                            Toast.makeText(getContext(), "Activité modifiée", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), getString(R.string.cal_toast_updated), Toast.LENGTH_SHORT)
+                                    .show();
                         } else {
                             Toast.makeText(getContext(), "Erreur lors de la modification", Toast.LENGTH_SHORT).show();
                         }
-                    }
-            );
+                    });
 
         } catch (ParseException e) {
             e.printStackTrace();
@@ -418,7 +417,7 @@ public class CalendarFragment extends Fragment
                 if (success) {
                     // Reload activities to reflect the deletion
                     loadActivitiesForDate(selectedDate);
-                    Toast.makeText(getContext(), "Activité supprimée", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.cal_toast_deleted), Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getContext(), "Erreur lors de la suppression", Toast.LENGTH_SHORT).show();
                 }

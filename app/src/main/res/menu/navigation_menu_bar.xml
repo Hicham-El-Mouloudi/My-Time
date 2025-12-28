@@ -5,23 +5,23 @@
     <item
         android:id="@+id/navigation_home"
         android:icon="@drawable/ic_homme"
-        android:title="Home" />
+        android:title="@string/nav_home" />
     <item
         android:id="@+id/navigation_study"
         android:icon="@drawable/ic_study"
-        android:title="Study" />
+        android:title="@string/nav_study_session" />
     <item
         android:id="@+id/navigation_sleep"
         android:icon="@drawable/ic_sleep"
-        android:title="Sleep" />
+        android:title="@string/nav_sleep_session" />
     <item
         android:id="@+id/navigation_calendar"
         android:icon="@drawable/ic_calender"
-        android:title="Calendar" />
+        android:title="@string/nav_calendar" />
     <item
         android:id="@+id/navigation_alarm"
         android:icon="@drawable/ic_alarme"
-        android:title="Alarm" />
+        android:title="@string/nav_alarm" />
 
     <item
         android:id="@+id/nav_statistics"

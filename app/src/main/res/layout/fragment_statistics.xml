@@ -36,7 +36,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Today"
+                    android:text="@string/stats_today"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/glass_text_primary" />
@@ -48,7 +48,7 @@
                     android:src="@drawable/statistics_calendar"
                     android:padding="8dp"
                     app:tint="@color/glass_accent_blue"
-                    android:contentDescription="Calendar" />
+                    android:contentDescription="@string/desc_calendar" />
             </LinearLayout>
 
             <!-- Horizontal RecyclerView of Days -->

@@ -4,9 +4,7 @@ import androidx.room.TypeConverter;
 
 import java.util.Date;
 
-
-
-//we need to use converter because room does not allow reference types like Date or costom classes
+//we need to use converter because room does not allow reference types like Date or custom classes
 public class Converters {
 
     @TypeConverter
@@ -18,6 +16,4 @@ public class Converters {
     public static Long dateToTimestamp(Date date) {
         return date == null ? null : date.getTime();
     }
-
-
 }

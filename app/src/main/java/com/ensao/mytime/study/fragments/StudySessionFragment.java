@@ -137,7 +137,7 @@ public class StudySessionFragment extends Fragment {
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(
                 requireContext());
 
-        builder.setTitle("Custom Duration");
+        builder.setTitle(getString(R.string.dialog_custom_duration_title));
 
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_custom_duration, null);
         android.widget.NumberPicker numberPicker = dialogView.findViewById(R.id.numberPicker);
@@ -146,10 +146,10 @@ public class StudySessionFragment extends Fragment {
         numberPicker.setMaxValue(120);
         numberPicker.setValue(30);
         numberPicker.setWrapSelectorWheel(false);
-        numberPicker.setFormatter(value -> value + " min");
+        numberPicker.setFormatter(value -> String.format(getString(R.string.dialog_custom_duration_min_format), value));
 
         builder.setView(dialogView)
-                .setPositiveButton("Start", (dialog, which) -> {
+                .setPositiveButton(getString(R.string.dialog_custom_duration_confirm), (dialog, which) -> {
                     int selectedMinutes = numberPicker.getValue();
                     currentMaxDuration = selectedMinutes * 60;
                     studyViewModel.setTimerDuration(selectedMinutes);
@@ -159,9 +159,11 @@ public class StudySessionFragment extends Fragment {
                         progressTimer.setProgress(100);
 
                     updateDurationButtonSelection(btnCustom);
-                    btnCustom.setText(selectedMinutes + " min");
+                    btnCustom.setText(
+                            String.format(getString(R.string.dialog_custom_duration_min_format), selectedMinutes));
                 })
-                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+                .setNegativeButton(getString(R.string.dialog_custom_duration_cancel),
+                        (dialog, which) -> dialog.dismiss());
 
         androidx.appcompat.app.AlertDialog dialog = builder.create();
         dialog.show();
@@ -177,6 +179,9 @@ public class StudySessionFragment extends Fragment {
             if ("paused".equals(currentState)) {
                 studyViewModel.resumeTimer();
             } else {
+                if (etSubjectName != null) {
+                    studyViewModel.setCurrentSubject(etSubjectName.getText().toString());
+                }
                 studyViewModel.startTimer();
             }
         });
@@ -241,14 +246,14 @@ public class StudySessionFragment extends Fragment {
                 break;
             case "paused":
                 btnStart.setVisibility(View.VISIBLE);
-                btnStart.setText("Resume");
+                btnStart.setText(getString(R.string.study_btn_resume));
                 btnPause.setVisibility(View.GONE);
                 btnStop.setVisibility(View.VISIBLE);
                 break;
             case "stopped":
             default:
                 btnStart.setVisibility(View.VISIBLE);
-                btnStart.setText("Start");
+                btnStart.setText(getString(R.string.study_btn_start));
                 btnPause.setVisibility(View.GONE);
                 btnStop.setVisibility(View.GONE);
                 break;

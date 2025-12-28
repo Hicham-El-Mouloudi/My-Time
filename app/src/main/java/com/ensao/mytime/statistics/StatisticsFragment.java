@@ -23,9 +23,9 @@ import com.ensao.mytime.statistics.adapter.calendar.CalendarDaysAdaptee;
 import com.ensao.mytime.statistics.adapter.calendar.CalendarDaysAdapter;
 import com.ensao.mytime.statistics.adapter.week.WeeksAdaptee;
 import com.ensao.mytime.statistics.adapter.week.WeeksAdapter;
-import com.ensao.mytime.statistics.calculation.MockSleepStatsCalculator;
-import com.ensao.mytime.statistics.calculation.MockStudyStatsCalculator;
-import com.ensao.mytime.statistics.calculation.MockWakeStatsCalculator;
+import com.ensao.mytime.statistics.calculation.SleepStatsCalculator;
+import com.ensao.mytime.statistics.calculation.StudyStatsCalculator;
+import com.ensao.mytime.statistics.calculation.WakeStatsCalculator;
 import com.ensao.mytime.statistics.data.StatisticsDAO;
 import com.ensao.mytime.statistics.data.StatisticsDAOProxy;
 import com.ensao.mytime.statistics.data.StatisticsDAOProxyDB;
@@ -58,9 +58,9 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
     private CalendarDaysAdapter calendarAdapter;
     private Dialog calendarDialog;
 
-    private MockSleepStatsCalculator sleepCalculator;
-    private MockWakeStatsCalculator wakeCalculator;
-    private MockStudyStatsCalculator studyCalculator;
+    private SleepStatsCalculator sleepCalculator;
+    private WakeStatsCalculator wakeCalculator;
+    private StudyStatsCalculator studyCalculator;
     private StatsViewGenerator viewGenerator;
 
     private DayData currentDay;
@@ -74,8 +74,7 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
         View view = inflater.inflate(R.layout.fragment_statistics, container, false);
 
         // Initialize Components
-        //daoProxy = new StatisticsDAOProxyDB(this.getActivity().getApplication(), this.getActivity());
-        daoProxy = new StatisticsDAOProxy();
+        daoProxy = new StatisticsDAOProxyDB(this.requireActivity().getApplication(), this.requireActivity());
         calendarDialog = new Dialog(getContext());
         calendarAdaptee = new CalendarDaysAdaptee(daoProxy);
         calendarAdapter = new CalendarDaysAdapter(calendarAdaptee, day -> {
@@ -84,9 +83,9 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
         });
         weeksAdaptee = new WeeksAdaptee(daoProxy);
         weeksAdapter = new WeeksAdapter(weeksAdaptee, this);
-        sleepCalculator = new MockSleepStatsCalculator();
-        wakeCalculator = new MockWakeStatsCalculator();
-        studyCalculator = new MockStudyStatsCalculator();
+        sleepCalculator = new SleepStatsCalculator();
+        wakeCalculator = new WakeStatsCalculator();
+        studyCalculator = new StudyStatsCalculator();
         // viewGenerator = new StatsViewGenerator();
 
         // Bind Views
@@ -141,9 +140,9 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
         java.time.LocalDate yesterday = today.minusDays(1);
 
         if (date.equals(today)) {
-            tvSelectedDay.setText("Today");
+            tvSelectedDay.setText(getString(R.string.stats_today));
         } else if (date.equals(yesterday)) {
-            tvSelectedDay.setText("Yesterday");
+            tvSelectedDay.setText(getString(R.string.stats_yesterday));
         } else {
             java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("EEE, MMM d");
             tvSelectedDay.setText(date.format(formatter));

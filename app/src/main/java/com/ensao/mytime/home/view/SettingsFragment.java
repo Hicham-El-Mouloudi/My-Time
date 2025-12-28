@@ -25,7 +25,7 @@ public class SettingsFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+            Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_settings, container, false);
     }
 
@@ -59,7 +59,8 @@ public class SettingsFragment extends Fragment {
     }
 
     private void saveSettingsAndScheduleAlarms() {
-        if (getContext() == null) return;
+        if (getContext() == null)
+            return;
 
         try {
             int morningStart = Integer.parseInt(editMorningStart.getText().toString());
@@ -71,7 +72,7 @@ public class SettingsFragment extends Fragment {
                     eveningStart < 16 || eveningStart > 23 || eveningEnd < 16 || eveningEnd > 23 ||
                     morningStart >= morningEnd || eveningStart >= eveningEnd) {
 
-                Toast.makeText(getContext(), "Veuillez entrer une heure valide et assurez-vous que l\'heure de début est inférieure à l\'heure de fin.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getString(R.string.settings_error_invalid_time), Toast.LENGTH_LONG).show();
                 return;
             }
 
@@ -82,7 +83,7 @@ public class SettingsFragment extends Fragment {
                     .putInt(InvocationData.KEY_EVENING_END_HOUR, eveningEnd)
                     .apply();
 
-            Toast.makeText(getContext(), "Réglages sauvegardés et alarmes mises à jour !", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.settings_success_saved), Toast.LENGTH_SHORT).show();
 
             AlarmScheduler.cancelAllAlarms(requireContext());
             AlarmScheduler.scheduleNextAlarm(requireContext(), true);
@@ -91,7 +92,7 @@ public class SettingsFragment extends Fragment {
             getParentFragmentManager().popBackStack();
 
         } catch (NumberFormatException e) {
-            Toast.makeText(getContext(), "Veuillez remplir tous les champs avec des chiffres.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.settings_error_numbers_only), Toast.LENGTH_SHORT).show();
         }
     }
 }

@@ -11,11 +11,14 @@
             app:icon="@drawable/ic_light_mode"
             app:useSimpleSummaryProvider="true" />
 
-        <Preference
+        <ListPreference
+            app:defaultValue="en"
+            app:entries="@array/language_entries"
+            app:entryValues="@array/language_values"
             app:key="language"
             app:title="@string/language_title"
             app:icon="@drawable/ic_language"
-            app:summary="English" />
+            app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 
