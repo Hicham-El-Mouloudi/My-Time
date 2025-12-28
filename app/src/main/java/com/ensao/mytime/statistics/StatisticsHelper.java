@@ -9,6 +9,7 @@ import com.ensao.mytime.Activityfeature.Busniss.StatisticsSleepSession;
 import com.ensao.mytime.Activityfeature.Busniss.StatisticsWakeSession;
 import com.ensao.mytime.Activityfeature.Repos.StatisticsSleepSessionRepo;
 import com.ensao.mytime.Activityfeature.Repos.StatisticsWakeSessionRepo;
+import com.ensao.mytime.Activityfeature.UsageStatsHelper;
 import com.ensao.mytime.home.AlarmScheduler;
 
 import java.text.SimpleDateFormat;
@@ -49,16 +50,38 @@ public class StatisticsHelper {
         }
         float sleepDurationHours = durationMillis / (1000f * 60f * 60f);
 
+        // Get wake during sleep data using UsageStatsManager
+        long actualSleepStart = sleepTimeMillis;
+        long actualSleepEnd = System.currentTimeMillis(); // Current time is actual wake time
+
+        // Adjust for overnight if needed
+        if (actualSleepEnd < actualSleepStart) {
+            actualSleepEnd += 24 * 60 * 60 * 1000;
+        }
+
+        String wakeSegmentsJson = UsageStatsHelper.getWakeSegmentsJson(context, actualSleepStart, actualSleepEnd);
+        int wakeDuringSleepMinutes = UsageStatsHelper.getTotalWakeDurationMinutes(wakeSegmentsJson);
+
+        // Calculate sleep efficiency: (actual sleep time / time in bed) * 100
+        float timeInBedHours = sleepDurationHours;
+        int sleepLatencyMinutes = 15; // Default sleep latency
+        float actualSleepHours = sleepDurationHours - (wakeDuringSleepMinutes / 60f) - (sleepLatencyMinutes / 60f);
+        int sleepEfficiency = (int) ((actualSleepHours / timeInBedHours) * 100);
+        sleepEfficiency = Math.max(0, Math.min(100, sleepEfficiency)); // Clamp to 0-100
+
+        Log.d(TAG, "Wake during sleep: " + wakeDuringSleepMinutes + " min, efficiency: " + sleepEfficiency + "%");
+
         // Create the statistics entry
         Date today = normalizeToStartOfDay(new Date());
 
         StatisticsSleepSession session = new StatisticsSleepSession(
                 today,
                 sleepDurationHours, // sleepDuration
-                85, // sleepEfficiency (default estimate)
-                sleepDurationHours, // timeInBed (same as duration initially)
+                sleepEfficiency, // sleepEfficiency (calculated from wake time)
+                timeInBedHours, // timeInBed
                 15, // sleepLatency (default 15 min to fall asleep)
-                0, // wakeDuringSleep (default 0)
+                wakeDuringSleepMinutes, // wakeDuringSleep (actual detected value)
+                wakeSegmentsJson, // wakeDuringSleepDistributionJSON
                 true // hasSleep
         );
 
@@ -67,7 +90,8 @@ public class StatisticsHelper {
         StatisticsSleepSessionRepo repo = new StatisticsSleepSessionRepo(app);
         repo.insert(session, id -> {
             Log.d(TAG, "Sleep statistics saved with id: " + id +
-                    ", duration: " + sleepDurationHours + "h");
+                    ", duration: " + sleepDurationHours + "h" +
+                    ", wakeDuringSleep: " + wakeDuringSleepMinutes + "min");
         });
     }
 

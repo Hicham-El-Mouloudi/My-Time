@@ -1,6 +1,7 @@
 package com.ensao.mytime.sleep.view;
 
 import android.app.AlarmManager;
+import android.app.AppOpsManager;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -126,6 +127,11 @@ public class SleepFragment extends Fragment {
             return;
         }
 
+        // Check usage stats permission for wake detection during sleep
+        if (!ensureUsagePermission()) {
+            return;
+        }
+
         AlarmManager alarmManager = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (!alarmManager.canScheduleExactAlarms()) {
@@ -135,6 +141,38 @@ public class SleepFragment extends Fragment {
             }
         }
         scheduleAllAlarmsAndServices();
+    }
+
+    /**
+     * Checks if the app has usage stats permission.
+     * If not, prompts the user to grant it in settings.
+     * 
+     * @return true if permission is granted, false otherwise
+     */
+    private boolean ensureUsagePermission() {
+        AppOpsManager appOps = (AppOpsManager) requireContext().getSystemService(Context.APP_OPS_SERVICE);
+        int mode = appOps.checkOpNoThrow(
+                AppOpsManager.OPSTR_GET_USAGE_STATS,
+                android.os.Process.myUid(),
+                requireContext().getPackageName());
+
+        if (mode != AppOpsManager.MODE_ALLOWED) {
+            showUsageAccessDialog();
+            return false;
+        }
+        return true;
+    }
+
+    private void showUsageAccessDialog() {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Usage Access Permission")
+                .setMessage(
+                        "MyTime needs usage access to detect phone usage during sleep for accurate sleep statistics.")
+                .setPositiveButton("Settings", (dialog, which) -> {
+                    startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     private boolean isAccessibilityServiceEnabled(Context context) {
