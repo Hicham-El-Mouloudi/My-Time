@@ -77,7 +77,7 @@ public class StudySessionFragment extends Fragment {
         subjectAdapter = new SubjectAdapter(new ArrayList<>(), new SubjectAdapter.OnSubjectClickListener() {
             @Override
             public void onSubjectChecked(Subject subject, boolean isChecked) {
-                studyViewModel.updateSubject(subject);
+                studyViewModel.changeSubjectCompletion(subject, isChecked);
             }
 
             @Override

@@ -82,7 +82,6 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.SubjectV
 
             cbSubject.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (listener != null) {
-                    subject.setCompleted(isChecked);
                     listener.onSubjectChecked(subject, isChecked);
 
                     // Rafraîchir l'apparence

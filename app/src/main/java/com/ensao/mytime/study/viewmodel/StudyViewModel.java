@@ -172,10 +172,25 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
         }
     }
 
-    public void updateSubject(Subject subject) {
-        if (subject.isCompleted()) {
-            com.ensao.mytime.statistics.StatisticsHelper.incrementCompletedTasks(getApplication());
+    /**
+     * Updates the completion status of a subject and updates statistics
+     * accordingly.
+     * 
+     * @param subject     The subject to update
+     * @param isCompleted The new completion status
+     */
+    public void changeSubjectCompletion(Subject subject, boolean isCompleted) {
+        if (subject.isCompleted() != isCompleted) {
+            com.ensao.mytime.statistics.StatisticsHelper.updateTaskCompletionStats(
+                    getApplication(),
+                    subject.getCreatedAt(),
+                    isCompleted);
+            subject.setCompleted(isCompleted);
+            repository.updateSubject(subject);
         }
+    }
+
+    public void updateSubject(Subject subject) {
         repository.updateSubject(subject);
     }
 
