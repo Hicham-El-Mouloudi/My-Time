@@ -321,6 +321,77 @@ public class StatisticsHelper {
     }
 
     /**
+     * Increments the completed tasks count for the current day.
+     * Should be called when a subject/task is marked as completed.
+     *
+     * @param context Application context
+     */
+    public static void incrementCompletedTasks(Context context) {
+        Log.d(TAG, "incrementCompletedTasks called");
+        Application app = (Application) context.getApplicationContext();
+        com.ensao.mytime.Activityfeature.Repos.StatisticsStudySessionRepo repo = new com.ensao.mytime.Activityfeature.Repos.StatisticsStudySessionRepo(
+                app);
+        Date today = normalizeToStartOfDay(new Date());
+
+        repo.getByDate(today, null, session -> {
+            if (session == null) {
+                session = new com.ensao.mytime.Activityfeature.Busniss.StatisticsStudySession();
+                session.setDate(today);
+                session.setTotalFocusTime(0);
+                session.setStreakCount(1);
+                session.setPauseCount(0);
+                session.setSessionsCount(0);
+                session.setCompletedTasksCount(0);
+                session.setTotalTasksCount(0);
+                session.setSubjectsStudiedCount(0);
+                session.setHasStudy(true);
+                session.setSubjectDistribution("{}");
+            }
+
+            session.setCompletedTasksCount(session.getCompletedTasksCount() + 1);
+            Log.d(TAG, "Incremented completed tasks to: " + session.getCompletedTasksCount());
+
+            repo.insert(session, id -> Log.d(TAG, "Study statistics updated with completed task. Id: " + id));
+        });
+    }
+
+    /**
+     * Updates the total tasks count (workload) for the current day.
+     * 
+     * @param context Application context
+     * @param delta   Change in total tasks (e.g., +1 for add, -1 for delete)
+     */
+    public static void updateTotalTasks(Context context, int delta) {
+        Log.d(TAG, "updateTotalTasks called with delta: " + delta);
+        Application app = (Application) context.getApplicationContext();
+        com.ensao.mytime.Activityfeature.Repos.StatisticsStudySessionRepo repo = new com.ensao.mytime.Activityfeature.Repos.StatisticsStudySessionRepo(
+                app);
+        Date today = normalizeToStartOfDay(new Date());
+
+        repo.getByDate(today, null, session -> {
+            if (session == null) {
+                session = new com.ensao.mytime.Activityfeature.Busniss.StatisticsStudySession();
+                session.setDate(today);
+                session.setTotalFocusTime(0);
+                session.setStreakCount(1);
+                session.setPauseCount(0);
+                session.setSessionsCount(0);
+                session.setCompletedTasksCount(0);
+                session.setTotalTasksCount(0);
+                session.setSubjectsStudiedCount(0);
+                session.setHasStudy(true);
+                session.setSubjectDistribution("{}");
+            }
+
+            int newTotal = Math.max(0, session.getTotalTasksCount() + delta);
+            session.setTotalTasksCount(newTotal);
+            Log.d(TAG, "Updated total tasks to: " + newTotal);
+
+            repo.insert(session, id -> Log.d(TAG, "Study statistics updated (Total Tasks). Id: " + id));
+        });
+    }
+
+    /**
      * Normalizes a date to the start of the day (midnight).
      *
      * @param date The date to normalize
