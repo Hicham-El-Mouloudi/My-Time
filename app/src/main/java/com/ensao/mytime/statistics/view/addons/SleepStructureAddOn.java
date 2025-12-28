@@ -46,7 +46,13 @@ public class SleepStructureAddOn extends StatsViewGenerator {
             if (durationObj instanceof Number) {
                 duration = ((Number) durationObj).floatValue();
             }
-            tvDuration.setText(String.format(Locale.getDefault(), "%.1f h", duration));
+            if (duration < 1.0f) {
+                // Display in minutes if less than 1 hour
+                int minutes = Math.round(duration * 60);
+                tvDuration.setText(String.format(Locale.getDefault(), "%d min", minutes));
+            } else {
+                tvDuration.setText(String.format(Locale.getDefault(), "%.1f h", duration));
+            }
 
             // Set Status
             if (tvDurationStatus != null) {
@@ -61,7 +67,12 @@ public class SleepStructureAddOn extends StatsViewGenerator {
             if (timeInBedObj instanceof Number) {
                 timeInBed = ((Number) timeInBedObj).floatValue();
             }
-            tvTimeInBed.setText(String.format(Locale.getDefault(), "%.1f h", timeInBed));
+            if (timeInBed < 1.0f) {
+                int minutes = Math.round(timeInBed * 60);
+                tvTimeInBed.setText(String.format(Locale.getDefault(), "%d min", minutes));
+            } else {
+                tvTimeInBed.setText(String.format(Locale.getDefault(), "%.1f h", timeInBed));
+            }
         }
 
         if (tvSleepLatency != null) {

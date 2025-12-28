@@ -250,12 +250,16 @@ public class StatisticsHelper {
      */
     public static void updateStudyStatistics(Context context, int durationMinutes, String subjectName,
             int sessionPauses) {
+        Log.d(TAG, "updateStudyStatistics called - duration: " + durationMinutes + "min, subject: " + subjectName
+                + ", pauses: " + sessionPauses);
         Application app = (Application) context.getApplicationContext();
         com.ensao.mytime.Activityfeature.Repos.StatisticsStudySessionRepo repo = new com.ensao.mytime.Activityfeature.Repos.StatisticsStudySessionRepo(
                 app);
         Date today = normalizeToStartOfDay(new Date());
+        Log.d(TAG, "Normalized date for study stats: " + today);
 
         repo.getByDate(today, null, session -> {
+            Log.d(TAG, "getByDate callback - existing session: " + (session != null ? "found" : "null"));
             if (session == null) {
                 session = new com.ensao.mytime.Activityfeature.Busniss.StatisticsStudySession();
                 session.setDate(today);
@@ -268,6 +272,7 @@ public class StatisticsHelper {
                 session.setSubjectsStudiedCount(0);
                 session.setHasStudy(true);
                 session.setSubjectDistribution("{}");
+                Log.d(TAG, "Created new StatisticsStudySession for today");
             }
 
             // Update Total Focus Time
@@ -306,8 +311,12 @@ public class StatisticsHelper {
             session.setSubjectDistribution(gson.toJson(subjects));
             session.setSubjectsStudiedCount(subjects.size());
 
+            Log.d(TAG, "About to insert study session - totalFocusTime: " + session.getTotalFocusTime() +
+                    ", sessionsCount: " + session.getSessionsCount() + ", hasStudy: " + session.isHasStudy());
+
             repo.insert(session,
-                    id -> Log.d(TAG, "Study statistics updated: + " + durationMinutes + " min for " + subjectName));
+                    id -> Log.d(TAG, "Study statistics SAVED with id: " + id + ", totalFocusTime: " + durationMinutes
+                            + " min for " + subjectName));
         });
     }
 

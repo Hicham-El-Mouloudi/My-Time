@@ -179,11 +179,16 @@ public class PomodoroService extends Service {
                 ispaused = false;
 
                 // Save study statistics
-                int durationMinutes = (int) (totalTime / (1000 * 60));
-                if (durationMinutes > 0) {
-                    com.ensao.mytime.statistics.StatisticsHelper.updateStudyStatistics(getApplicationContext(),
-                            durationMinutes, currentSubject, pauseCount);
-                }
+                int durationMinutes = (int) Math.ceil(totalTime / (1000.0 * 60.0));
+                Log.d("PomodoroService",
+                        "Timer finished! Duration: " + durationMinutes + "min, subject: " + currentSubject);
+
+                // Allow saving even short sessions (at least 1 min if rounded, or 0 if user
+                // wants)
+                // But ceiling ensures even 1 second is 1 minute
+                Log.d("PomodoroService", "Calling StatisticsHelper.updateStudyStatistics");
+                com.ensao.mytime.statistics.StatisticsHelper.updateStudyStatistics(getApplicationContext(),
+                        durationMinutes, currentSubject, pauseCount);
 
                 if (listener != null) {
                     listener.onTimerFinished();

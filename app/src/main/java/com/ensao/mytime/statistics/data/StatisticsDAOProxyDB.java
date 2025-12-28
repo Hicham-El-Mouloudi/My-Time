@@ -259,9 +259,14 @@ public class StatisticsDAOProxyDB implements StatisticsDAO {
         // focus time or hasStudy flag
         boolean hasStudy = studySession != null && studySession.isHasStudy();
 
+        android.util.Log.d("StatisticsDAOProxyDB", "buildDayData for " + date +
+                " - hasSleep: " + hasSleep + ", hasWake: " + hasWake + ", hasStudy: " + hasStudy);
+
         DayData data = new DayData(date, hasSleep, hasWake);
 
         if (sleepSession != null) {
+            android.util.Log.d("StatisticsDAOProxyDB", "Sleep session found - duration: " +
+                    sleepSession.getSleepDuration() + ", efficiency: " + sleepSession.getSleepEfficiency());
             data.setSleepDuration(sleepSession.getSleepDuration());
             data.setSleepEfficiency(sleepSession.getSleepEfficiency());
             data.setTimeInBed(sleepSession.getTimeInBed());
@@ -270,11 +275,28 @@ public class StatisticsDAOProxyDB implements StatisticsDAO {
             // Parse JSON string to List<WakeWhileSleepingDuration>
             String json = sleepSession.getWakeDuringSleepDistributionJSON();
             if (json != null && !json.isEmpty()) {
-                Gson gson = new Gson();
-                Type listType = new TypeToken<List<WakeWhileSleepingDuration>>() {
-                }.getType();
-                List<WakeWhileSleepingDuration> distribution = gson.fromJson(json, listType);
-                data.setWakeDuringSleepDistribution(distribution);
+                try {
+                    List<WakeWhileSleepingDuration> distribution = new ArrayList<>();
+                    org.json.JSONObject jsonObj = new org.json.JSONObject(json);
+                    org.json.JSONArray sessions = jsonObj.optJSONArray("wake_sessions");
+                    if (sessions != null) {
+                        java.text.SimpleDateFormat timeFormat = new java.text.SimpleDateFormat("HH:mm",
+                                java.util.Locale.getDefault());
+                        for (int i = 0; i < sessions.length(); i++) {
+                            org.json.JSONObject segment = sessions.getJSONObject(i);
+                            long startMillis = segment.optLong("start", 0);
+                            long endMillis = segment.optLong("end", 0);
+                            if (startMillis > 0 && endMillis > 0) {
+                                String startTime = timeFormat.format(new java.util.Date(startMillis));
+                                String endTime = timeFormat.format(new java.util.Date(endMillis));
+                                distribution.add(new WakeWhileSleepingDuration(startTime, endTime));
+                            }
+                        }
+                    }
+                    data.setWakeDuringSleepDistribution(distribution);
+                } catch (org.json.JSONException e) {
+                    android.util.Log.e("StatisticsDAOProxyDB", "Error parsing wake segments JSON", e);
+                }
             }
         }
 
@@ -287,6 +309,8 @@ public class StatisticsDAOProxyDB implements StatisticsDAO {
         }
 
         if (studySession != null) {
+            android.util.Log.d("StatisticsDAOProxyDB", "Study session found - totalFocusTime: " +
+                    studySession.getTotalFocusTime() + ", hasStudy: " + studySession.isHasStudy());
             data.setHasStudy(hasStudy);
             data.setTotalFocusTime(studySession.getTotalFocusTime());
             data.setStreakCount(studySession.getStreakCount());
