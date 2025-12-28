@@ -308,4 +308,9 @@
         <item>Sudoku</item>
     </string-array>
 
+    <string name="study_select_subject_title">Select Subject</string>
+    <string name="study_subject_add_action">Add</string>
+    <string name="study_msg_select_subject">Please select a subject first!</string>
+    <string name="study_msg_subject_added">Subject added</string>
+
 </resources>

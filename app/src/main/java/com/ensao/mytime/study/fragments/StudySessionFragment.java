@@ -84,6 +84,11 @@ public class StudySessionFragment extends Fragment {
             public void onSubjectDeleted(Subject subject) {
                 studyViewModel.deleteSubject(subject);
             }
+
+            @Override
+            public void onSubjectClicked(Subject subject) {
+                // Do nothing for main list clicks
+            }
         });
 
         rvSubjects.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -173,16 +178,66 @@ public class StudySessionFragment extends Fragment {
         }
     }
 
+    private void showSubjectSelectionDialog() {
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(
+                requireContext());
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_select_subject, null);
+
+        RecyclerView rvDialogSubjects = dialogView.findViewById(R.id.rv_dialog_subjects);
+        EditText etNewSubject = dialogView.findViewById(R.id.et_dialog_new_subject);
+        Button btnAdd = dialogView.findViewById(R.id.btn_dialog_add_subject);
+        Button btnCancel = dialogView.findViewById(R.id.btn_dialog_cancel);
+
+        builder.setView(dialogView);
+        androidx.appcompat.app.AlertDialog dialog = builder.create();
+
+        // Setup Adapter for Dialog
+        com.ensao.mytime.study.adapter.SubjectSelectionAdapter dialogAdapter = new com.ensao.mytime.study.adapter.SubjectSelectionAdapter(
+                new ArrayList<>(),
+                subject -> {
+                    // Select subject and start
+                    studyViewModel.setCurrentSubject(subject.getName());
+                    studyViewModel.startTimer();
+                    dialog.dismiss();
+                });
+
+        rvDialogSubjects.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvDialogSubjects.setAdapter(dialogAdapter);
+
+        // Load subjects
+        studyViewModel.getAllSubjects().observe(getViewLifecycleOwner(), subjects -> {
+            if (subjects != null) {
+                dialogAdapter.setSubjects(subjects);
+            }
+        });
+
+        // Add Button Logic
+        btnAdd.setOnClickListener(v -> {
+            String name = etNewSubject.getText().toString().trim();
+            if (!name.isEmpty()) {
+                studyViewModel.insertSubject(name);
+                etNewSubject.setText("");
+                android.widget.Toast
+                        .makeText(getContext(), R.string.study_msg_subject_added, android.widget.Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(0));
+        }
+        dialog.show();
+    }
+
     private void setupButtonListeners() {
         btnStart.setOnClickListener(v -> {
             String currentState = studyViewModel.getTimerState().getValue();
             if ("paused".equals(currentState)) {
                 studyViewModel.resumeTimer();
             } else {
-                if (etSubjectName != null) {
-                    studyViewModel.setCurrentSubject(etSubjectName.getText().toString());
-                }
-                studyViewModel.startTimer();
+                showSubjectSelectionDialog();
             }
         });
 

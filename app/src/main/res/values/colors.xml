@@ -159,4 +159,8 @@
     <color name="button_text_legacy">#FFFFFF</color>
     <color name="sudoku_text_primary">#0b2545</color>
     <color name="sudoku_text_secondary">#13315c</color>
+    
+    <!-- ========== POPUP COLORS (User Requested) ========== -->
+    <color name="popup_background">#0b2545</color>
+    <color name="popup_text">#FFFFFF</color>
 </resources>
