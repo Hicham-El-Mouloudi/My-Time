@@ -16,6 +16,7 @@
     <!-- Theme Preferences -->
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
+    <string name="theme_system">System Default</string>
 
     <string name="schedule_alarm">Schedule alarm at:</string>
     <string name="title_activity_alarm_full_screen_ui">AlarmFullScreenUI</string>
@@ -94,13 +95,13 @@
 
     <!-- Confirmation -->
     <string name="delete_alarm_confirmation">Are you sure you want to delete this alarm?</string>
-    <string name="accessibility_description">Ce service permet de détecter l\'ouverture des applications pour activer le blocage durant votre sommeil.</string>
+    <string name="accessibility_description">This service detects app launches to enable blocking during your sleep.</string>
 
     <string-array name="sleep_advice_messages">
-        <item>Conseil Nuit : Évitez la lumière bleue de vos écrans 1h avant de dormir pour améliorer votre mélatonine.</item>
-        <item>Conseil Nuit : Assurez-vous que votre chambre est complètement obscure pour un sommeil profond et réparateur.</item>
-        <item>Conseil Nuit : Une boisson chaude et non caféinée (tisane) peut grandement faciliter votre endormissement.</item>
-        <item>Conseil Nuit : Écrivez vos préoccupations dans un journal pour vider votre esprit avant de vous coucher.</item>
+        <item>Night Tip: Avoid blue light from screens 1h before bed to improve melatonin.</item>
+        <item>Night Tip: Ensure your room is completely dark for deep and restorative sleep.</item>
+        <item>Night Tip: A hot, non-caffeinated drink (herbal tea) can greatly help you fall asleep.</item>
+        <item>Night Tip: Write down your worries in a journal to clear your mind before bed.</item>
     </string-array>
 
     <!-- Toolbar Menu -->
@@ -117,5 +118,44 @@
     <string name="title_alarm">Alarm</string>
     <string name="title_statistics">Statistics</string>
     <string name="title_settings">Settings</string>
+
+    <!-- Settings Fragment (Invocation) -->
+    <string name="settings_invocation_title">Set Invocation Hours</string>
+    <string name="settings_morning_label">Morning Hours (Default: 5am - 8am)</string>
+    <string name="settings_morning_start_hint">Start (h)</string>
+    <string name="settings_morning_end_hint">End (h)</string>
+    <string name="settings_evening_label">Evening Hours (Default: 5pm - 8pm)</string>
+    <string name="settings_evening_start_hint">Start (h)</string>
+    <string name="settings_evening_end_hint">End (h)</string>
+    <string name="settings_save_button">Save</string>
+    <string name="settings_error_invalid_time">Please enter a valid time and ensure start time is before end time.</string>
+    <string name="settings_success_saved">Settings saved and alarms updated!</string>
+    <string name="settings_error_numbers_only">Please fill all fields with numbers.</string>
+
+    <!-- Home Fragment -->
+    <string name="app_title_home">AURORA</string>
+    <string name="home_btn_invocations">Invocations</string>
+
+    <!-- Statistics Fragment -->
+    <string name="stats_today">Today</string>
+    <string name="desc_calendar">Calendar</string>
+    <string name="desc_header_background">Header Background</string>
+    <string name="stats_toggle_wake">Wake</string>
+    <string name="stats_toggle_sleep">Sleep</string>
+    <string name="stats_toggle_study">Study</string>
+
+    <!-- Study Fragment -->
+    <string name="study_subjects_title">Subjects to Study</string>
+    <string name="study_subject_name_hint">Subject name</string>
+    <string name="study_btn_add">Add</string>
+    <string name="study_btn_start">Start</string>
+    <string name="study_btn_pause">Pause</string>
+    <string name="study_btn_stop">Stop</string>
+    <string name="study_btn_custom">Custom</string>
+
+    <!-- Content Descriptions -->
+    <string name="desc_sleep_data_available">Sleep Data Available</string>
+    <string name="desc_wake_data_available">Wake Data Available</string>
+    <string name="desc_study_data_available">Study Data Available</string>
 
 </resources>

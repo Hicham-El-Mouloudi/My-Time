@@ -1,0 +1,161 @@
+<resources>
+    <string name="app_name">My Time</string>
+
+    <!-- Navigation menu bar -->
+    <string name="nav_alarm">Alarme</string>
+    <string name="nav_study_session">Études</string>
+    <string name="nav_sleep_session">Sommeil</string>
+    <string name="nav_statistics">Rapport</string>
+    <string name="nav_settings">Paramètres</string>
+
+    <!-- Preference Titles -->
+    <string name="genral_settings">Paramètres Généraux</string>
+    <string name="theme_title">Thème</string>
+    <string name="language_title">Langue</string>
+
+    <!-- Theme Preferences -->
+    <string name="theme_light">Clair</string>
+    <string name="theme_dark">Sombre</string>
+    <string name="theme_system">Défaut Système</string>
+
+    <string name="schedule_alarm">Programmer l\'alarme à :</string>
+    <string name="title_activity_alarm_full_screen_ui">AlarmFullScreenUI</string>
+    <string name="dummy_button">Bouton Factice</string>
+    <string name="dummy_content">CONTENU\nFACTICE</string>
+    <string name="confirm">Confirmer</string>
+
+    <!-- Alarm Actions -->
+    <string name="add_alarm">Ajouter Alarme</string>
+    <string name="edit_alarm">Modifier Alarme</string>
+    <string name="delete_alarm">Supprimer Alarme</string>
+    <string name="dismiss_alarm">Rejeter</string>
+    <string name="save">Sauvegarder</string>
+    <string name="cancel">Annuler</string>
+    <string name="delete">Supprimer</string>
+
+    <!-- Alarm List -->
+    <string name="no_alarms">Pas d\'alarmes</string>
+    <string name="tap_to_add_alarm">Appuyez sur + pour ajouter votre première alarme</string>
+
+    <!-- Alarm Dialog -->
+    <string name="set_alarm_time">Régler l\'heure de l\'alarme</string>
+    <string name="alarm_label">Libellé de l\'alarme (optionnel)</string>
+
+    <!-- Toast Messages -->
+    <string name="alarm_created">Alarme créée</string>
+    <string name="alarm_updated">Alarme mise à jour</string>
+    <string name="alarm_deleted">Alarme supprimée</string>
+    <string name="alarm_enabled">Alarme activée</string>
+    <string name="alarm_disabled">Alarme désactivée</string>
+
+    <!-- Difficulty levels -->
+    <string name="difficulty_easy">Facile</string>
+    <string name="difficulty_medium">Moyen</string>
+    <string name="difficulty_hard">Difficile</string>
+
+    <!-- Buttons -->
+    <string name="new_game">Nouveau Jeu</string>
+    <string name="hint">Indice</string>
+    <string name="undo">Annuler</string>
+    <string name="notes">Notes</string>
+    <string name="erase">Effacer</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Reprendre</string>
+
+    <!-- Timer -->
+    <string name="timer_format" formatted="false">%02d:%02d</string>
+
+    <!-- Messages -->
+    <string name="no_hints_available">Aucun indice disponible</string>
+    <string name="puzzle_solved">Félicitations ! Puzzle résolu !</string>
+    <string name="new_game_confirm">Commencer une nouvelle partie ? Votre progression actuelle sera perdue.</string>
+    <string name="yes">Oui</string>
+    <string name="no">Non</string>
+    <string name="ok">OK</string>
+
+    <!-- Dialog titles -->
+    <string name="select_difficulty">Sélectionner la difficulté</string>
+    <string name="victory_title">Victoire !</string>
+    <string name="victory_message">Vous avez résolu le puzzle en %s !</string>
+
+    <!-- Stats -->
+    <string name="time">Temps</string>
+    <string name="mistakes">Erreurs</string>
+
+    <!-- Numbers -->
+    <string name="number_1">1</string>
+    <string name="number_2">2</string>
+    <string name="number_3">3</string>
+    <string name="number_4">4</string>
+    <string name="number_5">5</string>
+    <string name="number_6">6</string>
+    <string name="number_7">7</string>
+    <string name="number_8">8</string>
+    <string name="number_9">9</string>
+
+    <!-- Confirmation -->
+    <string name="delete_alarm_confirmation">Êtes-vous sûr de vouloir supprimer cette alarme ?</string>
+    <string name="accessibility_description">Ce service permet de détecter l\'ouverture des applications pour activer le blocage durant votre sommeil.</string>
+
+    <string-array name="sleep_advice_messages">
+        <item>Conseil Nuit : Évitez la lumière bleue de vos écrans 1h avant de dormir pour améliorer votre mélatonine.</item>
+        <item>Conseil Nuit : Assurez-vous que votre chambre est complètement obscure pour un sommeil profond et réparateur.</item>
+        <item>Conseil Nuit : Une boisson chaude et non caféinée (tisane) peut grandement faciliter votre endormissement.</item>
+        <item>Conseil Nuit : Écrivez vos préoccupations dans un journal pour vider votre esprit avant de vous coucher.</item>
+    </string-array>
+
+    <!-- Toolbar Menu -->
+    <string name="menu_preferences">Préférences</string>
+    <string name="menu_privacy">Confidentialité et Politique</string>
+    <string name="menu_help">Aide</string>
+    <string name="menu_report">Signaler</string>
+
+    <!-- Fragment Titles -->
+    <string name="title_home">Accueil</string>
+    <string name="title_study">Études</string>
+    <string name="title_sleep">Sommeil</string>
+    <string name="title_calendar">Calendrier</string>
+    <string name="title_alarm">Alarme</string>
+    <string name="title_statistics">Statistiques</string>
+    <string name="title_settings">Paramètres</string>
+
+    <!-- Settings Fragment (Invocation) -->
+    <string name="settings_invocation_title">Régler les Heures d\'Invocation</string>
+    <string name="settings_morning_label">Heures du Matin (5h - 8h par défaut)</string>
+    <string name="settings_morning_start_hint">Début (h)</string>
+    <string name="settings_morning_end_hint">Fin (h)</string>
+    <string name="settings_evening_label">Heures du Soir (17h - 20h par défaut)</string>
+    <string name="settings_evening_start_hint">Début (h)</string>
+    <string name="settings_evening_end_hint">Fin (h)</string>
+    <string name="settings_save_button">Sauvegarder</string>
+    <string name="settings_error_invalid_time">Veuillez entrer une heure valide et assurez-vous que l\'heure de début est inférieure à l\'heure de fin.</string>
+    <string name="settings_success_saved">Réglages sauvegardés et alarmes mises à jour !</string>
+    <string name="settings_error_numbers_only">Veuillez remplir tous les champs avec des chiffres.</string>
+
+    <!-- Home Fragment -->
+    <string name="app_title_home">AURORA</string>
+    <string name="home_btn_invocations">Invocations</string>
+
+    <!-- Statistics Fragment -->
+    <string name="stats_today">Aujourd\'hui</string>
+    <string name="desc_calendar">Calendrier</string>
+    <string name="desc_header_background">Arrière-plan d\'en-tête</string>
+    <string name="stats_toggle_wake">Réveil</string>
+    <string name="stats_toggle_sleep">Sommeil</string>
+    <string name="stats_toggle_study">Études</string>
+
+    <!-- Study Fragment -->
+    <string name="study_subjects_title">Matières à étudier</string>
+    <string name="study_subject_name_hint">Nom de la matière</string>
+    <string name="study_btn_add">Ajouter</string>
+    <string name="study_btn_start">Démarrer</string>
+    <string name="study_btn_pause">Pause</string>
+    <string name="study_btn_stop">Arrêter</string>
+    <string name="study_btn_custom">Personnalisé</string>
+
+    <!-- Content Descriptions -->
+    <string name="desc_sleep_data_available">Données de sommeil disponibles</string>
+    <string name="desc_wake_data_available">Données de réveil disponibles</string>
+    <string name="desc_study_data_available">Données d\'études disponibles</string>
+
+</resources>
