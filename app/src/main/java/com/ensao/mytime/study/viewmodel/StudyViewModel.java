@@ -6,31 +6,38 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.util.Log;
+
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
 import com.ensao.mytime.study.model.Subject;
 import com.ensao.mytime.study.repository.StudyRepository;
 import com.ensao.mytime.study.service.PomodoroService;
+
 import java.util.List;
-import android.util.Log;
 
 public class StudyViewModel extends AndroidViewModel implements PomodoroService.PomodoroListener {
 
     private StudyRepository repository;
-    private MutableLiveData<List<Subject>> allSubjects;
+    private LiveData<List<Subject>> allSubjects;
 
     private MutableLiveData<Integer> currentTime = new MutableLiveData<>();
     private MutableLiveData<Boolean> isTimerRunning = new MutableLiveData<>();
     private MutableLiveData<String> timerState = new MutableLiveData<>();
 
+    // Pour savoir si on affiche "Travail" ou "Pause"
+    private MutableLiveData<Boolean> isWorkMode = new MutableLiveData<>(true);
+
     private PomodoroService pomodoroService;
     private boolean isServiceBound = false;
 
-    private int initialTime = 25 * 60; // 25 minutes en secondes
+    private int initialTime = 25 * 60; // 25 minutes par défaut en secondes
 
     public StudyViewModel(Application application) {
         super(application);
-        repository = new StudyRepository();
+        repository = new StudyRepository(application);
         allSubjects = repository.getAllSubjects();
 
         currentTime.setValue(initialTime);
@@ -64,14 +71,12 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
         try {
             Intent intent = new Intent(getApplication(), PomodoroService.class);
 
-            // Démarrer le service en avant-plan
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 getApplication().startForegroundService(intent);
             } else {
                 getApplication().startService(intent);
             }
 
-            // Lier le service
             getApplication().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
         } catch (Exception e) {
             e.printStackTrace();
@@ -81,22 +86,42 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
     private void updateTimerFromService() {
         if (isServiceBound && pomodoroService != null) {
             long timeLeft = pomodoroService.getTimeLeft();
+
+            // Mise à jour du temps
             if (timeLeft > 0) {
                 currentTime.setValue((int) (timeLeft / 1000));
-                isTimerRunning.setValue(pomodoroService.isTimerRunning());
+            }
 
-                String state = "stopped";
-                if (pomodoroService.isTimerRunning()) {
-                    state = "running";
-                } else if (pomodoroService.isTimerPaused()) {
-                    state = "paused";
+            // Mise à jour de l'état (Running/Paused)
+            isTimerRunning.setValue(pomodoroService.isTimerRunning());
+
+            String state = "stopped";
+            if (pomodoroService.isTimerRunning()) {
+                state = "running";
+            } else {
+                // Vérification sécurisée si la méthode existe, sinon on suppose false
+                try {
+                    // Si vous avez ajouté isTimerPaused() dans le Service :
+                    if (pomodoroService.isTimerPaused()) {
+                        state = "paused";
+                    }
+                } catch (NoSuchMethodError e) {
+                    // Fallback si le Service n'est pas encore mis à jour
+                    Log.w("ViewModel", "Méthode isTimerPaused manquante dans le service");
                 }
+            }
+            timerState.setValue(state);
 
-                timerState.setValue(state);
+            // Mise à jour du mode (Travail/Pause)
+            try {
+                isWorkMode.setValue(pomodoroService.isWorkSession());
+            } catch (NoSuchMethodError e) {
+                isWorkMode.setValue(true);
             }
         }
     }
-
+  
+  
     private String currentSubject;
 
     public void setCurrentSubject(String subject) {
@@ -106,7 +131,7 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
         }
     }
 
-    // Implémentation de l'interface PomodoroListener
+    // === Implémentation de l'interface PomodoroListener ===
     @Override
     public void onTimerTick(long millisUntilFinished) {
         currentTime.postValue((int) (millisUntilFinished / 1000));
@@ -114,6 +139,9 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
 
     @Override
     public void onTimerFinished() {
+        // Attention: Avec le nouveau service "intelligent", onTimerFinished est appelé à la toute fin
+        // ou entre les sessions. Ici, on ne reset à 0 que si tout est fini.
+        // La gestion fine se fait via l'affichage du temps restant.
         currentTime.postValue(0);
         isTimerRunning.postValue(false);
         timerState.postValue("finished");
@@ -143,12 +171,19 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
         if (fallbackTimer != null) {
             fallbackTimer.cancel();
         }
+        // On remet le temps initial choisi par l'utilisateur
         currentTime.postValue(initialTime);
         isTimerRunning.postValue(false);
         timerState.postValue("stopped");
     }
 
-    public MutableLiveData<List<Subject>> getAllSubjects() {
+    @Override
+    public void onModeChanged(boolean isWorkMode) {
+        this.isWorkMode.postValue(isWorkMode);
+    }
+
+    // === Getters pour l'UI ===
+    public LiveData<List<Subject>> getAllSubjects() {
         return allSubjects;
     }
 
@@ -164,6 +199,11 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
         return timerState;
     }
 
+    public MutableLiveData<Boolean> getIsWorkMode() {
+        return isWorkMode;
+    }
+
+    // === Base de données ===
     public void insertSubject(String subjectName) {
         if (subjectName != null && !subjectName.trim().isEmpty()) {
             Subject subject = new Subject(subjectName.trim());
@@ -206,17 +246,15 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
 
     public void startTimer() {
         if (isServiceBound && pomodoroService != null) {
-            // Vérifier l'état actuel du timer
             if (pomodoroService.isTimerRunning()) {
-                Log.d("TIMER_DEBUG", "Timer déjà en cours, ignore start");
                 return;
             }
 
+            // On envoie le temps total (ex: 60 min) au service
             long duration = initialTime * 1000L;
             pomodoroService.startTimer(duration);
-            Log.d("TIMER_DEBUG", "Démarrage timer depuis ViewModel: " + duration + "ms");
+
         } else {
-            Log.d("TIMER_DEBUG", "Service non lié, fallback timer");
             startFallbackTimer();
         }
     }
@@ -224,9 +262,7 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
     public void pauseTimer() {
         if (isServiceBound && pomodoroService != null) {
             pomodoroService.pauseTimer();
-            Log.d("TIMER_DEBUG", "Pause demandée depuis ViewModel");
         } else {
-            // Cancel fallback timer if running
             if (fallbackTimer != null) {
                 fallbackTimer.cancel();
             }
@@ -237,12 +273,9 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
 
     public void resumeTimer() {
         if (isServiceBound && pomodoroService != null) {
-            // Vérifier si on peut reprendre
-            if (!pomodoroService.isTimerRunning() && pomodoroService.getTimeLeft() > 0) {
+            // On vérifie simplement si on peut reprendre
+            if (!pomodoroService.isTimerRunning()) {
                 pomodoroService.resumeTimer();
-                Log.d("TIMER_DEBUG", "Reprise demandée depuis ViewModel");
-            } else {
-                Log.d("TIMER_DEBUG", "Impossible de reprendre - état incompatible");
             }
         } else {
             isTimerRunning.setValue(true);
@@ -253,7 +286,6 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
     public void stopTimer() {
         if (isServiceBound && pomodoroService != null) {
             pomodoroService.stopTimer();
-            Log.d("TIMER_DEBUG", "Arrêt demandé depuis ViewModel");
         } else {
             onTimerStopped();
         }
@@ -261,19 +293,18 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
 
     public void setTimerDuration(int minutes) {
         this.initialTime = minutes * 60;
+
+        // Si le timer est arrêté, on met à jour l'affichage immédiatement
         if (!isTimerRunning.getValue()) {
             currentTime.setValue(initialTime);
-
-            // Mettre à jour aussi la durée dans le service
-            if (isServiceBound && pomodoroService != null) {
-                pomodoroService.setTimerDuration(initialTime * 1000L);
-            }
         }
+        // Note: On n'appelle plus pomodoroService.setTimerDuration() ici car
+        // le service recalculera tout au moment du startTimer()
     }
 
+    // === Fallback (Secours si le service plante) ===
     private android.os.CountDownTimer fallbackTimer;
 
-    // Méthode fallback si le service n'est pas disponible
     private void startFallbackTimer() {
         if (fallbackTimer != null) {
             fallbackTimer.cancel();
@@ -282,7 +313,6 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
         isTimerRunning.setValue(true);
         timerState.setValue("running");
 
-        // Timer local de secours
         fallbackTimer = new android.os.CountDownTimer(initialTime * 1000L, 1000) {
             public void onTick(long millisUntilFinished) {
                 currentTime.postValue((int) (millisUntilFinished / 1000));
@@ -296,19 +326,9 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
         }.start();
     }
 
-    // Méthodes pour vérifier l'état du service
-    public boolean isServiceBound() {
-        return isServiceBound;
-    }
-
-    public PomodoroService getPomodoroService() {
-        return pomodoroService;
-    }
-
     @Override
     protected void onCleared() {
         super.onCleared();
-        // Nettoyer les ressources
         if (isServiceBound) {
             getApplication().unbindService(serviceConnection);
             isServiceBound = false;

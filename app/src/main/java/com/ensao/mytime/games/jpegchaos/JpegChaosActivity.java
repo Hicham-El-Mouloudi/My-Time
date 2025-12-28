@@ -355,8 +355,7 @@ public class JpegChaosActivity extends BasePuzzleActivity {
             }
 
             // Select a random image
-            java.util.Random random = new java.util.Random();
-            selectedImageFileName = validImages.get(random.nextInt(validImages.size()));
+            selectedImageFileName = validImages.get(0);
             android.util.Log.i(TAG, "Selected random image: " + selectedImageFileName);
 
             // Load the master bitmap

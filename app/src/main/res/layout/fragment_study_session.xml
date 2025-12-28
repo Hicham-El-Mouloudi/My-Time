@@ -14,7 +14,6 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Timer Container with Glass Styling -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/timer_container"
             style="@style/GlassCardStyle.Large"
@@ -35,7 +34,6 @@
                     android:layout_height="260dp"
                     android:layout_marginBottom="32dp">
 
-                    <!-- Progress Bar Track -->
                     <ProgressBar
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -46,7 +44,6 @@
                         android:rotation="-90"
                         style="?android:attr/progressBarStyleHorizontal" />
 
-                    <!-- Actual Progress -->
                     <ProgressBar
                         android:id="@+id/progress_timer"
                         android:layout_width="match_parent"
@@ -58,7 +55,6 @@
                         android:rotation="-90"
                         style="?android:attr/progressBarStyleHorizontal" />
 
-                    <!-- Digital Clock Center -->
                     <TextView
                         android:id="@+id/tv_timer"
                         android:layout_width="wrap_content"
@@ -70,7 +66,6 @@
                         android:textColor="@color/glass_text_primary"
                         android:fontFamily="sans-serif"
                         android:letterSpacing="0.05"/>
-
                 </FrameLayout>
 
                 <!-- Duration Controls -->
@@ -126,7 +121,6 @@
                         app:cornerRadius="16dp"
                         android:layout_marginStart="8dp"
                         android:stateListAnimator="@null"/>
-
                 </LinearLayout>
 
                 <!-- Timer Controls -->
@@ -175,13 +169,13 @@
                         app:backgroundTint="@color/glass_error"
                         app:cornerRadius="20dp"
                         android:layout_marginStart="8dp" />
-
                 </LinearLayout>
-
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Subjects Container with Glass Styling -->
+        <!-- ============================================= -->
+        <!-- 2. SUBJECTS SECTION (Style Glass) -->
+        <!-- ============================================= -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/subjects_container"
             style="@style/GlassCardStyle.Large"
@@ -235,7 +229,6 @@
                         app:strokeWidth="1dp"
                         app:cornerRadius="16dp"
                         android:stateListAnimator="@null"/>
-
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -243,6 +236,70 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false"/>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ============================================= -->
+        <!-- 3. PDF SECTION (Style Glass - AJOUTÉE ICI) -->
+        <!-- ============================================= -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/pdf_container"
+            style="@style/GlassCardStyle.Large"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Revision Documents"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/glass_text_primary"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Bouton d'importation avec le même style que "Add Subject" -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_import_pdf"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:text="Import PDF"
+                    android:textSize="16sp"
+                    android:textColor="@color/glass_text_primary"
+                    app:icon="@android:drawable/ic_menu_add"
+                    app:iconTint="@color/glass_text_primary"
+                    app:iconGravity="textStart"
+                    app:backgroundTint="@color/glass_button_secondary"
+                    app:strokeColor="@color/glass_card_stroke"
+                    app:strokeWidth="1dp"
+                    app:cornerRadius="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:stateListAnimator="@null"/>
+
+                <!-- Message si liste vide -->
+                <TextView
+                    android:id="@+id/tv_no_pdf"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="No documents imported yet"
+                    android:gravity="center"
+                    android:textColor="@color/glass_text_hint"
+                    android:visibility="gone"
+                    android:layout_marginBottom="8dp"/>
+
+                <!-- Liste des PDF -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_pdfs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>

@@ -1,6 +1,10 @@
 package com.ensao.mytime.study.fragments;
 
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,41 +13,82 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.ensao.mytime.R;
 import com.ensao.mytime.study.adapter.SubjectAdapter;
 import com.ensao.mytime.study.model.Subject;
 import com.ensao.mytime.study.viewmodel.StudyViewModel;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 public class StudySessionFragment extends Fragment {
 
     private StudyViewModel studyViewModel;
 
-    // UI Elements
+    // UI Elements (Timer)
     private TextView tvTimer;
     private ProgressBar progressTimer;
     private Button btnStart, btnPause, btnStop;
     private Button btn25Min, btn45Min, btnCustom;
+
+    // UI Elements (Sujets)
     private EditText etSubjectName;
     private Button btnAddSubject;
     private RecyclerView rvSubjects;
     private SubjectAdapter subjectAdapter;
 
+    // --- NOUVEAUX UI ELEMENTS (PDFs) ---
+    private RecyclerView rvPdfs;
+    private TextView tvNoPdf;
+    private Button btnImportPdf;
+    private PdfAdapter pdfAdapter;
+    private List<File> pdfList = new ArrayList<>();
+
+    // Launcher pour ouvrir la galerie
+    private ActivityResultLauncher<String> pickPdfLauncher;
+
     private int currentMaxDuration = 25 * 60; // Default 25 min in seconds
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // --- INITIALISATION DU LAUNCHER (Indispensable pour l'import) ---
+        pickPdfLauncher = registerForActivityResult(
+                new ActivityResultContracts.GetContent(),
+                uri -> {
+                    if (uri != null) {
+                        importPdfFile(uri);
+                    }
+                }
+        );
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_study_session, container, false);
 
         studyViewModel = new ViewModelProvider(requireActivity()).get(StudyViewModel.class);
 
         initViews(view);
-        setupRecyclerView();
+        setupRecyclerView();    // Pour les matières
+        setupPdfRecyclerView(); // Pour les PDF (NOUVEAU)
         observeViewModel();
         setupButtonListeners();
 
@@ -70,6 +115,11 @@ public class StudySessionFragment extends Fragment {
         btnAddSubject = view.findViewById(R.id.btn_add_subject);
         rvSubjects = view.findViewById(R.id.rv_subjects);
 
+        // --- PDF Views ---
+        btnImportPdf = view.findViewById(R.id.btn_import_pdf);
+        rvPdfs = view.findViewById(R.id.rv_pdfs);
+        tvNoPdf = view.findViewById(R.id.tv_no_pdf);
+
         updateButtonVisibility("stopped");
     }
 
@@ -95,6 +145,14 @@ public class StudySessionFragment extends Fragment {
         rvSubjects.setAdapter(subjectAdapter);
     }
 
+    // --- Configuration de la liste PDF ---
+    private void setupPdfRecyclerView() {
+        rvPdfs.setLayoutManager(new LinearLayoutManager(getContext()));
+        pdfAdapter = new PdfAdapter(pdfList, this::openPdf);
+        rvPdfs.setAdapter(pdfAdapter);
+        loadSavedPdfs();
+    }
+
     private void observeViewModel() {
         studyViewModel.getCurrentTime().observe(getViewLifecycleOwner(), timeInSeconds -> {
             if (timeInSeconds != null) {
@@ -109,20 +167,8 @@ public class StudySessionFragment extends Fragment {
                 updateDurationButtonsState(isRunning);
 
                 if (tvTimer != null) {
-                    // Update text color based on state if needed, or keep white/primary
-                    // Since we are using Glass style with explicit colors in XML, consistent white
-                    // is usually best.
-                    // But if you want status indication via text color:
                     switch (state) {
-                        case "running":
-                            // tvTimer.setTextColor(getResources().getColor(R.color.glass_text_primary));
-                            break;
-                        case "paused":
-                            // tvTimer.setTextColor(getResources().getColor(R.color.glass_text_secondary));
-                            break;
                         case "stopped":
-                            // tvTimer.setTextColor(getResources().getColor(R.color.glass_text_primary));
-                            // Reset progress on stop
                             if (progressTimer != null)
                                 progressTimer.setProgress(100);
                             break;
@@ -272,7 +318,96 @@ public class StudySessionFragment extends Fragment {
                 hideKeyboard();
             }
         });
+
+        // --- Clic sur le bouton Import PDF ---
+        btnImportPdf.setOnClickListener(v -> {
+            pickPdfLauncher.launch("application/pdf");
+        });
     }
+
+    // ==========================================
+    // LOGIQUE PDF (IMPORT & LECTURE)
+    // ==========================================
+
+    private void importPdfFile(Uri sourceUri) {
+        try {
+            String fileName = getFileName(sourceUri);
+            File destFile = new File(requireContext().getFilesDir(), fileName);
+
+            InputStream is = requireContext().getContentResolver().openInputStream(sourceUri);
+            FileOutputStream fos = new FileOutputStream(destFile);
+
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = is.read(buffer)) > 0) {
+                fos.write(buffer, 0, length);
+            }
+
+            is.close();
+            fos.close();
+
+            Toast.makeText(getContext(), "Document importé !", Toast.LENGTH_SHORT).show();
+            loadSavedPdfs();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "Erreur d'importation", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void loadSavedPdfs() {
+        pdfList.clear();
+        File dir = requireContext().getFilesDir();
+        File[] files = dir.listFiles((d, name) -> name.toLowerCase().endsWith(".pdf"));
+
+        if (files != null) {
+            for (File f : files) {
+                pdfList.add(f);
+            }
+        }
+
+        if (pdfAdapter != null) pdfAdapter.notifyDataSetChanged();
+        if (tvNoPdf != null) {
+            tvNoPdf.setVisibility(pdfList.isEmpty() ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    private void openPdf(File file) {
+        try {
+            Uri uri = FileProvider.getUriForFile(requireContext(),
+                    requireContext().getPackageName() + ".provider", file);
+
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(uri, "application/pdf");
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(getContext(), "Aucune application pour lire les PDF", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private String getFileName(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            try (Cursor cursor = requireContext().getContentResolver().query(uri, null, null, null, null)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    int index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                    if (index >= 0) result = cursor.getString(index);
+                }
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) result = result.substring(cut + 1);
+        }
+        return result;
+    }
+
+    // ==========================================
+    // MÉTHODES UI & UTILITAIRES
+    // ==========================================
 
     private void updateTimerDisplay(int timeInSeconds) {
         int minutes = timeInSeconds / 60;
@@ -282,7 +417,6 @@ public class StudySessionFragment extends Fragment {
             tvTimer.setText(timeString);
         }
 
-        // Update Circular Progress
         if (progressTimer != null && currentMaxDuration > 0) {
             int progress = (int) ((timeInSeconds / (float) currentMaxDuration) * 100);
             progressTimer.setProgress(progress);
@@ -320,9 +454,6 @@ public class StudySessionFragment extends Fragment {
         btn25Min.setEnabled(enabled);
         btn45Min.setEnabled(enabled);
         btnCustom.setEnabled(enabled);
-
-        // Tint logic handled by selector or simple alpha change if desired
-        // For glass morphism, disabling might just mean lowering opacity
         float alpha = enabled ? 1.0f : 0.5f;
         btn25Min.setAlpha(alpha);
         btn45Min.setAlpha(alpha);
@@ -330,16 +461,7 @@ public class StudySessionFragment extends Fragment {
     }
 
     private void updateDurationButtonSelection(Button selectedButton) {
-        // Reset styles (Glass button secondary is default)
-        // Here we can use simple alpha or slightly different tint if we had specific
-        // selected state color
-        // For simplicity with glass buttons, we'll keep them consistent or maybe add a
-        // border
-        // For now, let's just ensure they look "reset".
-
-        // If we want to highlight selection, we could change background tint.
-        // Let's assume default is glass_button_secondary.
-        // Selected could be glass_button_primary or just higher opacity.
+        // Optionnel : Gestion de la sélection visuelle
     }
 
     private void hideKeyboard() {
@@ -356,17 +478,57 @@ public class StudySessionFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        tvTimer = null;
-        progressTimer = null;
-        btnStart = null;
-        btnPause = null;
-        btnStop = null;
-        btn25Min = null;
-        btn45Min = null;
-        btnCustom = null;
-        etSubjectName = null;
-        btnAddSubject = null;
-        rvSubjects = null;
+        tvTimer = null; progressTimer = null;
+        btnStart = null; btnPause = null; btnStop = null;
+        btn25Min = null; btn45Min = null; btnCustom = null;
+        etSubjectName = null; btnAddSubject = null; rvSubjects = null;
         subjectAdapter = null;
+        // Clean PDF
+        rvPdfs = null; tvNoPdf = null; btnImportPdf = null;
+    }
+
+    // --- ADAPTER PDF (STATIC) ---
+    private static class PdfAdapter extends RecyclerView.Adapter<PdfAdapter.PdfViewHolder> {
+        private final List<File> files;
+        private final OnPdfClickListener listener;
+
+        public interface OnPdfClickListener {
+            void onPdfClick(File file);
+        }
+
+        public PdfAdapter(List<File> files, OnPdfClickListener listener) {
+            this.files = files;
+            this.listener = listener;
+        }
+
+        @NonNull
+        @Override
+        public PdfViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(android.R.layout.simple_list_item_1, parent, false);
+            return new PdfViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull PdfViewHolder holder, int position) {
+            File file = files.get(position);
+            holder.tvName.setText("📄 " + file.getName());
+            holder.itemView.setOnClickListener(v -> listener.onPdfClick(file));
+        }
+
+        @Override
+        public int getItemCount() {
+            return files.size();
+        }
+
+        static class PdfViewHolder extends RecyclerView.ViewHolder {
+            TextView tvName;
+            public PdfViewHolder(@NonNull View itemView) {
+                super(itemView);
+                tvName = itemView.findViewById(android.R.id.text1);
+                // Couleur blanche pour le style Glass
+                tvName.setTextColor(0xFFFFFFFF);
+            }
+        }
     }
 }

@@ -5,146 +5,203 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
+import android.media.AudioAttributes;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
-import android.util.Log;
 import android.os.CountDownTimer;
 import android.os.IBinder;
+import android.os.PowerManager;
+import android.util.Log;
+
 import androidx.core.app.NotificationCompat;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class PomodoroService extends Service {
     private static final String CHANNEL_ID = "pomodoro_channel";
     private static final int NOTIFICATION_ID = 1;
+
+    // === CONSTANTES ===
+    // Cycle : 25 min travail + 5 min pause = 30 min total
+    private static final long WORK_BLOCK = 25 * 60 * 1000;
+    private static final long BREAK_BLOCK = 5 * 60 * 1000;
+    private static final long CYCLE_DURATION = WORK_BLOCK + BREAK_BLOCK;
+
     private PomodoroListener listener;
 
-    // Variables pour le minuteur
-    private CountDownTimer countDownTimer;
-    private long timeLeftInMillis = 25 * 60 * 1000; // 25 minutes par défaut
+    // === ÉTAT DU SERVICE ===
+    private CountDownTimer activeTimer;
+    private PowerManager.WakeLock wakeLock; // INDISPENSABLE : Empêche le CPU de dormir
+
+    private long initialTotalDuration; // Durée totale ajustée (avec pauses)
+    private long timeRemainingGlobal;  // Temps global restant
+
+    private boolean isWorkSession = true; // État actuel
     private boolean isTimerRunning = false;
-    private boolean ispaused = false;
+    private boolean isPausedByUser = false;
 
-    private long totalTime = 25 * 60 * 1000;
-    private int pauseCount = 0;
-
-    // Interface pour la communication avec le ViewModel
-    public interface PomodoroListener {
-        void onTimerTick(long remainingTime);
-
-        void onTimerFinished();
-
-        void onTimerStarted();
-
-        void onTimerPaused();
-
-        void onTimerStopped();
-    }
-
-    // Binder pour lier le service
     private final IBinder binder = new LocalBinder();
 
     public class LocalBinder extends Binder {
-        public PomodoroService getService() {
-            return PomodoroService.this;
-        }
+        public PomodoroService getService() { return PomodoroService.this; }
+    }
+    private long totalTime = 25 * 60 * 1000;
+    private int pauseCount = 0;
+
+    public interface PomodoroListener {
+        void onTimerTick(long remainingTime);
+        void onTimerFinished();
+        void onTimerStarted();
+        void onTimerPaused();
+        void onTimerStopped();
+        default void onModeChanged(boolean isWorkMode) {}
     }
 
     @Override
-    public IBinder onBind(Intent intent) {
-        return binder;
-    }
+    public IBinder onBind(Intent intent) { return binder; }
 
-    // Méthode pour définir le listener
-    public void setPomodoroListener(PomodoroListener listener) {
-        this.listener = listener;
-    }
+    public void setPomodoroListener(PomodoroListener listener) { this.listener = listener; }
 
     @Override
     public void onCreate() {
         super.onCreate();
         createNotificationChannel();
+
+        // Initialisation du WakeLock pour garder le service actif même écran éteint
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        if (powerManager != null) {
+            wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyTime:PomodoroWakelock");
+        }
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Notification notification = createNotification();
-        startForeground(NOTIFICATION_ID, notification);
+        startForeground(NOTIFICATION_ID, createNotification("Prêt", "En attente"));
         return START_STICKY;
     }
 
-    // === MÉTHODES POUR LE MINUTEUR ===
+    // ==========================================
+    // LOGIQUE "ROBUSTE" (Calcul Mathématique)
+    // ==========================================
 
-    /**
-     * Start a fresh timer with the given duration.
-     * This resets all state and starts counting down from the beginning.
-     */
-    public void startTimer(long duration) {
-        // Cancel any existing timer first
+    public void startTimer(long pureWorkDuration) {
+        stopTimer(); // Reset propre
+
+        // --- CORRECTION : Calcul de la durée étendue (incluant les pauses) ---
+        // Ex: Si l'utilisateur veut 50 min de travail pur.
+        // 50 / 25 = 2 cycles complets.
+        // Chaque cycle complet = 30 min (25T + 5P).
+        // Donc Total = 2 * 30 = 60 min.
+
+        long fullCycles = pureWorkDuration / WORK_BLOCK;
+        long partialWork = pureWorkDuration % WORK_BLOCK;
+
+        long adjustedTotalDuration = (fullCycles * CYCLE_DURATION) + partialWork;
+
+        Log.d("POMODORO", "Demande: " + pureWorkDuration + "ms -> Ajusté à: " + adjustedTotalDuration + "ms (avec pauses)");
+
+        this.initialTotalDuration = adjustedTotalDuration;
+        this.timeRemainingGlobal = adjustedTotalDuration;
+        this.isPausedByUser = false;
+        this.isWorkSession = true; // On commence toujours par travailler
+
+        startGlobalCountdown(adjustedTotalDuration);
+    }
+
+    private void startGlobalCountdown(long duration) {
         cancelCurrentTimer();
+        acquireWakeLock(); // Empêcher le CPU de dormir
 
-        // Reset all state for fresh start
-        this.totalTime = duration;
-        this.timeLeftInMillis = duration;
-        this.ispaused = false;
-
-        // Create and start the countdown
-        createAndStartCountdown(duration);
+        isTimerRunning = true;
 
         if (listener != null) {
             listener.onTimerStarted();
+            // Force une mise à jour immédiate de l'état pour l'UI
+            updateSessionState();
         }
 
+        activeTimer = new CountDownTimer(duration, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                timeRemainingGlobal = millisUntilFinished;
+                updateSessionState(); // Recalculer l'état (Travail/Pause) à chaque seconde
+            }
+
+            @Override
+            public void onFinish() {
+                finishAll();
+            }
+        }.start();
         Log.d("TIMER_DEBUG", "Timer démarré (fresh): " + duration + "ms");
         pauseCount = 0;
     }
 
-    public void pauseTimer() {
-        if (countDownTimer != null && isTimerRunning) {
-            countDownTimer.cancel();
-            countDownTimer = null;
-            isTimerRunning = false;
-            ispaused = true;
+    /**
+     * C'est ici que la magie opère. Au lieu de changer de timer,
+     * on calcule où on en est dans le cycle de 30 minutes.
+     */
+    private void updateSessionState() {
+        // Temps écoulé depuis le début absolu
+        long timeElapsed = initialTotalDuration - timeRemainingGlobal;
 
-            // Notify listener about pause state
-            if (listener != null) {
-                listener.onTimerPaused();
-            }
+        // Position dans le cycle actuel de 30 min (25+5)
+        long timeInCycle = timeElapsed % CYCLE_DURATION;
 
+        boolean newSessionState;
+        long displayTime;
             Log.d("TIMER_DEBUG", "Timer mis en pause. Temps restant: " + timeLeftInMillis + "ms");
             pauseCount++;
         }
     }
 
-    public void resumeTimer() {
-        // Relaxed condition: if timer is not running and we have time left, we can
-        // resume
-        if (!isTimerRunning && timeLeftInMillis > 0) {
-            // Resume from paused state - don't reset totalTime
-            this.ispaused = false;
+        if (timeInCycle < WORK_BLOCK) {
+            // === MODE TRAVAIL (0 à 25 min du cycle) ===
+            newSessionState = true;
 
-            // Create and start countdown with remaining time
-            createAndStartCountdown(timeLeftInMillis);
+            // Temps restant avant la pause
+            displayTime = WORK_BLOCK - timeInCycle;
 
-            if (listener != null) {
-                listener.onTimerStarted();
+            // Cas particulier : Si c'est la toute fin globale (ex: reste 10 min total)
+            // On ne doit pas afficher 25 min, mais le vrai temps restant
+            if (timeRemainingGlobal < displayTime) {
+                displayTime = timeRemainingGlobal;
             }
 
-            Log.d("TIMER_DEBUG", "Timer repris: " + timeLeftInMillis + "ms");
         } else {
-            Log.d("TIMER_DEBUG",
-                    "Impossible de reprendre - état: running=" + isTimerRunning + ", timeLeft=" + timeLeftInMillis);
+            // === MODE PAUSE (25 à 30 min du cycle) ===
+            newSessionState = false;
+
+            // Temps restant avant la fin de la pause
+            displayTime = CYCLE_DURATION - timeInCycle;
         }
+
+        // --- DÉTECTION DU CHANGEMENT D'ÉTAT (Travail <-> Pause) ---
+        // Cette logique garantit que le son joue dans les DEUX sens
+        if (this.isWorkSession != newSessionState) {
+
+            // SONNERIE : On joue le son AVANT de changer la variable pour être sûr
+            Log.d("POMODORO", "Changement d'état détecté ! Sonnerie activée.");
+            playNotificationSound();
+
+            this.isWorkSession = newSessionState;
+
+            if (listener != null) listener.onModeChanged(isWorkSession);
+        }
+
+        // Mise à jour UI
+        if (listener != null) {
+            listener.onTimerTick(displayTime);
+        }
+        updateNotification(displayTime);
     }
 
-    /**
-     * Helper method to cancel the current timer if it exists.
-     */
-    private void cancelCurrentTimer() {
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-            countDownTimer = null;
-        }
-    }
-
+    // ==========================================
+    // USER CONTROLS
+    // ==========================================
     /**
      * Helper method to create and start a new CountDownTimer.
      * This centralizes the timer creation logic.
@@ -155,156 +212,213 @@ public class PomodoroService extends Service {
         this.currentSubject = subject;
     }
 
-    private void createAndStartCountdown(long durationMillis) {
-        this.isTimerRunning = true;
+    public void pauseTimer() {
+        if (isTimerRunning) {
+            cancelCurrentTimer();
+            releaseWakeLock(); // On relâche le CPU quand c'est l'utilisateur qui met pause
+            isTimerRunning = false;
+            isPausedByUser = true;
+            if (listener != null) listener.onTimerPaused();
+            // On garde la notification à jour
+            updateNotification(getTimeLeftForDisplay());
+          pauseCount++
+        }
+    }
 
-        countDownTimer = new CountDownTimer(durationMillis, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                // Only update if still running (prevents ghost ticks after cancel)
-                if (isTimerRunning) {
-                    timeLeftInMillis = millisUntilFinished;
-                    if (listener != null) {
-                        listener.onTimerTick(millisUntilFinished);
-                    }
-                    Log.d("TIMER_DEBUG", "Tick: " + millisUntilFinished + "ms");
-                    updateNotification(millisUntilFinished);
-                }
-            }
-
-            @Override
-            public void onFinish() {
-                timeLeftInMillis = 0;
-                isTimerRunning = false;
-                ispaused = false;
-
-                // Save study statistics
-                int durationMinutes = (int) Math.ceil(totalTime / (1000.0 * 60.0));
-                Log.d("PomodoroService",
-                        "Timer finished! Duration: " + durationMinutes + "min, subject: " + currentSubject);
-
-                // Allow saving even short sessions (at least 1 min if rounded, or 0 if user
-                // wants)
-                // But ceiling ensures even 1 second is 1 minute
-                Log.d("PomodoroService", "Calling StatisticsHelper.updateStudyStatistics");
-                com.ensao.mytime.statistics.StatisticsHelper.updateStudyStatistics(getApplicationContext(),
-                        durationMinutes, currentSubject, pauseCount);
-
-                if (listener != null) {
-                    listener.onTimerFinished();
-                }
-                updateNotification(0);
-                pauseCount = 0;
-            }
-        }.start();
+    public void resumeTimer() {
+        if (!isTimerRunning && isPausedByUser) {
+            isPausedByUser = false;
+            // On reprend simplement le timer global là où il s'était arrêté
+            startGlobalCountdown(timeRemainingGlobal);
+        }
     }
 
     public void stopTimer() {
         cancelCurrentTimer();
+        releaseWakeLock();
 
         isTimerRunning = false;
-        ispaused = false; // Reset paused state on stop
-        timeLeftInMillis = totalTime;
+        isPausedByUser = false;
+        timeRemainingGlobal = 0;
+        isWorkSession = true;
+      
         pauseCount = 0;
 
         if (listener != null) {
             listener.onTimerStopped();
+            listener.onModeChanged(true);
         }
-
-        updateNotification(totalTime);
-        Log.d("TIMER_DEBUG", "Timer arrêté et réinitialisé");
+        updateNotification(0);
     }
 
-    // Méthodes pour obtenir l'état du timer
-    public long getTimeLeft() {
-        return timeLeftInMillis;
+    private void finishAll() {
+        playNotificationSound(); // Sonnerie finale
+        releaseWakeLock();
+        isTimerRunning = false;
+      
+      // We use initialTotalDuration instead of totalTime
+        int durationMinutes = (int) Math.ceil(initialTotalDuration / (1000.0 * 60.0));
+        
+        Log.d("PomodoroService", "Saving stats: " + durationMinutes + "min, subject: " + currentSubject);
+
+        // Check if StatisticsHelper is imported. If not, import com.ensao.mytime.statistics.StatisticsHelper;
+        try {
+             com.ensao.mytime.statistics.StatisticsHelper.updateStudyStatistics(
+                getApplicationContext(),
+                durationMinutes,
+                currentSubject,
+                pauseCount
+            );
+        } catch (Exception e) {
+            Log.e("PomodoroService", "Error saving statistics", e);
+        }
+      
+        if (listener != null) listener.onTimerFinished();
+        updateNotification(0);
+        stopForeground(true);
+        pauseCount = 0; // Reset pause count
     }
 
-    public boolean isTimerRunning() {
-        return isTimerRunning;
+    private void cancelCurrentTimer() {
+        if (activeTimer != null) {
+            activeTimer.cancel();
+            activeTimer = null;
+        }
     }
 
-    public boolean isTimerPaused() {
-        return ispaused;
+    // ==========================================
+    // GESTION DU WAKELOCK (Important pour veille)
+    // ==========================================
+    private void acquireWakeLock() {
+        if (wakeLock != null && !wakeLock.isHeld()) {
+            // On met un timeout de sécurité (ex: 4 heures) pour ne pas vider la batterie si bug
+            wakeLock.acquire(4 * 60 * 60 * 1000L);
+            Log.d("POMODORO", "WakeLock acquired");
+        }
     }
 
-    public void setTimerDuration(long durationInMillis) {
-        this.totalTime = durationInMillis;
-        if (!isTimerRunning) {
-            this.timeLeftInMillis = durationInMillis;
-            this.ispaused = false;
-            // Mettre à jour l'affichage même si le timer ne tourne pas
-            if (listener != null) {
-                listener.onTimerTick(durationInMillis);
+    private void releaseWakeLock() {
+        if (wakeLock != null && wakeLock.isHeld()) {
+            wakeLock.release();
+            Log.d("POMODORO", "WakeLock released");
+        }
+    }
+
+    // ==========================================
+    // AUDIO & NOTIF CORRIGÉ (Arrêt automatique)
+    // ==========================================
+
+    private void playNotificationSound() {
+        try {
+            // 1. Essayer le son d'ALARME (Prioritaire, sonne fort)
+            Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+
+            // 2. Fallback sur NOTIFICATION
+            if (soundUri == null) {
+                soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             }
+
+            // 3. Fallback sur RINGTONE
+            if (soundUri == null) {
+                soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+            }
+
+            final Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), soundUri);
+
+            if (r != null) {
+                // Configuration audio
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    r.setLooping(false); // Important : Ne pas boucler
+                    r.setAudioAttributes(new AudioAttributes.Builder()
+                            .setUsage(AudioAttributes.USAGE_ALARM)
+                            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                            .build());
+                }
+
+                r.play();
+
+                // --- CORRECTION CRUCIALE : Arrêter le son après 5 secondes ---
+                // Cela empêche le son de tourner à l'infini sur certains téléphones
+                new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        try {
+                            if (r.isPlaying()) {
+                                r.stop();
+                                Log.d("POMODORO", "Son arrêté automatiquement.");
+                            }
+                        } catch (Exception e) {
+                            // Ignorer si déjà arrêté
+                        }
+                    }
+                }, 5000); // 5000 ms = 5 secondes
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    // === MÉTHODES DE NOTIFICATION ===
+    // Helper pour recalculer le temps d'affichage sans faire avancer le timer
+    // Utile pour updateNotification quand on est en pause
+    private long getTimeLeftForDisplay() {
+        long timeElapsed = initialTotalDuration - timeRemainingGlobal;
+        long timeInCycle = timeElapsed % CYCLE_DURATION;
+        if (timeInCycle < WORK_BLOCK) {
+            long display = WORK_BLOCK - timeInCycle;
+            return (timeRemainingGlobal < display) ? timeRemainingGlobal : display;
+        } else {
+            return CYCLE_DURATION - timeInCycle;
+        }
+    }
+
+    // ==========================================
+    // GETTERS & NOTIFICATIONS
+    // ==========================================
+
+    public long getTimeLeft() {
+        // Utilisé par le ViewModel au moment du binding
+        return getTimeLeftForDisplay();
+    }
+
+    public boolean isTimerRunning() { return isTimerRunning; }
+    public boolean isWorkSession() { return isWorkSession; }
+    public boolean isTimerPaused() { return isPausedByUser; }
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
-                    CHANNEL_ID,
-                    "Pomodoro Timer",
-                    NotificationManager.IMPORTANCE_LOW);
-            channel.setDescription("Pomodoro timer notifications");
-
-            NotificationManager manager = getSystemService(NotificationManager.class);
-            if (manager != null) {
-                manager.createNotificationChannel(channel);
-            }
+                    CHANNEL_ID, "Pomodoro Timer", NotificationManager.IMPORTANCE_LOW);
+            getSystemService(NotificationManager.class).createNotificationChannel(channel);
         }
     }
 
-    private Notification createNotification() {
+    private Notification createNotification(String title, String content) {
         return new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Pomodoro Timer")
-                .setContentText("Prêt à démarrer")
+                .setContentTitle(title)
+                .setContentText(content)
                 .setSmallIcon(android.R.drawable.ic_dialog_info)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setOnlyAlertOnce(true)
                 .build();
     }
 
-    private void updateNotification(long millisUntilFinished) {
-        String contentText;
+    private void updateNotification(long displayTime) {
+        String title = isWorkSession ? "Concentration" : "Pause Détente ";
+        if (isPausedByUser) title += " (Pause)";
 
-        if (millisUntilFinished > 0) {
-            int minutes = (int) (millisUntilFinished / 1000) / 60;
-            int seconds = (int) (millisUntilFinished / 1000) % 60;
-            contentText = String.format("Temps restant: %02d:%02d", minutes, seconds);
-        } else {
-            contentText = "Timer terminé!";
-        }
+        int min = (int) (displayTime / 1000) / 60;
+        int sec = (int) (displayTime / 1000) % 60;
+        String content = String.format("%02d:%02d", min, sec);
 
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Pomodoro Timer")
-                .setContentText(contentText)
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-                .setOnlyAlertOnce(true)
-                .build();
-
-        // Mettre à jour la notification
         NotificationManager manager = getSystemService(NotificationManager.class);
         if (manager != null) {
-            manager.notify(NOTIFICATION_ID, notification);
+            manager.notify(NOTIFICATION_ID, createNotification(title, content));
         }
     }
 
     @Override
     public void onDestroy() {
-        // Arrêter le timer si running
-        cancelCurrentTimer();
-
-        // Notifier l'arrêt
-        if (listener != null) {
-            listener.onTimerStopped();
-        }
-
+        stopTimer();
         super.onDestroy();
-        stopForeground(true);
-        stopSelf();
     }
 }
