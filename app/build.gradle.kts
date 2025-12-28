@@ -14,6 +14,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        //multiDexEnabled = true
+
+
     }
 
     buildTypes {
@@ -35,9 +39,9 @@ android {
 dependencies {
 
 
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    //implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
-    implementation("com.google.android.material:material:1.12.0")
+    //implementation("com.google.android.material:material:1.12.0")
 
     // Retrofit pour les appels API (Librairie réseau)
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -53,8 +57,8 @@ dependencies {
     implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
 
 
-    implementation("androidx.room:room-runtime:2.8.4")
-    annotationProcessor("androidx.room:room-compiler:2.8.4")
+    implementation("androidx.room:room-runtime:2.6.1")
+    annotationProcessor("androidx.room:room-compiler:2.6.1")
 
     // Lifecycle components (LiveData, ViewModel)
     implementation("androidx.lifecycle:lifecycle-livedata:2.7.0")
@@ -74,5 +78,11 @@ dependencies {
     coreLibraryDesugaring(libs.desugar.jdk.libs)
 
     annotationProcessor("androidx.lifecycle:lifecycle-compiler:2.7.0")
+
+
+    implementation("androidx.multidex:multidex:2.0.1")
+
+    // FlipTimerView
+    //implementation("com.github.anugotta:FlipTimerView:v1.5")
 
 }

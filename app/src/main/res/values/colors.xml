@@ -158,4 +158,12 @@
     <color name="button_text_legacy">#FFFFFF</color>
     <color name="sudoku_text_primary">#0b2545</color>
     <color name="sudoku_text_secondary">#13315c</color>
+
+    <!-- Ajoutez ces couleurs -->
+    <color name="flip_digit_background">#2C3E50</color>
+    <color name="flip_digit_text">#FFFFFF</color>
+    <color name="flip_timer_running">#4CAF50</color> <!-- Vert pour running -->
+    <color name="flip_timer_paused">#FF9800</color>  <!-- Orange pour paused -->
+    <color name="flip_timer_stopped">#2196F3</color> <!-- Bleu pour stopped -->
+    <color name="flip_timer_break">#E91E63</color>   <!-- Rose pour break -->
 </resources>
