@@ -102,12 +102,12 @@ public class StudyStructureAddOn extends StatsViewGenerator {
 
         // Setup Completion Distribution Pie Chart
         if (chartCompletionDistribution != null) {
-            setupCompletionChart(chartCompletionDistribution, stats);
+            setupCompletionDistributionChart(chartCompletionDistribution, stats);
         }
 
-        // Setup Weekly Bar Chart
+        // Setup Weekly Progress Bar Chart
         if (chartWeeklySubjects != null) {
-            setupWeeklyChart(chartWeeklySubjects, stats);
+            setupWeeklySubjectsChart(chartWeeklySubjects, stats);
         }
     }
 
@@ -149,7 +149,7 @@ public class StudyStructureAddOn extends StatsViewGenerator {
         chart.invalidate();
     }
 
-    private void setupCompletionChart(PieChart chart, Map<String, Object> stats) {
+    private void setupCompletionDistributionChart(PieChart chart, Map<String, Object> stats) {
         Object completedObj = stats.get("completedTasksCount");
         Object totalObj = stats.get("totalTasksCount");
 
@@ -197,7 +197,7 @@ public class StudyStructureAddOn extends StatsViewGenerator {
         chart.invalidate();
     }
 
-    private void setupWeeklyChart(BarChart chart, Map<String, Object> stats) {
+    private void setupWeeklySubjectsChart(BarChart chart, Map<String, Object> stats) {
         @SuppressWarnings("unchecked")
         List<Integer> weeklyData = (List<Integer>) stats.get("weeklySubjectsStudied");
 

@@ -10,14 +10,16 @@ public class StudyRepository {
     private List<Subject> subjectsList = new ArrayList<>();
     private int nextId = 1;
 
-    /*public StudyRepository() {
-        // Initialiser avec quelques données de test
-        subjectsList.add(new Subject(1, "Mathématiques", false));
-        subjectsList.add(new Subject(2, "Physique", false));
-        subjectsList.add(new Subject(3, "Programmation Java", false));
-        nextId = 4;
-        subjectsLiveData.setValue(new ArrayList<>(subjectsList));
-    }*/
+    /*
+     * public StudyRepository() {
+     * // Initialiser avec quelques données de test
+     * subjectsList.add(new Subject(1, "Mathématiques", false));
+     * subjectsList.add(new Subject(2, "Physique", false));
+     * subjectsList.add(new Subject(3, "Programmation Java", false));
+     * nextId = 4;
+     * subjectsLiveData.setValue(new ArrayList<>(subjectsList));
+     * }
+     */
 
     // Opérations pour Subject - SIMPLES sans Base de données
     public void insertSubject(Subject subject) {
@@ -40,6 +42,14 @@ public class StudyRepository {
     public void deleteSubject(Subject subject) {
         subjectsList.removeIf(s -> s.getId() == subject.getId());
         subjectsLiveData.setValue(new ArrayList<>(subjectsList));
+    }
+
+    public Subject getSubjectById(int id) {
+        for (Subject s : subjectsList) {
+            if (s.getId() == id)
+                return s;
+        }
+        return null;
     }
 
     public MutableLiveData<List<Subject>> getAllSubjects() {

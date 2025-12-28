@@ -309,4 +309,9 @@
     <string name="alarm_empty_title">Pas d\'alarmes</string>
     <string name="alarm_empty_subtitle">Appuyez sur + pour ajouter</string>
 
+    <string name="study_select_subject_title">Choisir une matière</string>
+    <string name="study_subject_add_action">Ajouter</string>
+    <string name="study_msg_select_subject">Veuillez d\'abord chosir une matière !</string>
+    <string name="study_msg_subject_added">Matière ajoutée</string>
+
 </resources>
