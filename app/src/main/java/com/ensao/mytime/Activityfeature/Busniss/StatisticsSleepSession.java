@@ -19,6 +19,7 @@ public class StatisticsSleepSession {
     private float timeInBed; // hours
     private int sleepLatency; // minutes to fall asleep
     private int wakeDuringSleep; // minutes awake during sleep
+    private String wakeDuringSleepDistributionJSON; // JSON array of wake episodes
     private boolean hasSleep;
 
     // Default constructor for Room
@@ -27,13 +28,15 @@ public class StatisticsSleepSession {
 
     @Ignore
     public StatisticsSleepSession(Date date, float sleepDuration, int sleepEfficiency,
-            float timeInBed, int sleepLatency, int wakeDuringSleep, boolean hasSleep) {
+            float timeInBed, int sleepLatency, int wakeDuringSleep,
+            String wakeDuringSleepDistributionJSON, boolean hasSleep) {
         this.date = date;
         this.sleepDuration = sleepDuration;
         this.sleepEfficiency = sleepEfficiency;
         this.timeInBed = timeInBed;
         this.sleepLatency = sleepLatency;
         this.wakeDuringSleep = wakeDuringSleep;
+        this.wakeDuringSleepDistributionJSON = wakeDuringSleepDistributionJSON;
         this.hasSleep = hasSleep;
     }
 
@@ -64,6 +67,10 @@ public class StatisticsSleepSession {
 
     public int getWakeDuringSleep() {
         return wakeDuringSleep;
+    }
+
+    public String getWakeDuringSleepDistributionJSON() {
+        return wakeDuringSleepDistributionJSON;
     }
 
     public boolean isHasSleep() {
@@ -97,6 +104,10 @@ public class StatisticsSleepSession {
 
     public void setWakeDuringSleep(int wakeDuringSleep) {
         this.wakeDuringSleep = wakeDuringSleep;
+    }
+
+    public void setWakeDuringSleepDistributionJSON(String wakeDuringSleepDistributionJSON) {
+        this.wakeDuringSleepDistributionJSON = wakeDuringSleepDistributionJSON;
     }
 
     public void setHasSleep(boolean hasSleep) {

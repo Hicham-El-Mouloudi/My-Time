@@ -114,6 +114,10 @@ public class WeeksAdapter extends RecyclerView.Adapter<WeeksAdapter.WeekViewHold
                 if (wakeIndicator != null) {
                     wakeIndicator.setVisibility(View.GONE);
                 }
+                View studyIndicator = getDayIndicatorStudyOf(day);
+                if (studyIndicator != null) {
+                    studyIndicator.setVisibility(View.GONE);
+                }
             }
         }
 
@@ -131,6 +135,8 @@ public class WeeksAdapter extends RecyclerView.Adapter<WeeksAdapter.WeekViewHold
                 setDayIndicatorSleepOf(day, dayData.hasSleep());
                 // Setting wake indicator
                 setDayIndicatorWakeOf(day, dayData.hasWake());
+                // Setting study indicator
+                setDayIndicatorStudyOf(day, dayData.hasStudy());
                 // Apply future/selected styling
                 applyDayStyling(day, isFuture, isSelected);
                 // Setting day container view click listener
@@ -226,6 +232,34 @@ public class WeeksAdapter extends RecyclerView.Adapter<WeeksAdapter.WeekViewHold
             return dayIndicatorWakeView;
         }
 
+        private View getDayIndicatorStudyOf(DayOfWeek day) {
+            View dayIndicatorStudyView = null;
+            switch (day) {
+                case MONDAY:
+                    dayIndicatorStudyView = itemView.findViewById(R.id.iv_monday_indicator_study);
+                    break;
+                case TUESDAY:
+                    dayIndicatorStudyView = itemView.findViewById(R.id.iv_tuesday_indicator_study);
+                    break;
+                case WEDNESDAY:
+                    dayIndicatorStudyView = itemView.findViewById(R.id.iv_wednesday_indicator_study);
+                    break;
+                case THURSDAY:
+                    dayIndicatorStudyView = itemView.findViewById(R.id.iv_thursday_indicator_study);
+                    break;
+                case FRIDAY:
+                    dayIndicatorStudyView = itemView.findViewById(R.id.iv_friday_indicator_study);
+                    break;
+                case SATURDAY:
+                    dayIndicatorStudyView = itemView.findViewById(R.id.iv_saturday_indicator_study);
+                    break;
+                case SUNDAY:
+                    dayIndicatorStudyView = itemView.findViewById(R.id.iv_sunday_indicator_study);
+                    break;
+            }
+            return dayIndicatorStudyView;
+        }
+
         private View getDayContainerViewOf(DayOfWeek day) {
             View dayLayoutView = null;
             switch (day) {
@@ -272,6 +306,13 @@ public class WeeksAdapter extends RecyclerView.Adapter<WeeksAdapter.WeekViewHold
             View dayIndicatorWakeView = getDayIndicatorWakeOf(day);
             if (dayIndicatorWakeView != null) {
                 dayIndicatorWakeView.setVisibility(isWake ? View.VISIBLE : View.GONE);
+            }
+        }
+
+        private void setDayIndicatorStudyOf(DayOfWeek day, boolean isStudy) {
+            View dayIndicatorStudyView = getDayIndicatorStudyOf(day);
+            if (dayIndicatorStudyView != null) {
+                dayIndicatorStudyView.setVisibility(isStudy ? View.VISIBLE : View.GONE);
             }
         }
 

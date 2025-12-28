@@ -10,7 +10,6 @@ public abstract class AbstractWakeStatsCalculator {
     // Template Method
     public Map<String, Object> calculateWakeStats(DayData dayData) {
         Map<String, Object> stats = new HashMap<>();
-        stats.put("wakeLatency", getWakeLatency(dayData));
         stats.put("ringCount", getRingCount(dayData));
         stats.put("timeVariability", getTimeVariability(dayData));
         stats.put("firstAlarm", getFirstAlarm(dayData));
@@ -25,8 +24,6 @@ public abstract class AbstractWakeStatsCalculator {
     }
 
     // Abstract Steps (Hooks)
-    protected abstract int getWakeLatency(DayData dayData);
-
     protected abstract int getRingCount(DayData dayData);
 
     protected abstract float getTimeVariability(DayData dayData);

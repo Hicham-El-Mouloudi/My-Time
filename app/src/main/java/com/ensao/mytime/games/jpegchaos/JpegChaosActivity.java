@@ -228,7 +228,10 @@ public class JpegChaosActivity extends BasePuzzleActivity {
     }
 
     private void showMoreOptionsDialog() {
-        final Dialog dialog = new Dialog(this);
+        // Use Material theme context wrapper to support Material components
+        android.content.Context materialContext = new android.view.ContextThemeWrapper(
+                this, com.google.android.material.R.style.Theme_MaterialComponents_DayNight_Dialog);
+        final Dialog dialog = new Dialog(materialContext);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.games_jpegchaos_more_options_dialog);
         if (dialog.getWindow() != null)
@@ -299,7 +302,11 @@ public class JpegChaosActivity extends BasePuzzleActivity {
     }
 
     private void showWinDialog() {
-        final Dialog dialog = new Dialog(this);
+        // Use Material theme context wrapper to support MaterialCardView and
+        // MaterialButton
+        android.content.Context materialContext = new android.view.ContextThemeWrapper(
+                this, com.google.android.material.R.style.Theme_MaterialComponents_DayNight_Dialog);
+        final Dialog dialog = new Dialog(materialContext);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.games_jpegchaos_win_dialog);
         dialog.setCancelable(false);

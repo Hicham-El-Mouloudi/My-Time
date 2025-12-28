@@ -39,6 +39,7 @@
     <color name="text_tertiary">#5a7a9a</color>
     <color name="text_on_primary">#0b2545</color>
     <color name="text_on_dark">#FFFFFF</color>
+    <color name="chart_text_color">#FFFFFF</color>
 
     <!-- ========== SEMANTIC COLORS ========== -->
     <color name="success">#4caf50</color>
@@ -158,4 +159,8 @@
     <color name="button_text_legacy">#0b2545</color>
     <color name="sudoku_text_primary">#eef4ed</color>
     <color name="sudoku_text_secondary">#8da9c4</color>
+
+    <!-- ========== POPUP COLORS (User Requested) ========== -->
+    <color name="popup_background">#8da9c4</color>
+    <color name="popup_text">#FFFFFF</color>
 </resources>

@@ -54,6 +54,9 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
             pomodoroService = binder.getService();
             pomodoroService.setPomodoroListener(StudyViewModel.this);
             isServiceBound = true;
+            if (currentSubject != null) {
+                pomodoroService.setCurrentSubject(currentSubject);
+            }
             updateTimerFromService();
         }
 
@@ -117,6 +120,16 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
             }
         }
     }
+  
+  
+    private String currentSubject;
+
+    public void setCurrentSubject(String subject) {
+        this.currentSubject = subject;
+        if (isServiceBound && pomodoroService != null) {
+            pomodoroService.setCurrentSubject(subject);
+        }
+    }
 
     // === Implémentation de l'interface PomodoroListener ===
     @Override
@@ -132,6 +145,10 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
         currentTime.postValue(0);
         isTimerRunning.postValue(false);
         timerState.postValue("finished");
+
+        // Note: Statistics saving is now handled by PomodoroService directly
+
+        // Optionnel : Redémarrer automatiquement ou afficher une notification
     }
 
     @Override
@@ -191,6 +208,25 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
         if (subjectName != null && !subjectName.trim().isEmpty()) {
             Subject subject = new Subject(subjectName.trim());
             repository.insertSubject(subject);
+            com.ensao.mytime.statistics.StatisticsHelper.updateTotalTasks(getApplication(), 1);
+        }
+    }
+
+    /**
+     * Updates the completion status of a subject and updates statistics
+     * accordingly.
+     * 
+     * @param subject     The subject to update
+     * @param isCompleted The new completion status
+     */
+    public void changeSubjectCompletion(Subject subject, boolean isCompleted) {
+        if (subject.isCompleted() != isCompleted) {
+            com.ensao.mytime.statistics.StatisticsHelper.updateTaskCompletionStats(
+                    getApplication(),
+                    subject.getCreatedAt(),
+                    isCompleted);
+            subject.setCompleted(isCompleted);
+            repository.updateSubject(subject);
         }
     }
 
@@ -200,6 +236,10 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
 
     public void deleteSubject(Subject subject) {
         repository.deleteSubject(subject);
+        // Only decrement total if it wasn't completed (as it was part of workload)
+        // OR decrement if user deletes it entirely?
+        // Usually if deleted, it's gone from stats? Let's decrement.
+        com.ensao.mytime.statistics.StatisticsHelper.updateTotalTasks(getApplication(), -1);
     }
 
     // === MÉTHODES DE CONTRÔLE DU TIMER ===
@@ -293,6 +333,7 @@ public class StudyViewModel extends AndroidViewModel implements PomodoroService.
             getApplication().unbindService(serviceConnection);
             isServiceBound = false;
         }
+
         if (fallbackTimer != null) {
             fallbackTimer.cancel();
             fallbackTimer = null;

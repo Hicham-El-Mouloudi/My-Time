@@ -127,12 +127,17 @@ public class StudySessionFragment extends Fragment {
         subjectAdapter = new SubjectAdapter(new ArrayList<>(), new SubjectAdapter.OnSubjectClickListener() {
             @Override
             public void onSubjectChecked(Subject subject, boolean isChecked) {
-                studyViewModel.updateSubject(subject);
+                studyViewModel.changeSubjectCompletion(subject, isChecked);
             }
 
             @Override
             public void onSubjectDeleted(Subject subject) {
                 studyViewModel.deleteSubject(subject);
+            }
+
+            @Override
+            public void onSubjectClicked(Subject subject) {
+                // Do nothing for main list clicks
             }
         });
 
@@ -183,7 +188,7 @@ public class StudySessionFragment extends Fragment {
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(
                 requireContext());
 
-        builder.setTitle("Custom Duration");
+        builder.setTitle(getString(R.string.dialog_custom_duration_title));
 
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_custom_duration, null);
         android.widget.NumberPicker numberPicker = dialogView.findViewById(R.id.numberPicker);
@@ -192,10 +197,10 @@ public class StudySessionFragment extends Fragment {
         numberPicker.setMaxValue(120);
         numberPicker.setValue(30);
         numberPicker.setWrapSelectorWheel(false);
-        numberPicker.setFormatter(value -> value + " min");
+        numberPicker.setFormatter(value -> String.format(getString(R.string.dialog_custom_duration_min_format), value));
 
         builder.setView(dialogView)
-                .setPositiveButton("Start", (dialog, which) -> {
+                .setPositiveButton(getString(R.string.dialog_custom_duration_confirm), (dialog, which) -> {
                     int selectedMinutes = numberPicker.getValue();
                     currentMaxDuration = selectedMinutes * 60;
                     studyViewModel.setTimerDuration(selectedMinutes);
@@ -205,9 +210,11 @@ public class StudySessionFragment extends Fragment {
                         progressTimer.setProgress(100);
 
                     updateDurationButtonSelection(btnCustom);
-                    btnCustom.setText(selectedMinutes + " min");
+                    btnCustom.setText(
+                            String.format(getString(R.string.dialog_custom_duration_min_format), selectedMinutes));
                 })
-                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+                .setNegativeButton(getString(R.string.dialog_custom_duration_cancel),
+                        (dialog, which) -> dialog.dismiss());
 
         androidx.appcompat.app.AlertDialog dialog = builder.create();
         dialog.show();
@@ -217,13 +224,66 @@ public class StudySessionFragment extends Fragment {
         }
     }
 
+    private void showSubjectSelectionDialog() {
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(
+                requireContext());
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_select_subject, null);
+
+        RecyclerView rvDialogSubjects = dialogView.findViewById(R.id.rv_dialog_subjects);
+        EditText etNewSubject = dialogView.findViewById(R.id.et_dialog_new_subject);
+        Button btnAdd = dialogView.findViewById(R.id.btn_dialog_add_subject);
+        Button btnCancel = dialogView.findViewById(R.id.btn_dialog_cancel);
+
+        builder.setView(dialogView);
+        androidx.appcompat.app.AlertDialog dialog = builder.create();
+
+        // Setup Adapter for Dialog
+        com.ensao.mytime.study.adapter.SubjectSelectionAdapter dialogAdapter = new com.ensao.mytime.study.adapter.SubjectSelectionAdapter(
+                new ArrayList<>(),
+                subject -> {
+                    // Select subject and start
+                    studyViewModel.setCurrentSubject(subject.getName());
+                    studyViewModel.startTimer();
+                    dialog.dismiss();
+                });
+
+        rvDialogSubjects.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvDialogSubjects.setAdapter(dialogAdapter);
+
+        // Load subjects
+        studyViewModel.getAllSubjects().observe(getViewLifecycleOwner(), subjects -> {
+            if (subjects != null) {
+                dialogAdapter.setSubjects(subjects);
+            }
+        });
+
+        // Add Button Logic
+        btnAdd.setOnClickListener(v -> {
+            String name = etNewSubject.getText().toString().trim();
+            if (!name.isEmpty()) {
+                studyViewModel.insertSubject(name);
+                etNewSubject.setText("");
+                android.widget.Toast
+                        .makeText(getContext(), R.string.study_msg_subject_added, android.widget.Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(0));
+        }
+        dialog.show();
+    }
+
     private void setupButtonListeners() {
         btnStart.setOnClickListener(v -> {
             String currentState = studyViewModel.getTimerState().getValue();
             if ("paused".equals(currentState)) {
                 studyViewModel.resumeTimer();
             } else {
-                studyViewModel.startTimer();
+                showSubjectSelectionDialog();
             }
         });
 
@@ -375,14 +435,14 @@ public class StudySessionFragment extends Fragment {
                 break;
             case "paused":
                 btnStart.setVisibility(View.VISIBLE);
-                btnStart.setText("Resume");
+                btnStart.setText(getString(R.string.study_btn_resume));
                 btnPause.setVisibility(View.GONE);
                 btnStop.setVisibility(View.VISIBLE);
                 break;
             case "stopped":
             default:
                 btnStart.setVisibility(View.VISIBLE);
-                btnStart.setText("Start");
+                btnStart.setText(getString(R.string.study_btn_start));
                 btnPause.setVisibility(View.GONE);
                 btnStop.setVisibility(View.GONE);
                 break;

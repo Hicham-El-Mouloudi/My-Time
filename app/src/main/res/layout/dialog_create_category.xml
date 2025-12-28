@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    style="@style/GlassCardStyle"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/glass_card_stroke"
+    app:cardBackgroundColor="@color/glass_dialog_bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- Title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nouvelle catégorie"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/glass_text_primary"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- Category Name -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nom de la catégorie *"
+            android:textSize="14sp"
+            android:textColor="@color/glass_text_secondary"
+            android:layout_marginBottom="4dp"/>
+
+        <EditText
+            android:id="@+id/categoryNameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Ex: Étude, Sport, Travail..."
+            android:inputType="textCapSentences"
+            android:padding="12dp"
+            android:textColor="@color/glass_text_primary"
+            android:textColorHint="@color/glass_text_hint"
+            android:background="@drawable/bg_glass_input"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Category Description -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Description"
+            android:textSize="14sp"
+            android:textColor="@color/glass_text_secondary"
+            android:layout_marginBottom="4dp"/>
+
+        <EditText
+            android:id="@+id/categoryDescriptionEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Description optionnelle"
+            android:inputType="textCapSentences"
+            android:padding="12dp"
+            android:textColor="@color/glass_text_primary"
+            android:textColorHint="@color/glass_text_hint"
+            android:background="@drawable/bg_glass_input"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Repetition Kind -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Répétition *"
+            android:textSize="14sp"
+            android:textColor="@color/glass_text_secondary"
+            android:layout_marginBottom="4dp"/>
+
+        <RadioGroup
+            android:id="@+id/repetitionRadioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp">
+
+            <RadioButton
+                android:id="@+id/radioOnetime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Une seule fois"
+                android:textSize="14sp"
+                android:textColor="@color/glass_text_primary"
+                android:buttonTint="@color/glass_accent_blue"
+                android:checked="true"
+                android:padding="8dp"/>
+
+            <RadioButton
+                android:id="@+id/radioEachday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Chaque jour"
+                android:textSize="14sp"
+                android:textColor="@color/glass_text_primary"
+                android:buttonTint="@color/glass_accent_blue"
+                android:padding="8dp"/>
+
+            <RadioButton
+                android:id="@+id/radioEachweek"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Chaque semaine (même jour)"
+                android:textSize="14sp"
+                android:textColor="@color/glass_text_primary"
+                android:buttonTint="@color/glass_accent_blue"
+                android:padding="8dp"/>
+
+            <RadioButton
+                android:id="@+id/radioEachmonth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Chaque mois (même date)"
+                android:textSize="14sp"
+                android:textColor="@color/glass_text_primary"
+                android:buttonTint="@color/glass_accent_blue"
+                android:padding="8dp"/>
+
+        </RadioGroup>
+
+        <!-- Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end">
+
+            <Button
+                android:id="@+id/btnCancelCategory"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Annuler"
+                android:textColor="@color/glass_text_primary"
+                android:layout_marginEnd="16dp"
+                app:strokeColor="@color/glass_card_stroke"
+                app:strokeWidth="1dp" />
+
+            <Button
+                android:id="@+id/btnCreateCategory"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Créer"
+                app:backgroundTint="@color/glass_accent_blue"
+                android:textColor="@color/glass_text_primary"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

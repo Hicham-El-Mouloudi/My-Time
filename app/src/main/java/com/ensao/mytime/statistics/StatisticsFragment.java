@@ -1,12 +1,12 @@
 package com.ensao.mytime.statistics;
 
-import java.time.LocalDate;
 import java.util.*;
 import java.text.*;
 
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.ensao.mytime.R;
@@ -22,26 +23,22 @@ import com.ensao.mytime.statistics.adapter.calendar.CalendarDaysAdaptee;
 import com.ensao.mytime.statistics.adapter.calendar.CalendarDaysAdapter;
 import com.ensao.mytime.statistics.adapter.week.WeeksAdaptee;
 import com.ensao.mytime.statistics.adapter.week.WeeksAdapter;
-import com.ensao.mytime.statistics.calculation.MockSleepStatsCalculator;
-import com.ensao.mytime.statistics.calculation.MockWakeStatsCalculator;
+import com.ensao.mytime.statistics.calculation.SleepStatsCalculator;
+import com.ensao.mytime.statistics.calculation.StudyStatsCalculator;
+import com.ensao.mytime.statistics.calculation.WakeStatsCalculator;
 import com.ensao.mytime.statistics.data.StatisticsDAO;
 import com.ensao.mytime.statistics.data.StatisticsDAOProxy;
 import com.ensao.mytime.statistics.data.StatisticsDAOProxyDB;
 import com.ensao.mytime.statistics.model.DayData;
 import com.ensao.mytime.statistics.view.StatsViewGenerator;
-import com.github.mikephil.charting.charts.PieChart;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.content.Context;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.Map;
@@ -61,13 +58,15 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
     private CalendarDaysAdapter calendarAdapter;
     private Dialog calendarDialog;
 
-    private MockSleepStatsCalculator sleepCalculator;
-    private MockWakeStatsCalculator wakeCalculator;
+    private SleepStatsCalculator sleepCalculator;
+    private WakeStatsCalculator wakeCalculator;
+    private StudyStatsCalculator studyCalculator;
     private StatsViewGenerator viewGenerator;
 
     private DayData currentDay;
     private boolean isSleepTabSelected = true; // Default to Sleep
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -75,8 +74,7 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
         View view = inflater.inflate(R.layout.fragment_statistics, container, false);
 
         // Initialize Components
-        daoProxy = new StatisticsDAOProxyDB(this.getActivity().getApplication(), this.getActivity());
-        // daoProxy = new StatisticsDAOProxy();
+        daoProxy = new StatisticsDAOProxyDB(this.requireActivity().getApplication(), this.requireActivity());
         calendarDialog = new Dialog(getContext());
         calendarAdaptee = new CalendarDaysAdaptee(daoProxy);
         calendarAdapter = new CalendarDaysAdapter(calendarAdaptee, day -> {
@@ -85,8 +83,9 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
         });
         weeksAdaptee = new WeeksAdaptee(daoProxy);
         weeksAdapter = new WeeksAdapter(weeksAdaptee, this);
-        sleepCalculator = new MockSleepStatsCalculator();
-        wakeCalculator = new MockWakeStatsCalculator();
+        sleepCalculator = new SleepStatsCalculator();
+        wakeCalculator = new WakeStatsCalculator();
+        studyCalculator = new StudyStatsCalculator();
         // viewGenerator = new StatsViewGenerator();
 
         // Bind Views
@@ -123,6 +122,7 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onDayClick(DayData day) {
         this.currentDay = day;
@@ -131,6 +131,7 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
         updateContent(day);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void updateSelectedDayText(DayData day) {
         if (day == null || tvSelectedDay == null)
             return;
@@ -139,9 +140,9 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
         java.time.LocalDate yesterday = today.minusDays(1);
 
         if (date.equals(today)) {
-            tvSelectedDay.setText("Today");
+            tvSelectedDay.setText(getString(R.string.stats_today));
         } else if (date.equals(yesterday)) {
-            tvSelectedDay.setText("Yesterday");
+            tvSelectedDay.setText(getString(R.string.stats_yesterday));
         } else {
             java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("EEE, MMM d");
             tvSelectedDay.setText(date.format(formatter));
@@ -158,26 +159,21 @@ public class StatisticsFragment extends Fragment implements OnDayClickListener {
         Map<String, Object> sleepStats = (day != null && day.hasSleep()) ? sleepCalculator.calculateSleepStats(day)
                 : null;
         Map<String, Object> wakeStats = (day != null && day.hasWake()) ? wakeCalculator.calculateWakeStats(day) : null;
+        Map<String, Object> studyStats = (day != null && day.hasStudy()) ? studyCalculator.calculateStudyStats(day)
+                : null;
 
         View contentView = builder
                 .forDay(day)
                 .setAvailableSleepDataLayout(R.layout.layout_sleep_stats)
-                .setUnavailableSleepDataLayout(R.layout.layout_statistics_empty) // Or specific empty layout
+                .setUnavailableSleepDataLayout(R.layout.layout_statistics_empty)
                 .setAvailableWakeDataLayout(R.layout.layout_wake_stats)
                 .setUnavailableWakeDataLayout(R.layout.layout_statistics_empty)
+                .setAvailableStudyDataLayout(R.layout.layout_studying_stats)
+                .setUnavailableStudyDataLayout(R.layout.layout_statistics_empty)
                 .setUnavailableDataLayout(R.layout.layout_statistics_empty)
                 .useSleepStats(sleepStats)
                 .useWakeStats(wakeStats)
-                .prioritizeDataAvailability(isSleepTabSelected) // Maintains state? Or builder determines priority?
-                // The user said: "prioritizeDataAvailability ... returns view will have by
-                // default an activated tab ... if hasSleep=true ... activated on tab Sleep"
-                // This implies the builder decides the INITIAL tab.
-                // But I have state 'isSleepTabSelected' in Fragment.
-                // If I want to persist user selection when they change days, I should pass my
-                // current selection.
-                // But if the user wants the logic "Prioritize available data", maybe I should
-                // let builder decide and update my state?
-                // For now, I'll pass 'isSleepTabSelected' as the preference.
+                .useStudyStats(studyStats)
                 .prioritizeDataAvailability(isSleepTabSelected)
                 .build();
 

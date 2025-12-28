@@ -23,6 +23,16 @@ public class StudyRepository {
     public LiveData<List<Subject>> getAllSubjects() {
         return allSubjects;
     }
+    /*
+     * public StudyRepository() {
+     * // Initialiser avec quelques données de test
+     * subjectsList.add(new Subject(1, "Mathématiques", false));
+     * subjectsList.add(new Subject(2, "Physique", false));
+     * subjectsList.add(new Subject(3, "Programmation Java", false));
+     * nextId = 4;
+     * subjectsLiveData.setValue(new ArrayList<>(subjectsList));
+     * }
+     */
 
     public void insertSubject(Subject subject) {
         executorService.execute(() -> {
@@ -40,5 +50,19 @@ public class StudyRepository {
         executorService.execute(() -> {
             subjectDao.delete(subject);
         });
+        //subjectsList.removeIf(s -> s.getId() == subject.getId());
+        //subjectsLiveData.setValue(new ArrayList<>(subjectsList));
+    }
+
+    public Subject getSubjectById(int id) {
+        for (Subject s : subjectsList) {
+            if (s.getId() == id)
+                return s;
+        }
+        return null;
+    }
+
+    public MutableLiveData<List<Subject>> getAllSubjects() {
+        return subjectsLiveData;
     }
 }

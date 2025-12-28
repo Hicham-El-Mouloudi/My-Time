@@ -1,6 +1,5 @@
 package com.ensao.mytime.study.adapter;
 
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,10 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.SubjectV
 
     public interface OnSubjectClickListener {
         void onSubjectChecked(Subject subject, boolean isChecked);
+
         void onSubjectDeleted(Subject subject);
+
+        void onSubjectClicked(Subject subject);
     }
 
     public SubjectAdapter(List<Subject> subjects, OnSubjectClickListener listener) {
@@ -80,7 +82,6 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.SubjectV
 
             cbSubject.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (listener != null) {
-                    subject.setCompleted(isChecked);
                     listener.onSubjectChecked(subject, isChecked);
 
                     // Rafraîchir l'apparence
@@ -91,6 +92,12 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.SubjectV
             btnDelete.setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onSubjectDeleted(subject);
+                }
+            });
+
+            itemView.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onSubjectClicked(subject);
                 }
             });
         }

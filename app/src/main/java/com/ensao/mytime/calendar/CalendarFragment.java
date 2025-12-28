@@ -1,203 +1,431 @@
 package com.ensao.mytime.calendar;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ensao.mytime.R;
+import com.ensao.mytime.Activityfeature.Busniss.userActivity;
+import com.ensao.mytime.Activityfeature.DTOs.CategoryDetailedDTO;
+import com.ensao.mytime.Activityfeature.Repos.ActivityRepo;
+import com.ensao.mytime.Activityfeature.Repos.CategoryRepo;
+import com.ensao.mytime.study.model.DailyActivity;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class CalendarFragment extends Fragment {
+public class CalendarFragment extends Fragment
+        implements AddActivityDialog.OnActivityAddedListener,
+        DayActivitiesAdapter.OnActivityClickListener,
+        EditActivityDialog.OnActivityEditedListener {
 
-    private RecyclerView calendarRecyclerView;
-    private TextView monthYearText;
-    private Calendar currentCalendar;
-    private CalendarAdapter calendarAdapter;
+    private static final String TAG = "CalendarFragment";
+
+    private RecyclerView dateBarRecyclerView;
+    private RecyclerView activitiesRecyclerView;
+    private TextView tvCurrentMonth;
+    private TextView tvSelectedDateHeader;
+    private LinearLayout emptyStateLayout;
+    private FloatingActionButton fabAddActivity;
+    private ImageButton btnToday;
+
+    private DateBarAdapter dateBarAdapter;
+    private DayActivitiesAdapter activitiesAdapter;
+    private List<DailyActivity> activities = new ArrayList<>();
+
+    private ActivityRepo activityRepo;
+    private CategoryRepo categoryRepo;
+    private long defaultCategoryId = -1;
+    private String selectedDate;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
 
-        // Initialisation avec les bons IDs de votre layout
-        calendarRecyclerView = view.findViewById(R.id.calendarRecyclerView);
-        monthYearText = view.findViewById(R.id.monthYearText);
+        Log.d(TAG, "=== CalendarFragment onCreateView ===");
 
-        currentCalendar = Calendar.getInstance();
-        setupCalendar(); // Appel de la méthode modifiée
-        setupNavigationButtons(view);
+        // Initialize repositories
+        activityRepo = new ActivityRepo(requireActivity().getApplication());
+        categoryRepo = new CategoryRepo(requireActivity().getApplication());
 
-        // Activities are now loaded from database in DayDetailActivity
+        // Initialize views
+        dateBarRecyclerView = view.findViewById(R.id.dateBarRecyclerView);
+        activitiesRecyclerView = view.findViewById(R.id.activitiesRecyclerView);
+        tvCurrentMonth = view.findViewById(R.id.tvCurrentMonth);
+        tvSelectedDateHeader = view.findViewById(R.id.tvSelectedDateHeader);
+        emptyStateLayout = view.findViewById(R.id.emptyStateLayout);
+        fabAddActivity = view.findViewById(R.id.fabAddActivity);
+        btnToday = view.findViewById(R.id.btnToday);
+
+        setupDateBar();
+        setupActivitiesList();
+        setupFab();
+        setupTodayButton();
+        loadDefaultCategory();
 
         return view;
     }
 
-    private void setupCalendar() {
-        List<CalendarDay> calendarDays = getCalendarDays();
+    private void setupDateBar() {
+        dateBarAdapter = new DateBarAdapter((date, formattedDate) -> {
+            selectedDate = formattedDate;
+            Log.d(TAG, "Date selected: " + formattedDate);
+            updateMonthHeader(date);
+            updateSelectedDateHeader(date);
+            loadActivitiesForDate(formattedDate);
+        });
 
-        // Obtenir le mois/année au format "MM-yyyy" pour le 3ème paramètre
-        String monthYear = new SimpleDateFormat("MM-yyyy", Locale.getDefault())
-                .format(currentCalendar.getTime());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(
+                getContext(), LinearLayoutManager.HORIZONTAL, false);
+        dateBarRecyclerView.setLayoutManager(layoutManager);
+        dateBarRecyclerView.setAdapter(dateBarAdapter);
 
-        // MODIFICATION : Utilisation de OnDateClickListener avec ouverture de
-        // DayDetailActivity
-        calendarAdapter = new CalendarAdapter(calendarDays,
-                new CalendarAdapter.OnDateClickListener() {
-                    @Override
-                    public void onDateClick(CalendarDay day) {
-                        // Vérifier si c'est un jour du mois courant
-                        if (day.isCurrentMonth()) {
-                            // Formater la date comme vous l'avez demandé
-                            String selectedDate = day.getYear() + "-" +
-                                    String.format("%02d", day.getMonth()) + "-" +
-                                    String.format("%02d", day.getDay());
-
-                            // Ouvrir l'activité indépendante DayDetailActivity
-                            Intent intent = new Intent(getActivity(), DayDetailActivity.class);
-                            intent.putExtra("SELECTED_DATE", selectedDate);
-                            startActivity(intent);
-                        }
-                    }
-                },
-                monthYear // 3ème paramètre
-        );
-
-        calendarRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 7));
-        calendarRecyclerView.setAdapter(calendarAdapter);
-        updateMonthYearHeader();
-    }
-
-    private void setupNavigationButtons(View view) {
-        // Utiliser les bons IDs de votre layout
-        ImageButton btnPreviousMonth = view.findViewById(R.id.btnPreviousMonth);
-        ImageButton btnNextMonth = view.findViewById(R.id.btnNextMonth);
-
-        if (btnPreviousMonth != null) {
-            btnPreviousMonth.setOnClickListener(v -> {
-                currentCalendar.add(Calendar.MONTH, -1);
-                updateCalendar();
+        int todayPosition = dateBarAdapter.getTodayPosition();
+        if (todayPosition >= 0) {
+            dateBarRecyclerView.scrollToPosition(todayPosition);
+            dateBarRecyclerView.post(() -> {
+                int offset = dateBarRecyclerView.getWidth() / 2 - 36;
+                layoutManager.scrollToPositionWithOffset(todayPosition, offset);
             });
         }
 
-        if (btnNextMonth != null) {
-            btnNextMonth.setOnClickListener(v -> {
-                currentCalendar.add(Calendar.MONTH, 1);
-                updateCalendar();
-            });
-        }
+        selectedDate = dateBarAdapter.getFormattedSelectedDate();
+        updateMonthHeader(dateBarAdapter.getSelectedDate());
+        updateSelectedDateHeader(dateBarAdapter.getSelectedDate());
     }
 
-    private void updateCalendar() {
-        List<CalendarDay> calendarDays = getCalendarDays();
-        if (calendarAdapter != null) {
-            // Mettre à jour aussi le mois/année dans l'adapter
-            String monthYear = new SimpleDateFormat("MM-yyyy", Locale.getDefault())
-                    .format(currentCalendar.getTime());
+    private void setupActivitiesList() {
+        activitiesAdapter = new DayActivitiesAdapter(activities, this);
+        activitiesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        activitiesRecyclerView.setAdapter(activitiesAdapter);
+    }
 
-            // Créer un nouvel adapter avec le nouveau mois/année
-            calendarAdapter = new CalendarAdapter(calendarDays,
-                    new CalendarAdapter.OnDateClickListener() {
-                        @Override
-                        public void onDateClick(CalendarDay day) {
-                            if (day.isCurrentMonth()) {
-                                String selectedDate = day.getYear() + "-" +
-                                        String.format("%02d", day.getMonth()) + "-" +
-                                        String.format("%02d", day.getDay());
+    private void setupFab() {
+        fabAddActivity.setOnClickListener(v -> {
+            if (selectedDate != null) {
+                AddActivityDialog dialog = AddActivityDialog.newInstance(selectedDate, this);
+                dialog.show(getChildFragmentManager(), "AddActivityDialog");
+            }
+        });
+    }
 
-                                Intent intent = new Intent(getActivity(), DayDetailActivity.class);
-                                intent.putExtra("SELECTED_DATE", selectedDate);
-                                startActivity(intent);
+    private void setupTodayButton() {
+        btnToday.setOnClickListener(v -> {
+            int todayPosition = dateBarAdapter.getTodayPosition();
+            if (todayPosition >= 0) {
+                dateBarAdapter.setSelectedPosition(todayPosition);
+                LinearLayoutManager layoutManager = (LinearLayoutManager) dateBarRecyclerView.getLayoutManager();
+                if (layoutManager != null) {
+                    int offset = dateBarRecyclerView.getWidth() / 2 - 36;
+                    layoutManager.scrollToPositionWithOffset(todayPosition, offset);
+                }
+                selectedDate = dateBarAdapter.getFormattedSelectedDate();
+                updateMonthHeader(dateBarAdapter.getSelectedDate());
+                updateSelectedDateHeader(dateBarAdapter.getSelectedDate());
+                loadActivitiesForDate(selectedDate);
+            }
+        });
+    }
+
+    private void loadDefaultCategory() {
+        Log.d(TAG, "Loading default category...");
+        categoryRepo.GetOrCreateDefaultCategory(requireActivity(), category -> {
+            if (category != null) {
+                defaultCategoryId = category.getId();
+                Log.d(TAG, "Default category loaded: ID=" + defaultCategoryId);
+
+                // Debug: Check what repetition kind the default category has
+                categoryRepo.GetCategories(requireActivity(), categories -> {
+                    if (categories != null) {
+                        for (CategoryDetailedDTO cat : categories) {
+                            if (cat.category.getId() == defaultCategoryId) {
+                                Log.d(TAG, "Default category repetition: " + cat.RepetitionTitle);
                             }
                         }
-                    },
-                    monthYear);
-            calendarRecyclerView.setAdapter(calendarAdapter);
-        }
-        updateMonthYearHeader();
+                    }
+                });
+            } else {
+                Log.e(TAG, "Failed to load default category!");
+            }
+            if (selectedDate != null) {
+                loadActivitiesForDate(selectedDate);
+            }
+        });
     }
 
-    private List<CalendarDay> getCalendarDays() {
-        List<CalendarDay> calendarDays = new ArrayList<>();
-
-        Calendar calendar = (Calendar) currentCalendar.clone();
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-
-        int currentMonth = calendar.get(Calendar.MONTH) + 1; // +1 car Calendar commence à 0
-        int currentYear = calendar.get(Calendar.YEAR);
-
-        // Obtenir la date d'aujourd'hui pour comparer
-        Calendar todayCalendar = Calendar.getInstance();
-        int todayDay = todayCalendar.get(Calendar.DAY_OF_MONTH);
-        int todayMonth = todayCalendar.get(Calendar.MONTH) + 1; // +1 car Calendar commence à 0
-        int todayYear = todayCalendar.get(Calendar.YEAR);
-
-        // Déterminer le jour de la semaine du premier jour du mois
-        int firstDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-
-        // Ajuster pour que lundi soit le premier jour de la semaine
-        int emptyDays = (firstDayOfWeek - Calendar.MONDAY + 7) % 7;
-        if (emptyDays < 0)
-            emptyDays += 7;
-
-        // Ajouter les jours vides du mois précédent
-        Calendar prevMonth = (Calendar) calendar.clone();
-        prevMonth.add(Calendar.MONTH, -1);
-        int prevMonthValue = prevMonth.get(Calendar.MONTH) + 1;
-        int prevYear = prevMonth.get(Calendar.YEAR);
-        int daysInPrevMonth = prevMonth.getActualMaximum(Calendar.DAY_OF_MONTH);
-
-        for (int i = 0; i < emptyDays; i++) {
-            int day = daysInPrevMonth - emptyDays + i + 1;
-            // Important : 5 paramètres pour CalendarDay
-            calendarDays.add(new CalendarDay(day, prevMonthValue, prevYear, false, false));
-        }
-
-        // Ajouter les jours du mois courant
-        int daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        for (int day = 1; day <= daysInMonth; day++) {
-            // Vérifier si c'est aujourd'hui
-            boolean isToday = (currentYear == todayYear) &&
-                    (currentMonth == todayMonth) &&
-                    (day == todayDay);
-
-            // Important : 5 paramètres pour CalendarDay
-            calendarDays.add(new CalendarDay(day, currentMonth, currentYear, true, isToday));
-        }
-
-        // Ajouter les jours vides du mois suivant pour compléter la grille
-        int totalCells = emptyDays + daysInMonth;
-        int remainingCells = 42 - totalCells; // 6 lignes de 7 jours
-
-        Calendar nextMonth = (Calendar) calendar.clone();
-        nextMonth.add(Calendar.MONTH, 1);
-        int nextMonthValue = nextMonth.get(Calendar.MONTH) + 1;
-        int nextYear = nextMonth.get(Calendar.YEAR);
-
-        for (int day = 1; day <= remainingCells; day++) {
-            // Important : 5 paramètres pour CalendarDay
-            calendarDays.add(new CalendarDay(day, nextMonthValue, nextYear, false, false));
-        }
-
-        return calendarDays;
+    private void updateMonthHeader(Date date) {
+        SimpleDateFormat monthFormat = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
+        tvCurrentMonth.setText(monthFormat.format(date));
     }
 
-    private void updateMonthYearHeader() {
-        if (monthYearText != null) {
-            String monthYear = new SimpleDateFormat("MMMM yyyy", Locale.getDefault())
-                    .format(currentCalendar.getTime());
-            monthYearText.setText(monthYear);
+    private void updateSelectedDateHeader(Date date) {
+        SimpleDateFormat fullFormat = new SimpleDateFormat("EEEE d MMMM", Locale.getDefault());
+        String formattedDate = fullFormat.format(date);
+        formattedDate = formattedDate.substring(0, 1).toUpperCase() + formattedDate.substring(1);
+        tvSelectedDateHeader.setText(getString(R.string.cal_header_prefix) + formattedDate);
+    }
+
+    private void loadActivitiesForDate(String date) {
+        if (date == null)
+            return;
+
+        Log.d(TAG, "========================================");
+        Log.d(TAG, "Loading activities for date: " + date);
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            Date queryDate = sdf.parse(date);
+            Log.d(TAG, "Query date timestamp: " + queryDate.getTime());
+
+            // Use GetActivities which uses the smart recurring query
+            activityRepo.GetActivities(queryDate, requireActivity(), dbActivities -> {
+                Log.d(TAG, "Received " + (dbActivities != null ? dbActivities.size() : 0) + " activities from DB");
+
+                if (dbActivities != null && !dbActivities.isEmpty()) {
+                    for (userActivity ua : dbActivities) {
+                        Log.d(TAG, "  - Activity: '" + ua.getTitle() + "'" +
+                                ", ID=" + ua.getId() +
+                                ", CategoryID=" + ua.getCategoryID() +
+                                ", StartDate=" + ua.getStartDate() +
+                                ", IsActive=" + ua.getIsActive());
+                    }
+                } else {
+                    Log.d(TAG, "  No activities returned by query!");
+                }
+
+                List<DailyActivity> loadedActivities = new ArrayList<>();
+                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+
+                if (dbActivities != null) {
+                    for (userActivity ua : dbActivities) {
+                        String startTime = ua.getStartDate() != null ? timeFormat.format(ua.getStartDate()) : "00:00";
+                        String endTime = ua.getEndDate() != null ? timeFormat.format(ua.getEndDate()) : startTime;
+                        loadedActivities.add(new DailyActivity(
+                                ua.getId(),
+                                date,
+                                startTime,
+                                endTime,
+                                ua.getTitle(),
+                                ua.getDescription(),
+                                ua.getCategoryID()));
+                    }
+                }
+
+                activities.clear();
+                activities.addAll(loadedActivities);
+                activitiesAdapter.notifyDataSetChanged();
+                updateEmptyState();
+
+                Log.d(TAG, "Activities list updated. Size: " + activities.size());
+                Log.d(TAG, "========================================");
+            });
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Log.e(TAG, "Error parsing date: " + date, e);
+        }
+    }
+
+    private void updateEmptyState() {
+        if (activities.isEmpty()) {
+            emptyStateLayout.setVisibility(View.VISIBLE);
+            activitiesRecyclerView.setVisibility(View.GONE);
+        } else {
+            emptyStateLayout.setVisibility(View.GONE);
+            activitiesRecyclerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onActivityAdded(DailyActivity activity) {
+        Log.d(TAG, "========================================");
+        Log.d(TAG, "onActivityAdded called");
+        Log.d(TAG, "Activity title: " + activity.getTitle());
+        Log.d(TAG, "Activity categoryId from dialog: " + activity.getCategoryId());
+
+        // Use provided categoryId, or fall back to default
+        long finalCategoryId = activity.getCategoryId() > 0 ? activity.getCategoryId() : defaultCategoryId;
+        Log.d(TAG, "Final categoryId to use: " + finalCategoryId);
+        Log.d(TAG, "Default categoryId: " + defaultCategoryId);
+
+        if (finalCategoryId == -1) {
+            Log.e(TAG, "CategoryID is -1! Cannot add activity.");
+            Toast.makeText(getContext(), "Chargement en cours, veuillez réessayer", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Debug: Check what category this is
+        categoryRepo.GetCategories(requireActivity(), categories -> {
+            if (categories != null) {
+                for (CategoryDetailedDTO cat : categories) {
+                    if (cat.category.getId() == finalCategoryId) {
+                        Log.d(TAG, "Using category: " + cat.category.getTitle() +
+                                ", Repetition: " + cat.RepetitionTitle);
+                    }
+                }
+            }
+        });
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            Date activityDate = sdf.parse(selectedDate);
+
+            // Parse start time
+            String[] startTimeParts = activity.getTime().split(":");
+            int startHour = Integer.parseInt(startTimeParts[0]);
+            int startMinute = Integer.parseInt(startTimeParts[1]);
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(activityDate);
+            calendar.set(Calendar.HOUR_OF_DAY, startHour);
+            calendar.set(Calendar.MINUTE, startMinute);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+            Date startDateTime = calendar.getTime();
+
+            // Parse end time
+            String[] endTimeParts = activity.getEndTime().split(":");
+            int endHour = Integer.parseInt(endTimeParts[0]);
+            int endMinute = Integer.parseInt(endTimeParts[1]);
+
+            calendar.set(Calendar.HOUR_OF_DAY, endHour);
+            calendar.set(Calendar.MINUTE, endMinute);
+            Date endDateTime = calendar.getTime();
+
+            Log.d(TAG, "Creating userActivity object...");
+            Log.d(TAG, "  StartDate: " + startDateTime + " (" + startDateTime.getTime() + ")");
+            Log.d(TAG, "  EndDate: " + endDateTime + " (" + endDateTime.getTime() + ")");
+            Log.d(TAG, "  CategoryID: " + finalCategoryId);
+
+            // Create a single activity - the query will handle showing it on recurring
+            // dates
+            userActivity newActivity = new userActivity();
+            newActivity.setTitle(activity.getTitle());
+            newActivity.setDescription(activity.getDescription());
+            newActivity.setCategoryID(finalCategoryId);
+            newActivity.setIsActive(true);
+            newActivity.setStartDate(startDateTime);
+            newActivity.setEndDate(endDateTime);
+            newActivity.setCreatedAt(new Date());
+            newActivity.setCourseID(null);
+
+            activityRepo.Insert(newActivity, requireActivity(), insertedId -> {
+                Log.d(TAG, "Activity inserted! ID: " + insertedId);
+
+                if (insertedId > 0) {
+                    // Reload activities to show the new one
+                    Log.d(TAG, "Reloading activities for current date: " + selectedDate);
+                    loadActivitiesForDate(selectedDate);
+                    Toast.makeText(getContext(), getString(R.string.cal_toast_added), Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.e(TAG, "Failed to insert activity!");
+                    Toast.makeText(getContext(), "Erreur lors de l'ajout", Toast.LENGTH_SHORT).show();
+                }
+                Log.d(TAG, "========================================");
+            });
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Log.e(TAG, "Error adding activity", e);
+            Toast.makeText(getContext(), "Erreur lors de l'ajout de l'activité", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onActivityEdit(int position, DailyActivity activity) {
+        EditActivityDialog dialog = EditActivityDialog.newInstance(position, activity, activity.getCategoryId(), this);
+        dialog.show(getChildFragmentManager(), "EditActivityDialog");
+    }
+
+    @Override
+    public void onActivityEdited(int position, DailyActivity updatedActivity) {
+        if (updatedActivity.getId() <= 0) {
+            Toast.makeText(getContext(), getString(R.string.cal_error_id), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            Date activityDate = sdf.parse(updatedActivity.getDate());
+
+            String[] startTimeParts = updatedActivity.getTime().split(":");
+            int startHour = Integer.parseInt(startTimeParts[0]);
+            int startMinute = Integer.parseInt(startTimeParts[1]);
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(activityDate);
+            calendar.set(Calendar.HOUR_OF_DAY, startHour);
+            calendar.set(Calendar.MINUTE, startMinute);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+            long startTimestamp = calendar.getTimeInMillis();
+
+            String[] endTimeParts = updatedActivity.getEndTime().split(":");
+            int endHour = Integer.parseInt(endTimeParts[0]);
+            int endMinute = Integer.parseInt(endTimeParts[1]);
+
+            calendar.set(Calendar.HOUR_OF_DAY, endHour);
+            calendar.set(Calendar.MINUTE, endMinute);
+            long endTimestamp = calendar.getTimeInMillis();
+
+            activityRepo.Update(
+                    updatedActivity.getId(),
+                    updatedActivity.getTitle(),
+                    updatedActivity.getDescription(),
+                    startTimestamp,
+                    endTimestamp,
+                    updatedActivity.getCategoryId(),
+                    requireActivity(),
+                    success -> {
+                        if (success) {
+                            // Reload activities to reflect the update
+                            loadActivitiesForDate(selectedDate);
+                            Toast.makeText(getContext(), getString(R.string.cal_toast_updated), Toast.LENGTH_SHORT)
+                                    .show();
+                        } else {
+                            Toast.makeText(getContext(), "Erreur lors de la modification", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "Erreur lors de la modification", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onActivityDelete(int position, DailyActivity activity) {
+        if (activity.getId() > 0) {
+            activityRepo.Delete(activity.getId(), requireActivity(), success -> {
+                if (success) {
+                    // Reload activities to reflect the deletion
+                    loadActivitiesForDate(selectedDate);
+                    Toast.makeText(getContext(), getString(R.string.cal_toast_deleted), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "Erreur lors de la suppression", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            activities.remove(position);
+            activitiesAdapter.notifyItemRemoved(position);
+            updateEmptyState();
         }
     }
 }

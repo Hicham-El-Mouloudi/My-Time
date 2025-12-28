@@ -49,6 +49,8 @@ public class PomodoroService extends Service {
     public class LocalBinder extends Binder {
         public PomodoroService getService() { return PomodoroService.this; }
     }
+    private long totalTime = 25 * 60 * 1000;
+    private int pauseCount = 0;
 
     public interface PomodoroListener {
         void onTimerTick(long remainingTime);
@@ -134,6 +136,8 @@ public class PomodoroService extends Service {
                 finishAll();
             }
         }.start();
+        Log.d("TIMER_DEBUG", "Timer démarré (fresh): " + duration + "ms");
+        pauseCount = 0;
     }
 
     /**
@@ -149,6 +153,10 @@ public class PomodoroService extends Service {
 
         boolean newSessionState;
         long displayTime;
+            Log.d("TIMER_DEBUG", "Timer mis en pause. Temps restant: " + timeLeftInMillis + "ms");
+            pauseCount++;
+        }
+    }
 
         if (timeInCycle < WORK_BLOCK) {
             // === MODE TRAVAIL (0 à 25 min du cycle) ===
@@ -194,6 +202,15 @@ public class PomodoroService extends Service {
     // ==========================================
     // USER CONTROLS
     // ==========================================
+    /**
+     * Helper method to create and start a new CountDownTimer.
+     * This centralizes the timer creation logic.
+     */
+    private String currentSubject;
+
+    public void setCurrentSubject(String subject) {
+        this.currentSubject = subject;
+    }
 
     public void pauseTimer() {
         if (isTimerRunning) {
@@ -204,6 +221,7 @@ public class PomodoroService extends Service {
             if (listener != null) listener.onTimerPaused();
             // On garde la notification à jour
             updateNotification(getTimeLeftForDisplay());
+          pauseCount++
         }
     }
 
@@ -223,6 +241,8 @@ public class PomodoroService extends Service {
         isPausedByUser = false;
         timeRemainingGlobal = 0;
         isWorkSession = true;
+      
+        pauseCount = 0;
 
         if (listener != null) {
             listener.onTimerStopped();
@@ -235,9 +255,28 @@ public class PomodoroService extends Service {
         playNotificationSound(); // Sonnerie finale
         releaseWakeLock();
         isTimerRunning = false;
+      
+      // We use initialTotalDuration instead of totalTime
+        int durationMinutes = (int) Math.ceil(initialTotalDuration / (1000.0 * 60.0));
+        
+        Log.d("PomodoroService", "Saving stats: " + durationMinutes + "min, subject: " + currentSubject);
+
+        // Check if StatisticsHelper is imported. If not, import com.ensao.mytime.statistics.StatisticsHelper;
+        try {
+             com.ensao.mytime.statistics.StatisticsHelper.updateStudyStatistics(
+                getApplicationContext(),
+                durationMinutes,
+                currentSubject,
+                pauseCount
+            );
+        } catch (Exception e) {
+            Log.e("PomodoroService", "Error saving statistics", e);
+        }
+      
         if (listener != null) listener.onTimerFinished();
         updateNotification(0);
         stopForeground(true);
+        pauseCount = 0; // Reset pause count
     }
 
     private void cancelCurrentTimer() {

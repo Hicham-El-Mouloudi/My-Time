@@ -252,11 +252,15 @@ public class RingtoneService extends Service {
      * @param autoSnoozeCount The current auto-snooze count (0 = first ring)
      */
     private void trackAlarmRingStatistics(long alarmTime, int autoSnoozeCount) {
+        android.util.Log.d("RingtoneService", "trackAlarmRingStatistics called - alarmTime: " + alarmTime +
+                ", autoSnoozeCount: " + autoSnoozeCount);
         if (autoSnoozeCount == 0) {
             // First ring - record the initial alarm time
+            android.util.Log.d("RingtoneService", "Recording first alarm ring");
             StatisticsHelper.recordFirstAlarmRing(this, alarmTime);
         } else {
             // Subsequent ring - increment the count
+            android.util.Log.d("RingtoneService", "Incrementing ring count");
             StatisticsHelper.incrementRingCount(this);
         }
     }
@@ -265,8 +269,19 @@ public class RingtoneService extends Service {
     public void onDestroy() {
         super.onDestroy();
 
+        // Remove notification
+        stopForeground(true);
+
+        // Explicitly cancel notification as backup
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notificationManager != null) {
+            notificationManager.cancel(1); // Same ID used in startForeground
+        }
+
         // Notify UI to close
-        sendBroadcast(new Intent("com.ensao.mytime.ACTION_STOP_ALARM_UI"));
+        Intent stopUIIntent = new Intent("com.ensao.mytime.ACTION_STOP_ALARM_UI");
+        stopUIIntent.setPackage(getPackageName());
+        sendBroadcast(stopUIIntent);
 
         if (mediaPlayer != null) {
             mediaPlayer.stop();

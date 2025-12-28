@@ -82,7 +82,7 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
                         } else {
                             // Silent
                             currentRingtoneUri = "";
-                            ringtoneNameText.setText("Silent");
+                            ringtoneNameText.setText(getString(R.string.alarm_silent));
                         }
                     }
                 });
@@ -230,17 +230,17 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
             return;
 
         new AlertDialog.Builder(requireContext())
-                .setTitle("Delete Alarms")
-                .setMessage("Delete " + selected.size() + " selected alarms?")
-                .setPositiveButton("Delete", (dialog, which) -> {
+                .setTitle(getString(R.string.alarm_delete_title))
+                .setMessage(String.format(getString(R.string.alarm_delete_msg), selected.size()))
+                .setPositiveButton(getString(R.string.action_delete), (dialog, which) -> {
                     for (Alarm alarm : selected) {
                         AlarmScheduler.cancelAlarm(requireContext(), alarm.getId());
                         repository.delete(alarm);
                     }
                     adapter.clearSelection();
-                    Toast.makeText(requireContext(), "Alarms deleted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), getString(R.string.alarm_msg_deleted), Toast.LENGTH_SHORT).show();
                 })
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton(getString(R.string.action_cancel), null)
                 .show();
     }
 
@@ -250,15 +250,15 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
                     android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
                 // Show dialog explaining why we need the permission
                 new AlertDialog.Builder(requireContext())
-                        .setTitle("Notification Permission Required")
+                        .setTitle(getString(R.string.perm_notif_title))
                         .setMessage(
-                                "This app needs notification permission to show alarm alerts. Without this, you won't see alarm notifications.")
-                        .setPositiveButton("Grant Permission", (dialog, which) -> {
+                                getString(R.string.perm_notif_msg))
+                        .setPositiveButton(getString(R.string.action_grant), (dialog, which) -> {
                             requestPermissions(new String[] { android.Manifest.permission.POST_NOTIFICATIONS }, 101);
                         })
-                        .setNegativeButton("Cancel", (dialog, which) -> {
+                        .setNegativeButton(getString(R.string.action_cancel), (dialog, which) -> {
                             Toast.makeText(requireContext(),
-                                    "Alarm notifications will not work without this permission",
+                                    getString(R.string.alarm_msg_notif_warning),
                                     Toast.LENGTH_LONG).show();
                         })
                         .setCancelable(false)
@@ -270,14 +270,14 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
                     .getSystemService(Context.NOTIFICATION_SERVICE);
             if (notificationManager != null && !notificationManager.areNotificationsEnabled()) {
                 new AlertDialog.Builder(requireContext())
-                        .setTitle("Notifications Disabled")
-                        .setMessage("Please enable notifications for this app to receive alarm alerts.")
-                        .setPositiveButton("Go to Settings", (dialog, which) -> {
+                        .setTitle(getString(R.string.alarm_notif_disabled_title))
+                        .setMessage(getString(R.string.alarm_notif_disabled_msg))
+                        .setPositiveButton(getString(R.string.action_settings), (dialog, which) -> {
                             Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
                             intent.putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().getPackageName());
                             startActivity(intent);
                         })
-                        .setNegativeButton("Cancel", null)
+                        .setNegativeButton(getString(R.string.action_cancel), null)
                         .show();
             }
         }
@@ -289,14 +289,14 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
                     .getSystemService(Context.NOTIFICATION_SERVICE);
             if (notificationManager != null && !notificationManager.canUseFullScreenIntent()) {
                 new AlertDialog.Builder(requireContext())
-                        .setTitle("Permission Required")
-                        .setMessage("To show alarms on the lock screen, please enable Full Screen Notifications.")
-                        .setPositiveButton("Go to Settings", (dialog, which) -> {
+                        .setTitle(getString(R.string.alarm_perm_required))
+                        .setMessage(getString(R.string.perm_fullscreen_msg))
+                        .setPositiveButton(getString(R.string.action_settings), (dialog, which) -> {
                             Intent intent = new Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT);
                             intent.setData(Uri.parse("package:" + requireContext().getPackageName()));
                             startActivity(intent);
                         })
-                        .setNegativeButton("Cancel", null)
+                        .setNegativeButton(getString(R.string.action_cancel), null)
                         .show();
             }
         }
@@ -307,15 +307,15 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
             AlarmManager alarmManager = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
             if (alarmManager != null && !alarmManager.canScheduleExactAlarms()) {
                 new AlertDialog.Builder(requireContext())
-                        .setTitle("Permission Required")
-                        .setMessage("This app needs permission to schedule exact alarms...")
-                        .setPositiveButton("Go to Settings", (dialog, which) -> {
+                        .setTitle(getString(R.string.alarm_perm_required))
+                        .setMessage(getString(R.string.alarm_perm_exact_msg))
+                        .setPositiveButton(getString(R.string.action_settings), (dialog, which) -> {
                             Intent intent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
                             intent.setData(Uri.parse("package:" + requireContext().getPackageName()));
                             startActivity(intent);
                         })
-                        .setNegativeButton("Cancel", (dialog, which) -> {
-                            Toast.makeText(requireContext(), "Alarms will not work without this permission",
+                        .setNegativeButton(getString(R.string.action_cancel), (dialog, which) -> {
+                            Toast.makeText(requireContext(), getString(R.string.alarm_msg_notif_warning),
                                     Toast.LENGTH_LONG).show();
                         })
                         .setCancelable(false)
@@ -350,7 +350,8 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
             Intent intent = new Intent(android.media.RingtoneManager.ACTION_RINGTONE_PICKER);
             intent.putExtra(android.media.RingtoneManager.EXTRA_RINGTONE_TYPE,
                     android.media.RingtoneManager.TYPE_ALARM);
-            intent.putExtra(android.media.RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Alarm Ringtone");
+            intent.putExtra(android.media.RingtoneManager.EXTRA_RINGTONE_TITLE,
+                    getString(R.string.alarm_select_ringtone_title));
             intent.putExtra(android.media.RingtoneManager.EXTRA_RINGTONE_EXISTING_URI,
                     (currentRingtoneUri != null && !currentRingtoneUri.isEmpty()) ? Uri.parse(currentRingtoneUri)
                             : null);
@@ -360,7 +361,7 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
         // Setup Puzzle Type Spinner
         View puzzleTypeContainer = dialogView.findViewById(R.id.puzzle_type_container);
         Spinner puzzleTypeSpinner = dialogView.findViewById(R.id.puzzle_type_spinner);
-        String[] puzzleNames = { "Jpeg Chaos", "Minesweeper", "Sudoku" };
+        String[] puzzleNames = getResources().getStringArray(R.array.puzzle_types);
         String[] puzzleValues = { "jpegchaos", "minesweeper", "sudoku" };
         ArrayAdapter<String> puzzleAdapter = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_spinner_item, puzzleNames);
@@ -397,7 +398,7 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
                     ringtoneNameText.setText(ringtone.getTitle(requireContext()));
                 }
             } else {
-                ringtoneNameText.setText("Default");
+                ringtoneNameText.setText(getString(R.string.alarm_default));
             }
 
             sleepAlarmSwitch.setChecked(existingAlarm.isSleepAlarm());
@@ -541,16 +542,18 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmActio
 
             // Update text to show count
             if (count > 0) {
-                selectAllText.setText("Select All (" + count + "/" + adapter.getAlarmCount() + ")");
+                selectAllText.setText(
+                        String.format(getString(R.string.alarm_select_all_fmt), count, adapter.getAlarmCount()));
             } else {
-                selectAllText.setText("Select All (0/" + adapter.getAlarmCount() + ")");
+                selectAllText
+                        .setText(String.format(getString(R.string.alarm_select_all_fmt), 0, adapter.getAlarmCount()));
             }
         } else {
             // Hide selection action bar when not in selection mode
             selectionActionBar.setVisibility(View.INVISIBLE);
             fabDeleteSelected.setVisibility(View.GONE);
             fabAddAlarm.setVisibility(View.VISIBLE);
-            selectAllText.setText("Select All");
+            selectAllText.setText(getString(R.string.alarm_select_all));
         }
     }
 }
